@@ -12,7 +12,7 @@ def get_wss():
     cid = ''
     request = ''
     status = ''
-    server = ('wss://datastream.idex.market', 443)
+    server = ('datastream.idex.market', 443)
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client.bind((host, port))
     client.setblocking(False)
