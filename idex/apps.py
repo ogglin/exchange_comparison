@@ -3,7 +3,7 @@ from .getter import *
 
 
 class IdexConfig(AppConfig):
-    name = 'idex'
+    name = 'idex_module'
 
     def ready(self):
         refresh()
