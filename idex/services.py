@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+import time
 
 
 def get_wss():
@@ -21,6 +22,7 @@ def get_wss():
         "request": "handshake",
         "payload": "{\"version\": \"1.0.0\", \"key\": \"api:rbXUPt_TeOMzWRBpd8O_d\"}"
     }
+    time.sleep(1)
     client.sendto(str(handshake).encode("utf-8"), server)
     reciv = client.recv(5242880)
     print(json.loads(reciv))
