@@ -7,6 +7,11 @@ from send_mail.models import Contacts
 
 
 @app.task()
+def hello_world():
+    print('Hello World!')
+
+
+@app.task()
 def send_spam_email(user_email):
     send(user_email)
 
