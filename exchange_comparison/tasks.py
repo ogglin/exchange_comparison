@@ -8,9 +8,9 @@ from send_mail.models import Contacts
 from send_mail.services import send
 
 
-@periodic_task(run_every=(timedelta(seconds=5)))
-def hello_world():
-    print('Hello World!')
+# @periodic_task(run_every=(timedelta(seconds=5)))
+# def hello_world():
+#     print('Hello World!')
 
 
 @app.task()
