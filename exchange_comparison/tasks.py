@@ -1,4 +1,6 @@
-from celery import shared_task
+from datetime import timedelta
+
+from celery.task import periodic_task
 from django.core.mail import send_mail
 
 from exchange_comparison._celery import app
@@ -6,7 +8,7 @@ from send_mail.models import Contacts
 from send_mail.services import send
 
 
-@shared_task
+@periodic_task(run_every=(timedelta(seconds=5)))
 def hello_world():
     print('Hello World!')
 
