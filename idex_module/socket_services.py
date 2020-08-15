@@ -1,15 +1,10 @@
-import socket
-import threading
-import json
-import time
-from idex.client import Client
-
 import asyncio
-import pathlib
-import ssl
-import websockets
+import json
 import logging
+import ssl
+import time
 
+import websockets
 from websockets import WebSocketClientProtocol
 
 logging.basicConfig(level=logging.INFO)
