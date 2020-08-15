@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .services import *
+from .socket_services import *
 
 
 # Create your views here.

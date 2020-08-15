@@ -1,17 +1,20 @@
+import sys
+
 from exchange_comparison._celery import app
-from .models import Idex
+from .services import set_currencies
 
 
 @app.task
-def pair_exch_add(direction, lowest_ask, highest_bid):
-    pair = Idex(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
-    pair.save()
-    return pair
+def currencies_update():
+    print('collect Idex update')
+    set_currencies()
 
 
 @app.task
-def pair_exch_update(direction, lowest_ask, highest_bid):
-    pair_id = Idex.objects.filter(exch_direction=direction).values('id')
-    pair = Idex(id=pair_id, exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
-    pair.save()
-    return pair
+def currencies_beat_update():
+    try:
+        print('collect Idex data')
+        set_currencies()
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        raise

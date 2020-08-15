@@ -10,8 +10,12 @@ app.autodiscover_tasks()
 
 # celery beat tasks
 app.conf.beat_schedule = {
-    'send-span-every-1-minute': {
-        'task': 'send_mail.tasks.send_beat_email',
+    # 'send-span-every-1-minute': {
+    #     'task': 'send_mail.tasks.send_beat_email',
+    #     'schedule': crontab(minute='*/1'),
+    # },
+    'idex-update-every-1-minute': {
+        'task': 'idex_module.tasks.currencies_update',
         'schedule': crontab(minute='*/1'),
     },
 }
