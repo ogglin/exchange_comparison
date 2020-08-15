@@ -15,7 +15,7 @@ app.conf.beat_schedule = {
     #     'schedule': crontab(minute='*/1'),
     # },
     'idex-update-every-1-minute': {
-        'task': 'idex_module.tasks.currencies_update',
+        'task': 'idex_module.tasks.currencies_beat_update',
         'schedule': crontab(minute='*/1'),
     },
 }

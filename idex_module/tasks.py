@@ -12,6 +12,7 @@ def currencies_update():
 
 @app.task
 def currencies_beat_update():
+    print('try collect Idex update')
     try:
         print('collect Idex data')
         set_currencies()
