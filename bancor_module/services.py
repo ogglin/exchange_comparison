@@ -32,11 +32,6 @@ def set_currencies():
         lowest_ask = data['price'] * koef
         name = data['name']
         link_id = data['id']
-        print(direction)
-        print(highest_bid)
-        print(lowest_ask)
-        print(name)
-        print(link_id)
-        print('/********************/')
+        currencies_update(direction, lowest_ask, highest_bid, name, link_id)
 
 
