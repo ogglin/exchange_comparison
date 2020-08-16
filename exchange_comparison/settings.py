@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'idex_module',
+    'bancor_module',
     'send_mail',
 ]
 
