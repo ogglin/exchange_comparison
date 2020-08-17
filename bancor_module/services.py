@@ -28,8 +28,8 @@ def set_currencies():
     jData = json.loads(response.content)['data']['page']
     for data in jData:
         direction = data['code']
-        highest_bid = data['price']
-        lowest_ask = data['price'] * koef
+        highest_bid = data['price'] * koef
+        lowest_ask = data['price']
         name = data['name']
         link_id = data['id']
         currencies_update(direction, lowest_ask, highest_bid, name, link_id)

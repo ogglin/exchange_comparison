@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 
@@ -10,3 +11,6 @@ class Idex(models.Model):
 
     def __str__(self):
         return self.exch_direction
+
+    class Meta:
+        db_table = 'module_idex'

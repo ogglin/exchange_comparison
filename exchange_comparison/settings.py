@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'channels',
     'idex_module',
     'bancor_module',
+    'kyber_module',
+    'uniswap_module',
     'send_mail',
 ]
 
