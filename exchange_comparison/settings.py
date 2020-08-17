@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'kyber_module',
     'uniswap_module',
     'send_mail',
+    'exchange_pairs',
 ]
 
 MIDDLEWARE = [
