@@ -13,11 +13,28 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
+from rest_framework import routers
+
+# Serializers define the API representation.
+from .viewsets import *
+
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'idex', IdexViewSet)
+router.register(r'bancor', BancorViewSet)
+router.register(r'kyber', KyberViewSet)
+router.register(r'uniswap', UniswapViewSet)
+
 urlpatterns = [
-    path('', include('send_mail.urls')),
+    # path('', include('send_mail.urls')),
+    path('', include(router.urls)),
     path('idex/', include('idex_module.urls')),
     path('admin/', admin.site.urls),
+    url(r'^api-auth/', include('rest_framework.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
