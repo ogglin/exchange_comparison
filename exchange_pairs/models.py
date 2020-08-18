@@ -21,3 +21,7 @@ class ExchangePairs(models.Model):
         db_table = 'exchange_pairs'
         verbose_name = 'ExchangePair'
         verbose_name_plural = 'ExchangePairs'
+
+
+class CustomSql(models.Model):
+    pass

@@ -4,6 +4,7 @@ from idex_module.models import Idex
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap
+from exchange_pairs.models import CustomSql
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -34,3 +35,9 @@ class UniswapSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Uniswap
         fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+
+
+class ExchangePairSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = CustomSql
+        fields = ['exch_direction', 'idexbid', 'idexask', 'bancorbid', 'bancorask', 'bancorid', 'kyberbid', 'kyberask']
