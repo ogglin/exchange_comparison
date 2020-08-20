@@ -24,4 +24,14 @@ class ExchangePairs(models.Model):
 
 
 class CustomSql(models.Model):
-    pass
+    exch_direction = models.CharField(max_length=100)
+    idexbid = models.FloatField()
+    idexask = models.FloatField()
+    bancorbid = models.FloatField()
+    bancorask = models.FloatField()
+    bancorid = models.CharField(max_length=255)
+    kyberbid = models.FloatField()
+    kyberask = models.FloatField()
+
+    class Meta:
+        managed = False

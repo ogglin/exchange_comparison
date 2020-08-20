@@ -7,7 +7,7 @@ from exchange_comparison._celery import app
 from .services import set_currencies
 
 
-@periodic_task(run_every=(timedelta(seconds=30)))
+@periodic_task(run_every=(timedelta(seconds=5)))
 def currencies_beat_update():
     try:
         print('try collect Kyber update')
