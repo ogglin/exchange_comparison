@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     "rest_framework_api_key",
+    'corsheaders',
     'channels',
     'idex_module',
     'bancor_module',
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'exchange_comparison.urls'
@@ -187,3 +190,16 @@ CACHES = {
         'LOCATION': 'exc_cache_table',
     }
 }
+
+# Cors configs
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'localhost:4200',
+    'http://localhost:4200',
+    "http://localhost:8080",
+    "http://localhost:80",
+)
+CORS_ORIGIN_REGEX_WHITELIST = (
+    'localhost:4200',
+)
