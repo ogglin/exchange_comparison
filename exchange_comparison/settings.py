@@ -24,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(__file__)
 SECRET_KEY = '-0$08j$t%r$28%3^n2v6)gs&$vdh8=(ffsz3)i5h3%nydj%5p0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['xc.vp4.ru', 'localhost', '127.0.0.1', '[::1]']
 
@@ -186,9 +186,10 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'exc_cache_table',
-        'TIMEOUT': 1,
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        # 'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        # 'LOCATION': 'exc_cache_table',
+        # 'TIMEOUT': 1,
     }
 }
 
