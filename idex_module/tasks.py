@@ -11,10 +11,10 @@ from .services import set_currencies
 #     print('collect Idex update')
 #     set_currencies()
 
-@periodic_task(run_every=(timedelta(seconds=6)))
+@periodic_task(run_every=(timedelta(seconds=3)))
 def currencies_beat_update():
     try:
-        print('try collect Idex update')
+        print('try collect Idex update') 
         set_currencies()
         print('Idex data collected')
     except:
