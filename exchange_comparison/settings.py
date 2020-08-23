@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+from .env import *
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -92,11 +94,11 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'exchange_comparison',
-        'USER': 'exchange_comparison',
-        'PASSWORD': 'exchange_comparison',
-        'HOST': '116.203.219.63',
-        'PORT': '5432'
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_HOST
     }
 }
 
@@ -156,10 +158,10 @@ STATICFILES_FINDERS = (
 
 # Send Mail settings
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ogglin.info@gmail.com'
-EMAIL_HOST_PASSWORD = 'GfhjkzYtn123'
-EMAIL_PORT = 587
+EMAIL_HOST = EMAIL_HOST
+EMAIL_HOST_USER = EMAIL_USER
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+EMAIL_PORT = EMAIL_PORT
 
 # Channel settings
 ASGI_APPLICATION = "exchange_comparison.routing.application"
@@ -201,6 +203,10 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
     "http://localhost:8080",
     "http://localhost:80",
+    "http://exc.vp4.ru:80",
+    "https://exc.vp4.ru:80",
+    "http://exc.vp4.ru",
+    "https://exc.vp4.ru",
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
     'localhost:4200',
