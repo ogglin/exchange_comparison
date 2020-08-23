@@ -23,6 +23,18 @@ class ExchangePairs(models.Model):
         verbose_name_plural = 'ExchangePairs'
 
 
+class Settings(models.Model):
+    timeout_refresh_data = models.IntegerField(verbose_name='Интервал обновления данных')
+    timeout_notice = models.IntegerField(verbose_name='Интервал показа нотификаций')
+    koef_top = models.FloatField(verbose_name='Коэффициет топ %')
+    koef_low = models.FloatField(verbose_name='Коэффициет минимума %')
+
+    class Meta:
+        db_table = 'settings'
+        verbose_name = 'Настройка'
+        verbose_name_plural = 'Настройки'
+
+
 class CustomSql(models.Model):
     exch_direction = models.CharField(max_length=100)
     idexbid = models.FloatField()

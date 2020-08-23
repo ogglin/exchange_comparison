@@ -30,6 +30,7 @@ router.register(r'bancor', BancorViewSet)
 router.register(r'kyber', KyberViewSet)
 router.register(r'uniswap', UniswapViewSet)
 router.register(r'exchpair', ExchangePairSet, basename='ExchangePair')
+router.register(r'settings', SettingsViewSet, basename='settings')
 
 urlpatterns = [
     # path('', include('send_mail.urls')),

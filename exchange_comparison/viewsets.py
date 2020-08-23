@@ -65,6 +65,12 @@ class UniswapViewSet(viewsets.ModelViewSet):
     serializer_class = UniswapSerializer
 
 
+class SettingsViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = Settings.objects.all()
+    serializer_class = SettingsSerializer
+
+
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''
