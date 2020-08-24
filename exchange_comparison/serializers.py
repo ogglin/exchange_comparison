@@ -40,10 +40,11 @@ class UniswapSerializer(serializers.HyperlinkedModelSerializer):
 class ExchangePairSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomSql
-        fields = ['id', 'exch_direction', 'idexbid', 'idexask', 'bancorbid', 'bancorask', 'bancorid', 'kyberbid', 'kyberask']
+        fields = ['id', 'exch_direction', 'idexbid', 'idexask', 'bancorbid', 'bancorask', 'bancorid', 'kyberbid',
+                  'kyberask']
 
 
 class SettingsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Settings
-        fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low']
+        fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push']
