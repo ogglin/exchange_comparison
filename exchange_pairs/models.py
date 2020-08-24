@@ -26,8 +26,9 @@ class ExchangePairs(models.Model):
 class Settings(models.Model):
     timeout_refresh_data = models.IntegerField(verbose_name='Интервал обновления данных')
     timeout_notice = models.IntegerField(verbose_name='Интервал показа нотификаций')
-    koef_top = models.FloatField(verbose_name='Коэффициет топ %')
-    koef_low = models.FloatField(verbose_name='Коэффициет минимума %')
+    koef_top = models.FloatField(verbose_name='Коэффициет топ %', help_text='красная строка')
+    koef_low = models.FloatField(verbose_name='Коэффициет минимума %', help_text='зеленая строка')
+    koef_push = models.FloatField(verbose_name='Коэффициет в % ', help_text='для пуш уведомлений')
 
     class Meta:
         db_table = 'settings'
