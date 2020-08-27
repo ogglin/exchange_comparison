@@ -46,8 +46,10 @@ class CustomSql(models.Model):
     bancorid = models.CharField(max_length=255)
     kyberbid = models.FloatField()
     kyberask = models.FloatField()
-    uniswapone = models.FloatField()
-    uniswap = models.FloatField()
+    uniswaponebid = models.FloatField()
+    uniswaponeask = models.FloatField()
+    uniswapbid = models.FloatField()
+    uniswapask = models.FloatField()
 
     class Meta:
         managed = False
