@@ -8,7 +8,7 @@ class Uniswap(models.Model):
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     tokenid = models.CharField(max_length=500, default='')
-    is_active = models.BooleanField(default=True, verbose_name='Активный')
+    is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
     def __str__(self):
         return self.exch_direction
@@ -22,7 +22,7 @@ class UniswapOne(models.Model):
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     tokenid = models.CharField(max_length=500, default='')
-    is_active = models.BooleanField(default=True, verbose_name='Активный')
+    is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
     def __str__(self):
         return self.exch_direction

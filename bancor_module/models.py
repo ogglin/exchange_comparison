@@ -9,7 +9,7 @@ class Bancor(models.Model):
     lowest_ask = models.FloatField()
     name = models.CharField(max_length=100, blank=False, null=False)
     link_id = models.CharField(max_length=100, blank=False, null=False)
-    is_active = models.BooleanField(default=True, verbose_name='Активный')
+    is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
     def __str__(self):
         return self.exch_direction
