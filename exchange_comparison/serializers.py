@@ -47,7 +47,7 @@ class ExchangePairSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomSql
         fields = ['id', 'exch_direction', 'idexbid', 'idexask', 'bancorbid', 'bancorask', 'bancorid', 'kyberbid',
-                  'kyberask']
+                  'kyberask', 'uniswapbid', 'uniswapask', 'uniswaponebid', 'uniswaponeask']
 
 
 class SettingsSerializer(serializers.HyperlinkedModelSerializer):

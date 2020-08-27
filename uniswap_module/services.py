@@ -11,7 +11,7 @@ def currencies_update_v1(direction, lowest_ask, highest_bid):
     if len(pair_id) > 0:
         pair = UniswapOne(id=pair_id[0]['id'], exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
     else:
-        pair = UniswapOne(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
+        pair = UniswapOne(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, is_active=True)
     pair.save()
 
 
@@ -20,7 +20,7 @@ def currencies_update_v2(direction, lowest_ask, highest_bid):
     if len(pair_id) > 0:
         pair = Uniswap(id=pair_id[0]['id'], exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
     else:
-        pair = Uniswap(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
+        pair = Uniswap(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, is_active=True)
     pair.save()
 
 

@@ -83,12 +83,21 @@ class ExchangePairSet(viewsets.ModelViewSet):
         SELECT ep.id, ep.exch_direction, 
         mi.highest_bid idexbid, mi.lowest_ask idexask, 
         mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
-        mk.highest_bid kyberbid, mk.lowest_ask kyberask
+        mk.highest_bid kyberbid, mk.lowest_ask kyberask,
+        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask,
+        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask
         FROM exchange_pairs ep
         LEFT JOIN module_idex mi ON ep.idex_direction_id = mi.id AND mi.is_active
         LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
         LEFT JOIN module_kyber mk ON ep.kyber_direction_id = mk.id AND mk.is_active
-        WHERE idex_direction_id is not null and (bancor_direction_id is not null or kyber_direction_id is not null) 
+        LEFT JOIN module_uniswap mu ON ep.uniswap_direction_id = mu.id AND mu.is_active
+        LEFT JOIN module_uniswap_one muo ON ep.uniswap_direction_id = muo.id AND muo.is_active
+        WHERE idex_direction_id is not null and 
+        (
+        bancor_direction_id is not null or 
+        kyber_direction_id is not null or 
+        uniswap_direction_id is not null or 
+        uniswap_one_direction_id is not null) 
         ORDER BY ep.exch_direction
         ''')
     serializer_class = ExchangePairSerializer
@@ -103,12 +112,21 @@ class ExchangePairSet(viewsets.ModelViewSet):
         SELECT ep.id, ep.exch_direction, 
         mi.highest_bid idexbid, mi.lowest_ask idexask, 
         mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
-        mk.highest_bid kyberbid, mk.lowest_ask kyberask
+        mk.highest_bid kyberbid, mk.lowest_ask kyberask,
+        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask,
+        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask
         FROM exchange_pairs ep
         LEFT JOIN module_idex mi ON ep.idex_direction_id = mi.id AND mi.is_active
         LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
         LEFT JOIN module_kyber mk ON ep.kyber_direction_id = mk.id AND mk.is_active
-        WHERE idex_direction_id is not null and (bancor_direction_id is not null or kyber_direction_id is not null) 
+        LEFT JOIN module_uniswap mu ON ep.uniswap_direction_id = mu.id AND mu.is_active
+        LEFT JOIN module_uniswap_one muo ON ep.uniswap_direction_id = muo.id AND muo.is_active
+        WHERE idex_direction_id is not null and 
+        (
+        bancor_direction_id is not null or 
+        kyber_direction_id is not null or 
+        uniswap_direction_id is not null or 
+        uniswap_one_direction_id is not null) 
         ORDER BY ep.exch_direction
         ''')
         return queryset

@@ -8,7 +8,7 @@ def currencies_update(direction, lowest_ask, highest_bid):
     if len(pair_id) > 0:
         pair = Idex(id=pair_id[0]['id'], exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
     else:
-        pair = Idex(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
+        pair = Idex(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, is_active=True)
     pair.save()
 
 
