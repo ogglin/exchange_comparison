@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 
 class Uniswap(models.Model):
-    exch_direction = models.CharField(max_length=20, blank=False, null=False)
+    exch_direction = models.CharField(max_length=256, blank=False, null=False)
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     is_active = models.BooleanField(default=True, verbose_name='Активный')
@@ -17,7 +17,7 @@ class Uniswap(models.Model):
 
 
 class UniswapOne(models.Model):
-    exch_direction = models.CharField(max_length=20, blank=False, null=False)
+    exch_direction = models.CharField(max_length=256, blank=False, null=False)
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     is_active = models.BooleanField(default=True, verbose_name='Активный')
