@@ -48,8 +48,10 @@ class CustomSql(models.Model):
     kyberask = models.FloatField()
     uniswaponebid = models.FloatField()
     uniswaponeask = models.FloatField()
+    uniswaponeid = models.CharField(max_length=500)
     uniswapbid = models.FloatField()
     uniswapask = models.FloatField()
+    uniswapid = models.CharField(max_length=500)
 
     class Meta:
         managed = False

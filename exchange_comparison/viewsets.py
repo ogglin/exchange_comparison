@@ -84,8 +84,8 @@ class ExchangePairSet(viewsets.ModelViewSet):
         mi.highest_bid idexbid, mi.lowest_ask idexask, 
         mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
         mk.highest_bid kyberbid, mk.lowest_ask kyberask,
-        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask,
-        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask
+        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
+        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
         FROM exchange_pairs ep
         LEFT JOIN module_idex mi ON ep.idex_direction_id = mi.id AND mi.is_active
         LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
@@ -113,8 +113,8 @@ class ExchangePairSet(viewsets.ModelViewSet):
         mi.highest_bid idexbid, mi.lowest_ask idexask, 
         mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
         mk.highest_bid kyberbid, mk.lowest_ask kyberask,
-        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask,
-        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask
+        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
+        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
         FROM exchange_pairs ep
         LEFT JOIN module_idex mi ON ep.idex_direction_id = mi.id AND mi.is_active
         LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
