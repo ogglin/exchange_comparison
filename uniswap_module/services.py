@@ -51,7 +51,7 @@ def set_currencies_v2(date):
     response = requests.post(url=url_v2, data=date)
     jData = json.loads(response.content)['data']
     for data in jData['tokens']:
-        if float(date['derivedETH']) > 0:
+        if float(data['derivedETH']) > 0:
             direction = data['symbol']
             highest_bid = float(data['derivedETH']) * koef
             lowest_ask = float(data['derivedETH'])
