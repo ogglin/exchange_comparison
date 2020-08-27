@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from idex_module.models import Idex
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
-from uniswap_module.models import Uniswap
+from uniswap_module.models import Uniswap, UniswapOne
 from exchange_pairs.models import CustomSql, Settings
 
 
@@ -34,6 +34,12 @@ class KyberSerializer(serializers.HyperlinkedModelSerializer):
 class UniswapSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Uniswap
+        fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+
+
+class UniswapOneSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UniswapOne
         fields = ['exch_direction', 'lowest_ask', 'highest_bid']
 
 

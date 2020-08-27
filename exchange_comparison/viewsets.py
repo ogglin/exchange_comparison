@@ -65,6 +65,12 @@ class UniswapViewSet(viewsets.ModelViewSet):
     serializer_class = UniswapSerializer
 
 
+class UniswapOneViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = UniswapOne.objects.all()
+    serializer_class = UniswapOneSerializer
+
+
 class SettingsViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = Settings.objects.all()
