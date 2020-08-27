@@ -91,7 +91,7 @@ class ExchangePairSet(viewsets.ModelViewSet):
         LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
         LEFT JOIN module_kyber mk ON ep.kyber_direction_id = mk.id AND mk.is_active
         LEFT JOIN module_uniswap mu ON ep.uniswap_direction_id = mu.id AND mu.is_active
-        LEFT JOIN module_uniswap_one muo ON ep.uniswap_direction_id = muo.id AND muo.is_active
+        LEFT JOIN module_uniswap_one muo ON ep.uniswap_one_direction_id = muo.id AND muo.is_active
         WHERE idex_direction_id is not null and 
         (
         bancor_direction_id is not null or 
@@ -120,7 +120,7 @@ class ExchangePairSet(viewsets.ModelViewSet):
         LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
         LEFT JOIN module_kyber mk ON ep.kyber_direction_id = mk.id AND mk.is_active
         LEFT JOIN module_uniswap mu ON ep.uniswap_direction_id = mu.id AND mu.is_active
-        LEFT JOIN module_uniswap_one muo ON ep.uniswap_direction_id = muo.id AND muo.is_active
+        LEFT JOIN module_uniswap_one muo ON ep.uniswap_one_direction_id = muo.id AND muo.is_active
         WHERE idex_direction_id is not null and 
         (
         bancor_direction_id is not null or 
