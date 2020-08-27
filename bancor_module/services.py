@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 from .models import Bancor
 
@@ -8,14 +9,13 @@ koef = 0.99
 
 def currencies_update(direction, lowest_ask, highest_bid, name, link_id):
     pair_id = Bancor.objects.filter(exch_direction=direction).values('id')
-    is_active = Bancor.objects.filter(exch_direction=direction).values('is_active')
     if len(pair_id) > 0:
-        pair = Bancor(id=pair_id[0]['id'], exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid,
-                      name=name, link_id=link_id, is_active=is_active)
+        Bancor.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
+                                                          highest_bid=highest_bid, name=name, link_id=link_id)
     else:
         pair = Bancor(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, name=name,
                       link_id=link_id)
-    pair.save()
+        pair.save()
 
 
 def set_currencies():
@@ -34,5 +34,3 @@ def set_currencies():
         name = data['name']
         link_id = data['id']
         currencies_update(direction, lowest_ask, highest_bid, name, link_id)
-
-

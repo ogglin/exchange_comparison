@@ -6,10 +6,10 @@ from .models import *
 def currencies_update(direction, lowest_ask, highest_bid):
     pair_id = Idex.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
-        pair = Idex(id=pair_id[0]['id'], exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
+        Idex.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid)
     else:
         pair = Idex(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, is_active=True)
-    pair.save()
+        pair.save()
 
 
 def set_currencies():
