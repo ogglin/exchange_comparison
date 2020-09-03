@@ -10,6 +10,6 @@ class ExchangePairAdmin(admin.ModelAdmin):
 
 @admin.register(Settings)
 class SettingsAdmin(admin.ModelAdmin):
-    list_display = ('timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low')
+    list_display = ('timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push')
 
 # admin.site.register(ExchangePairs)

@@ -12,7 +12,7 @@ class ContactView(CreateView):
     """Email Form"""
     model = Contacts
     form_class = ContactForm
-    success_url = '/'
+    success_url = '/contact/'
     template_name = 'main/contact.html'
 
     def form_valid(self, form):

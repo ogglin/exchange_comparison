@@ -1,3 +1,4 @@
+import sys
 from datetime import timedelta
 
 from celery.task import periodic_task
@@ -6,11 +7,18 @@ from django.core.mail import send_mail
 from exchange_comparison._celery import app
 from send_mail.models import Contacts
 from send_mail.services import send
+from .services import token_set
 
 
-# @periodic_task(run_every=(timedelta(seconds=5)))
-# def hello_world():
-#     print('Hello World!')
+@periodic_task(run_every=(timedelta(minutes=1)))
+def currencies_beat_update():
+    try:
+        print('Try set new tokens')
+        token_set()
+        print('Tokens data collected')
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        raise
 
 
 @app.task()

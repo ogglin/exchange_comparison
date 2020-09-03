@@ -5,13 +5,36 @@ from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap, UniswapOne
 
 
-# Create your models here.
+class TrustedPairs(models.Model):
+    token = models.CharField(max_length=20, blank=False, null=False)
+    contract = models.CharField(max_length=100, blank=False, null=False)
+    decimals = models.IntegerField()
+    is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
+
+    class Meta:
+        db_table = 'trusted_pairs'
+        verbose_name = 'Trusted pair'
+        verbose_name_plural = 'Trusted pairs'
+
+
+class ComparePairs(models.Model):
+    token = models.CharField(max_length=20, blank=False, null=False)
+    contract = models.CharField(max_length=100, blank=False, null=False)
+    decimals = models.IntegerField()
+    is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
+
+    class Meta:
+        db_table = 'compare_pairs'
+        verbose_name = 'Compare pair'
+        verbose_name_plural = 'Compare pairs'
+
 
 class ExchangePairs(models.Model):
     exch_direction = models.CharField(max_length=20, blank=False, null=False)
     idex_direction = models.ForeignKey(Idex, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
     uniswap_direction = models.ForeignKey(Uniswap, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
-    uniswap_one_direction = models.ForeignKey(UniswapOne, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
+    uniswap_one_direction = models.ForeignKey(UniswapOne, on_delete=models.DO_NOTHING, related_name='+', null=True,
+                                              blank=True)
     bancor_direction = models.ForeignKey(Bancor, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
     kyber_direction = models.ForeignKey(Kyber, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
 
@@ -20,8 +43,8 @@ class ExchangePairs(models.Model):
 
     class Meta:
         db_table = 'exchange_pairs'
-        verbose_name = 'ExchangePair'
-        verbose_name_plural = 'ExchangePairs'
+        verbose_name = 'Exchange pair'
+        verbose_name_plural = 'Exchange pairs'
 
 
 class Settings(models.Model):
