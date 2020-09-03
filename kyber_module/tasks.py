@@ -8,7 +8,7 @@ from .services import set_currencies
 
 
 @periodic_task(run_every=(timedelta(seconds=5)))
-def currencies_kyber_update():
+def kyber_currencies_update():
     try:
         print('Kyber collect update try')
         set_currencies()

@@ -7,7 +7,7 @@ from .services import set_all_currencies
 
 
 @periodic_task(run_every=(timedelta(seconds=20)))
-def currencies_uniswap_update():
+def uniswap_currencies_update():
     try:
         print('Uniswap collect data try')
         set_all_currencies()

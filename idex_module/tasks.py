@@ -12,7 +12,7 @@ from .services import set_currencies
 #     set_currencies()
 
 @periodic_task(run_every=(timedelta(seconds=3)))
-def currencies_idex_update():
+def idex_currencies_update():
     try:
         print('Idex collect update try')
         set_currencies()

@@ -7,7 +7,7 @@ from .services import set_currencies
 
 
 @periodic_task(run_every=(timedelta(seconds=2)))
-def currencies_bancor_update():
+def bancor_currencies_update():
     try:
         print('Bancor collect update try')
         set_currencies()
