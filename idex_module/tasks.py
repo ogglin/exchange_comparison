@@ -2,7 +2,7 @@ import sys
 from datetime import timedelta
 
 from celery.task import periodic_task
-
+from exchange_comparison._celery import app
 from .services import set_currencies
 
 
@@ -11,7 +11,8 @@ from .services import set_currencies
 #     print('collect Idex update')
 #     set_currencies()
 
-@periodic_task(run_every=(timedelta(seconds=3)))
+# @periodic_task(run_every=(timedelta(seconds=3)))
+@app.task()
 def idex_currencies_update():
     try:
         print('Idex collect update try')

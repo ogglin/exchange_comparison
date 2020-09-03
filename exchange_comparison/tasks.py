@@ -10,7 +10,8 @@ from send_mail.services import send
 from .services import token_set
 
 
-@periodic_task(run_every=(timedelta(minutes=1)))
+# @periodic_task(run_every=(timedelta(minutes=1)))
+@app.task()
 def tokens_update():
     try:
         print('Try set new tokens')
