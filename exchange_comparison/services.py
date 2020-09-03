@@ -31,7 +31,7 @@ def token_set():
                     contract = item[1]
                 else:
                     contract = None
-            if str(item[0]) == 'highestBid':
+            if str(item[0]) == 'decimals':
                 if item[1] != 'N/A':
                     decimals = item[1]
                 else:
