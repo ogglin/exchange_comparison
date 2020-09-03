@@ -6,8 +6,8 @@ from exchange_comparison._celery import app
 from .services import set_all_currencies
 
 
-# @periodic_task(run_every=(timedelta(seconds=20)))
-@app.task()
+@periodic_task(run_every=(timedelta(seconds=20)))
+# @app.task()
 def uniswap_currencies_update():
     try:
         print('Uniswap collect data try')

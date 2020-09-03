@@ -7,8 +7,8 @@ from celery.task import periodic_task
 from .services import set_currencies
 
 
-# @periodic_task(run_every=(timedelta(seconds=2)))
-@app.task()
+@periodic_task(run_every=(timedelta(seconds=2)))
+# @app.task()
 def bancor_currencies_update():
     try:
         print('Bancor collect update try')
