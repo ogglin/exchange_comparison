@@ -13,7 +13,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 # celery beat tasks
 app.conf.beat_schedule = {
-    'send-span-every-1-minute': {
+    'tokens_update-1-minute': {
         'task': 'exchange_comparison.tasks.tokens_update',
         'schedule': crontab(minute='*/1'),
     },
