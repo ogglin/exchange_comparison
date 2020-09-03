@@ -8,9 +8,9 @@ from .services import set_currencies
 
 
 @periodic_task(run_every=(timedelta(seconds=5)))
-def currencies_beat_update():
+def currencies_kyber_update():
     try:
-        print('try collect Kyber update')
+        print('Kyber collect update try')
         set_currencies()
         print('Kyber data collected')
     except:

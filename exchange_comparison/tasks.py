@@ -11,7 +11,7 @@ from .services import token_set
 
 
 @periodic_task(run_every=(timedelta(minutes=1)))
-def currencies_beat_update():
+def tokens_update():
     try:
         print('Try set new tokens')
         token_set()

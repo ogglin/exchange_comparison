@@ -7,9 +7,9 @@ from .services import set_currencies
 
 
 @periodic_task(run_every=(timedelta(seconds=2)))
-def currencies_beat_update():
+def currencies_bancor_update():
     try:
-        print('try collect Bancor update')
+        print('Bancor collect update try')
         set_currencies()
         print('Bancor data collected')
     except:
