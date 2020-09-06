@@ -2,6 +2,7 @@ import json
 
 import requests
 
+from exchange_pairs.models import TrustedPairs, CustomSql
 from .models import Uniswap, UniswapOne
 
 koef = 0.99
@@ -29,7 +30,7 @@ def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid):
         pair.save()
 
 
-def set_currencies_v1(date):
+def set_currencies_v1(date, trusted_tokens):
     url_v1 = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
     response = requests.post(url=url_v1, data=date)
     jData = json.loads(response.content)['data']
@@ -39,10 +40,12 @@ def set_currencies_v1(date):
             lowest_ask = 1.003 / float(data['price'])
             highest_bid = lowest_ask * koef
             tokenid = data['tokenAddress']
-            currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
+            for row in trusted_tokens:
+                if row['token'] == direction and row['contract'] == tokenid:
+                    currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
 
 
-def set_currencies_v2(date):
+def set_currencies_v2(date, trusted_tokens):
     # proxies = {
     #     'http': '46.102.73.244:53281',
     #     'https': '199.91.203.210:3128'
@@ -57,20 +60,41 @@ def set_currencies_v2(date):
             highest_bid = float(data['derivedETH']) * koef
             lowest_ask = float(data['derivedETH'])
             tokenid = data['id']
-            currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
+            for row in trusted_tokens:
+                if row['token'] == direction and row['contract'] == tokenid:
+                    currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
 
 
 def set_all_currencies():
+    trusted_tokens = TrustedPairs.objects.all()
+    print(trusted_tokens)
     pages_v1 = 4
     pages_v2 = 6
+    CustomSql.objects.raw('''
+        SELECT setval('"public"."uniswap_module_uniswap_id_seq"', 1, true);
+        TRUNCATE module_uniswap;
+        SELECT setval('"public"."module_uniswap_one_id_seq"', 1, true);
+        TRUNCATE module_uniswap_one;
+    ''')
     for i in range(pages_v2):
         req_v2 = f'''
             {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
         '''
-        set_currencies_v2(req_v2)
+        set_currencies_v2(req_v2, trusted_tokens)
 
     for i in range(pages_v1):
         req_v1 = f'''
             {{"query":"{{exchanges(first: 1000, skip: {i * 1000}) {{ ethBalance ethLiquidity tokenAddress price tokenName tokenSymbol}}}}","variables":{{}}}}
         '''
-        set_currencies_v1(req_v1)
+        set_currencies_v1(req_v1, trusted_tokens)
+    CustomSql.objects.raw('''
+        UPDATE exchange_pairs SET uniswap_direction_id = s.id
+        FROM (SELECT mu.id, mu.exch_direction FROM module_uniswap mu
+        LEFT JOIN exchange_pairs ep ON replace(ep.exch_direction, 'ETH_', '') = mu.exch_direction) s 
+        WHERE s.exch_direction = replace(exchange_pairs.exch_direction, 'ETH_', '');
+    
+        UPDATE exchange_pairs SET uniswap_one_direction_id = s.id
+        FROM (SELECT muo.id, muo.exch_direction FROM module_uniswap_one muo
+        LEFT JOIN exchange_pairs ep ON replace(ep.exch_direction, 'ETH_', '') = muo.exch_direction) s 
+        WHERE s.exch_direction = replace(exchange_pairs.exch_direction, 'ETH_', '');
+	''')

@@ -1,7 +1,7 @@
 import requests
 import json
 
-from exchange_pairs.models import ComparePairs, TrustedPairs
+from exchange_pairs.models import ComparePairs, TrustedPairs, CustomSql
 from .models import *
 
 
@@ -37,3 +37,4 @@ def token_set():
                 else:
                     decimals = None
         token_update(token, contract, decimals)
+    CustomSql.objects.raw('SELECT * from update_pairs();')
