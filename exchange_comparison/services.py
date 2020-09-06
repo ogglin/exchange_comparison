@@ -37,4 +37,3 @@ def token_set():
                 else:
                     decimals = None
         token_update(token, contract, decimals)
-    CustomSql.objects.raw('SELECT * from update_pairs();')

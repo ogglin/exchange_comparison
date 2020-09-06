@@ -67,13 +67,8 @@ def set_currencies_v2(date, trusted_tokens):
 
 def set_all_currencies():
     trusted_tokens = TrustedPairs.objects.all().values()
-    print(trusted_tokens)
     pages_v1 = 4
     pages_v2 = 6
-    CustomSql.objects.raw('''SELECT setval('"public"."uniswap_module_uniswap_id_seq"', 1, true);
-        TRUNCATE module_uniswap;
-        SELECT setval('"public"."module_uniswap_one_id_seq"', 1, true);
-        TRUNCATE module_uniswap_one;''')
     for i in range(pages_v2):
         req_v2 = f'''
             {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
