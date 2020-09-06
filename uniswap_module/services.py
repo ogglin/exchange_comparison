@@ -66,7 +66,7 @@ def set_currencies_v2(date, trusted_tokens):
 
 
 def set_all_currencies():
-    trusted_tokens = TrustedPairs.objects.all()
+    trusted_tokens = TrustedPairs.objects.all().values()
     print(trusted_tokens)
     pages_v1 = 4
     pages_v2 = 6
