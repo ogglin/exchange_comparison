@@ -7,3 +7,4 @@ from .models import *
 @admin.register(Bancor)
 class BancorAdmin(admin.ModelAdmin):
     list_display = ('exch_direction', 'is_active')
+    search_fields = ('exch_direction',)

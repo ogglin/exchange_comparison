@@ -26,7 +26,7 @@ PROJECT_ROOT = os.path.dirname(__file__)
 SECRET_KEY = '-0$08j$t%r$28%3^n2v6)gs&$vdh8=(ffsz3)i5h3%nydj%5p0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['xc.vp4.ru', 'localhost', '127.0.0.1', '[::1]']
 
@@ -144,16 +144,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, "static"),
 )
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
 )
 
 # Send Mail settings

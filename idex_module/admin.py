@@ -6,3 +6,4 @@ from .models import *
 @admin.register(Idex)
 class IdexAdmin(admin.ModelAdmin):
     list_display = ('exch_direction', 'is_active')
+    search_fields = ('exch_direction',)

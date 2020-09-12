@@ -11,6 +11,9 @@ class TrustedPairs(models.Model):
     decimals = models.IntegerField(null=True)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
+    def __str__(self):
+        return self.token
+
     class Meta:
         db_table = 'trusted_pairs'
         verbose_name = 'Trusted pair'
@@ -22,6 +25,9 @@ class ComparePairs(models.Model):
     contract = models.CharField(max_length=100, blank=False, null=False)
     decimals = models.IntegerField(null=True)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
+
+    def __str__(self):
+        return self.token
 
     class Meta:
         db_table = 'compare_pairs'
@@ -58,6 +64,19 @@ class Settings(models.Model):
         db_table = 'settings'
         verbose_name = 'Настройка'
         verbose_name_plural = 'Настройки'
+
+
+class SettingsModules(models.Model):
+    module_name = models.CharField(verbose_name='Модуль', max_length=200, blank=False, null=False)
+    is_active = models.BooleanField(verbose_name='Включен', blank=False, null=False)
+
+    def __str__(self):
+        return self.module_name
+
+    class Meta:
+        db_table = 'settings_modules'
+        verbose_name = 'Настройка модуля'
+        verbose_name_plural = 'Настройки модулей'
 
 
 class CustomSql(models.Model):

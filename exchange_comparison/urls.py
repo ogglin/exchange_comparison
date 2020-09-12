@@ -16,10 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-
+from django.conf.urls.static import static
 from rest_framework import routers
 
 # Serializers define the API representation.
+from . import settings
 from .viewsets import *
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -32,13 +33,13 @@ router.register(r'uniswap', UniswapViewSet)
 router.register(r'uniswapone', UniswapOneViewSet)
 router.register(r'exchpair', ExchangePairSet, basename='ExchangePair')
 router.register(r'settings', SettingsViewSet, basename='settings')
+router.register(r'settings_modules', SettingsModulesViewSet, basename='settings_modules')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('contact/', include('send_mail.urls')),
-    path('idex/', include('idex_module.urls')),
-    path('admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-]
-
+                  path('', include(router.urls)),
+                  path('contact/', include('send_mail.urls')),
+                  path('idex/', include('idex_module.urls')),
+                  path('admin/', admin.site.urls),
+                  url(r'^api-auth/', include('rest_framework.urls')),
+                  path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
