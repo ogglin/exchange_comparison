@@ -33,3 +33,45 @@ def set_currencies():
                     lowest_ask = 0
         currencies_update(exch_direction, lowest_ask, highest_bid)
 
+
+
+'''
+wss://datastream.idex.market
+{
+  "request": "handshake",
+  "payload": "{\"version\": \"1.0.0\", \"key\": \"api:rbXUPt_TeOMzWRBpd8O_d\"}"
+}
+
+{
+"action": "subscribe",
+"topics": ["ETH_AURA", "ETH_IDXM"],
+"events": ["market_orders", "market_cancels", "market_trades"]
+}
+
+
+{
+    "sid": "sid:tmuTRa_Zx_4s",
+    "request": "subscribeToMarkets",
+    "payload": "{\"topics\": [\"ETH_AURA\", \"ETH_IDXM\"], \"events\": [\"market_orders\", \"market_cancels\", \"market_trades\"] }"
+}
+
+{
+	"sid": "sid:62hgXpkqmMIv",
+	"request": "subscribeToMarkets",
+	"payload": "{\"topics": [\"ETH_AURA\", \"ETH_IDXM\"], \"events": [\"market_orders\", \"market_cancels\", \"market_trades\"] }"
+}
+
+{
+	"sid": "sid:hMeIjxvKbZQM",
+	"request": "subscribeToMarkets",
+	"payload": "{\"topics\": [\"ETH_AURA\", \"ETH_IDXM\"], \"events\": [\"market_trades\"] }"
+}
+{"sid": "sid:mvrtfwiT-S1","request": "subscribeToMarkets","payload": "{\"topics\": [\"ETH_AURA\", \"ETH_IDXM\"], \"events": [\"market_orders\", \"market_cancels\", \"market_trades\"] }"}
+
+{
+    "sid": "62hgXpkqmMIv",
+    "request": "subscribeToMarkets",
+    "payload": "{\"action\": \"unsubscribe\", \"topics\": [\"ETH_AURA\", \"ETH_IDXM\"] }"
+  }
+
+'''
