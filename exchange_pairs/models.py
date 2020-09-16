@@ -59,6 +59,10 @@ class Settings(models.Model):
     koef_top = models.FloatField(verbose_name='Коэффициет топ %', help_text='красная строка')
     koef_low = models.FloatField(verbose_name='Коэффициет минимума %', help_text='зеленая строка')
     koef_push = models.FloatField(verbose_name='Коэффициет в % ', help_text='для пуш уведомлений')
+    freeze_percent = models.FloatField(verbose_name='Процент заморозки ', help_text='в %', default=1)
+
+    def __str__(self):
+        return 'Кастройки коэффициентов'
 
     class Meta:
         db_table = 'settings'

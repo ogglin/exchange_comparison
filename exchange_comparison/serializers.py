@@ -53,7 +53,7 @@ class ExchangePairSerializer(serializers.HyperlinkedModelSerializer):
 class SettingsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Settings
-        fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push']
+        fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push', 'freeze_percent']
 
 
 class SettingsModulesSerializer(serializers.HyperlinkedModelSerializer):

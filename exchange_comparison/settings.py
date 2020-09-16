@@ -26,7 +26,7 @@ PROJECT_ROOT = os.path.dirname(__file__)
 SECRET_KEY = '-0$08j$t%r$28%3^n2v6)gs&$vdh8=(ffsz3)i5h3%nydj%5p0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['xc.vp4.ru', 'localhost', '127.0.0.1', '[::1]']
 
