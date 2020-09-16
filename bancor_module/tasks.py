@@ -7,7 +7,8 @@ from celery.task import periodic_task
 from .services import set_currencies
 
 
-@periodic_task(run_every=(timedelta(seconds=2)))
+@periodic_task(run_every=(timedelta(seconds=2)), queue='low',
+               options={'queue': 'low'})
 # @app.task()
 def bancor_currencies_update():
     try:
