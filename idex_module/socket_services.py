@@ -104,7 +104,9 @@ def get_wss():
     # return data
 
 
-get_wss()
+# get_wss()
+
+
 # def get_wss():
 #     # rT = threading.Thread(target=receving, args=("ResvThread", s))
 #     host = socket.gethostbyname(socket.gethostname())
