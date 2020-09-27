@@ -32,6 +32,7 @@ router.register(r'kyber', KyberViewSet)
 router.register(r'uniswap', UniswapViewSet)
 router.register(r'uniswapone', UniswapOneViewSet)
 router.register(r'exchpair', ExchangePairSet, basename='ExchangePair')
+router.register(r'trustpair', TrustedPairsSet, basename='TrustedPairs')
 router.register(r'settings', SettingsViewSet, basename='settings')
 router.register(r'settings_modules', SettingsModulesViewSet, basename='settings_modules')
 

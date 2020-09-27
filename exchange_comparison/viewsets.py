@@ -77,6 +77,12 @@ class SettingsViewSet(viewsets.ModelViewSet):
     serializer_class = SettingsSerializer
 
 
+class TrustedPairsSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = TrustedPairs.objects.filter(is_active=True)
+    serializer_class = TrustedPairsSerializer
+
+
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''

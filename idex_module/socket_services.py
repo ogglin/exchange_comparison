@@ -24,7 +24,7 @@ def log_message(message: str) -> None:
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
-        log_message(message)
+        log_message(json.loads(message))
 
 
 async def consume(host) -> None:
@@ -49,7 +49,7 @@ async def subscribe(host, handshake, req, payload) -> None:
         time.sleep(1)
         await websocket.send(reqs)
         subs = await websocket.recv()
-        print(subs)
+        print('Subs: ', subs)
         await consumer_handler(websocket)
 
 
@@ -60,6 +60,7 @@ async def produce(message: str, host: str) -> None:
 
 
 async def hello(api):
+    token = 'ETH_QNT'
     headers = ''
     handshake = {
         "request": "handshake",
@@ -77,8 +78,8 @@ async def hello(api):
         print(f"received: {greeting}")
         sid = json.loads(greeting)['sid']
         reqs = '{"sid": "' + sid + '","request": "subscribeToMarkets",' \
-                                   '"payload": "{\\"topics\\": [\\"ETH_AURA\\", \\"ETH_IDXM\\"], ' \
-                                   '\\"events\\": [\\"market_orders\\", \\"market_cancels\\", \\"market_trades\\"] }"}'
+                                   '"payload": "{\\"topics\\": [\\"' + token + '\\", \"ETH_IDXM\"], ' \
+                                   '\\"events\\": [\\"market_trades\\"] }"}'
         time.sleep(0.2)
         await websocket.send(reqs)
         print(reqs)
@@ -88,12 +89,13 @@ async def hello(api):
 
 
 def get_wss():
+    token = 'ETH_QNT'
     handshake = json.dumps({
         "request": "handshake",
         "payload": "{\"version\": \"1.0.0\", \"key\": \"" + API_KEY + "\"}"
     })
     req = "subscribeToMarkets"
-    payload = "{\"topics\": [\"ETH_AURA\", \"ETH_IDXM\"], \"events\": [\"market_orders\", \"market_cancels\", \"market_trades\"] }"
+    payload = '{\"topics\": [\"' + token + '\", \"ETH_IDXM\"], \"events\": [\"market_trades\"] }'
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
@@ -102,6 +104,7 @@ def get_wss():
     # return data
 
 
+get_wss()
 # def get_wss():
 #     # rT = threading.Thread(target=receving, args=("ResvThread", s))
 #     host = socket.gethostbyname(socket.gethostname())

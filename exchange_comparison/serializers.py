@@ -4,7 +4,7 @@ from idex_module.models import Idex
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap, UniswapOne
-from exchange_pairs.models import CustomSql, Settings, SettingsModules
+from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -60,3 +60,10 @@ class SettingsModulesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SettingsModules
         fields = ['module_name', 'is_active']
+
+
+class TrustedPairsSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = TrustedPairs
+        fields = ['token', ]
+
