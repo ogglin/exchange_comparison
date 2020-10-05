@@ -10,7 +10,7 @@ from uniswap_module.models import *
 
 def token_update(token, contract, decimals):
     compare_id = ComparePairs.objects.filter(token=token).values('id')
-    trusted_id = ComparePairs.objects.filter(token=token).values('id')
+    trusted_id = TrustedPairs.objects.filter(token=token).values('id')
     uni_id = Uniswap.objects.filter(exch_direction=token).values('id')
     uni_one_id = UniswapOne.objects.filter(exch_direction=token).values('id')
     # bankor_id = Bancor.objects.filter(token=token).values('id')
@@ -44,7 +44,6 @@ def token_set():
     jData = json.loads(response.content)
     for key in jData.keys():
         token = key
-        print(token)
         for item in jData[key].items():
             if str(item[0]) == 'address':
                 if item[1] != 'N/A':
