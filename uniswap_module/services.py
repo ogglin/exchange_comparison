@@ -22,7 +22,6 @@ def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid):
 def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid):
     pair_id = Uniswap.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
-        print(pair_id[0]['id'], direction, lowest_ask, highest_bid, tokenid)
         Uniswap.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
                                                            highest_bid=highest_bid, tokenid=tokenid)
     else:
@@ -93,5 +92,4 @@ def set_all_currencies():
         FROM (SELECT muo.id, muo.exch_direction FROM module_uniswap_one muo
         LEFT JOIN exchange_pairs ep ON replace(ep.exch_direction, 'ETH_', '') = muo.exch_direction) s
         WHERE s.exch_direction = replace(exchange_pairs.exch_direction, 'ETH_', '');
-	''')
-
+        ''')
