@@ -104,7 +104,6 @@ def get_wss():
     # return data
 
 
-get_wss()
 
 
 # def get_wss():
