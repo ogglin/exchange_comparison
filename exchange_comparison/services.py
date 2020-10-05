@@ -11,8 +11,8 @@ from uniswap_module.models import *
 def token_update(token, contract, decimals):
     compare_id = ComparePairs.objects.filter(token=token).values('id')
     trusted_id = ComparePairs.objects.filter(token=token).values('id')
-    uni_id = Uniswap.objects.filter(token=token).values('id')
-    uni_one_id = UniswapOne.objects.filter(token=token).values('id')
+    uni_id = Uniswap.objects.filter(exch_direction=token).values('id')
+    uni_one_id = UniswapOne.objects.filter(exch_direction=token).values('id')
     # bankor_id = Bancor.objects.filter(token=token).values('id')
     # kyber_id = Kyber.objects.filter(token=token).values('id')
     if len(compare_id) > 0:
