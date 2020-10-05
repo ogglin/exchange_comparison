@@ -22,6 +22,7 @@ def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid):
 def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid):
     pair_id = Uniswap.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
+        print(pair_id[0]['id'], direction, lowest_ask, highest_bid, tokenid)
         Uniswap.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
                                                            highest_bid=highest_bid, tokenid=tokenid)
     else:
