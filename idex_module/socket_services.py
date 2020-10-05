@@ -89,13 +89,13 @@ async def hello(api):
 
 
 def get_wss():
-    token = 'ETH_QNT'
+    tokens = '[\"ETH_ETH\",\"ETH_PLU\",\"ETH_1ST\",\"ETH_DGD\",\"ETH_RLC\",\"ETH_TRST\",\"ETH_GNO\",\"ETH_WINGS\",\"ETH_TKN\",\"ETH_HMQ\",\"ETH_ANT\",\"ETH_BAT\",\"ETH_MYST\",\"ETH_BNT\",\"ETH_SNT\",\"ETH_SNM\",\"ETH_NMR\",\"ETH_PAY\",\"ETH_PPT\",\"ETH_FUN\",\"ETH_STORJ\",\"ETH_ADX\",\"ETH_MTL\",\"ETH_PLR\",\"ETH_CVC\",\"ETH_DNT\",\"ETH_VGX\",\"ETH_DENT\",\"ETH_SAN\",\"ETH_ZRX\",\"ETH_MCO\",\"ETH_POE\",\"ETH_SCL\",\"ETH_RVT\",\"ETH_TNT\",\"ETH_MANA\",\"ETH_MTH\",\"ETH_WTC\",\"ETH_ART\",\"ETH_PRO2\",\"ETH_HBT\",\"ETH_KNC\",\"ETH_RLX\",\"ETH_LINK\",\"ETH_RPL\",\"ETH_CND\",\"ETH_BTM\",\"ETH_SALT\",\"ETH_HVN\",\"ETH_EVX\",\"ETH_ENG\",\"ETH_AST\",\"ETH_REQ\",\"ETH_ENJ\",\"ETH_DATA\",\"ETH_VIB\",\"ETH_RCN\",\"ETH_BLUE\",\"ETH_ARN\",\"ETH_LIFE\",\"ETH_EPY\",\"ETH_RDN\",\"ETH_GRID\",\"ETH_GVT\",\"ETH_ASTRO\",\"ETH_DNA\",\"ETH_LEND\",\"ETH_ITT\",\"ETH_DRGN\",\"ETH_GET\",\"ETH_BNTY\",\"ETH_CAJ\",\"ETH_SPANK\",\"ETH_BLT\",\"ETH_EXRN\",\"ETH_CAT\",\"ETH_MKR\",\"ETH_DMT\",\"ETH_TAU\",\"ETH_CRED\",\"ETH_VEE\",\"ETH_UFR\",\"ETH_SXUT\",\"ETH_WABI\",\"ETH_APPC\",\"ETH_BDG\",\"ETH_WAND\",\"ETH_LEV\",\"ETH_REF\",\"ETH_INS\",\"ETH_NEU\",\"ETH_HQX\",\"ETH_KEY\",\"ETH_PRFT\",\"ETH_STK\",\"ETH_CRPT\",\"ETH_SAL\",\"ETH_ELF\",\"ETH_QSP\",\"ETH_QNT\"]'
     handshake = json.dumps({
         "request": "handshake",
         "payload": "{\"version\": \"1.0.0\", \"key\": \"" + API_KEY + "\"}"
     })
     req = "subscribeToMarkets"
-    payload = '{\"topics\": [\"' + token + '\", \"ETH_IDXM\"], \"events\": [\"market_trades\"] }'
+    payload = '{\"topics\": ' + tokens + ', \"events\": [\"market_trades\"] }'
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
@@ -104,7 +104,7 @@ def get_wss():
     # return data
 
 
-# get_wss()
+get_wss()
 
 
 # def get_wss():

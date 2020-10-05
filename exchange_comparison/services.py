@@ -8,7 +8,8 @@ from .models import *
 def token_update(token, contract, decimals):
     token_id = ComparePairs.objects.filter(token=token).values('id')
     if len(token_id) > 0:
-        pass
+        ComparePairs.objects.filter(id=token_id[0]['id']).update(contract=contract, decimals=decimals)
+        TrustedPairs.objects.filter(id=token_id[0]['id']).update(contract=contract, decimals=decimals)
     else:
         compare = ComparePairs(token=token, contract=contract, decimals=decimals, is_active=True)
         trusted = TrustedPairs(token=token, contract=contract, decimals=decimals, is_active=True)
