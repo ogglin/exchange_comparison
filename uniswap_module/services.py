@@ -69,8 +69,8 @@ def set_currencies_v2(date, trusted_tokens):
 def set_all_currencies():
     trusted_tokens = TrustedPairs.objects.all().values()
     # trusted_tokens = []
-    pages_v1 = 4
-    pages_v2 = 8
+    pages_v1 = 6
+    pages_v2 = 10
     for i in range(pages_v2):
         req_v2 = f'''
             {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
