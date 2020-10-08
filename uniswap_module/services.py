@@ -33,16 +33,19 @@ def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid):
 def set_currencies_v1(date, trusted_tokens):
     url_v1 = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
     response = requests.post(url=url_v1, data=date)
-    jData = json.loads(response.content)['data']
-    for data in jData['exchanges']:
-        if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
-            direction = data['tokenSymbol']
-            lowest_ask = 1.003 / float(data['price'])
-            highest_bid = lowest_ask * koef
-            tokenid = data['tokenAddress']
-            for row in trusted_tokens:
-                if row['token'] == direction and row['contract'] == tokenid:
-                    currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
+    try:
+        jData = json.loads(response.content)['data']
+        for data in jData['exchanges']:
+            if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
+                direction = data['tokenSymbol']
+                lowest_ask = 1.003 / float(data['price'])
+                highest_bid = lowest_ask * koef
+                tokenid = data['tokenAddress']
+                for row in trusted_tokens:
+                    if row['token'] == direction and row['contract'] == tokenid:
+                        currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
+    except:
+        pass
 
 
 def set_currencies_v2(date, trusted_tokens):
@@ -53,24 +56,27 @@ def set_currencies_v2(date, trusted_tokens):
     url_v2 = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
     # response = requests.post(url=url_v2, data=date, proxies=proxies)
     response = requests.post(url=url_v2, data=date)
-    jData = json.loads(response.content)['data']
-    for data in jData['tokens']:
-        if data['totalLiquidity'] is not None:
-            if float(data['derivedETH']) > 0 and float(data['totalLiquidity']) > 1:
-                direction = data['symbol']
-                highest_bid = float(data['derivedETH']) * koef
-                lowest_ask = float(data['derivedETH'])
-                tokenid = data['id']
-                for row in trusted_tokens:
-                    if row['token'] == direction and row['contract'] == tokenid:
-                        currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
+    try:
+        jData = json.loads(response.content)['data']
+        for data in jData['tokens']:
+            if data['totalLiquidity'] is not None:
+                if float(data['derivedETH']) > 0 and float(data['totalLiquidity']) > 1:
+                    direction = data['symbol']
+                    highest_bid = float(data['derivedETH']) * koef
+                    lowest_ask = float(data['derivedETH'])
+                    tokenid = data['id']
+                    for row in trusted_tokens:
+                        if row['token'] == direction and row['contract'] == tokenid:
+                            currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
+    except:
+        pass
 
 
 def set_all_currencies():
     trusted_tokens = TrustedPairs.objects.all().values()
     # trusted_tokens = []
     pages_v1 = 6
-    pages_v2 = 10
+    pages_v2 = 12
     for i in range(pages_v2):
         req_v2 = f'''
             {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
