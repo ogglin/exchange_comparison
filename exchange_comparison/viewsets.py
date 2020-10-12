@@ -83,6 +83,12 @@ class TrustedPairsSet(viewsets.ModelViewSet):
     serializer_class = TrustedPairsSerializer
 
 
+class WebsocketLogSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = WebsocketLog.objects.all()
+    serializer_class = WebsocketLogSerializer
+
+
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''

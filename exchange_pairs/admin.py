@@ -23,5 +23,11 @@ class SettingsModulesAdmin(admin.ModelAdmin):
 class TrustedPairsAdmin(admin.ModelAdmin):
     list_display = ('token', 'contract', 'decimals', 'is_active')
     list_filter = ('is_active',)
-    search_fields = ('token', )
-# admin.site.register(ExchangePairs)
+    search_fields = ('token',)
+
+
+@admin.register(WebsocketLog)
+class WebsocketLogAdmin(admin.ModelAdmin):
+    list_display = ('datetime', 'log')
+    list_filter = ('datetime',)
+    search_fields = ('datetime',)

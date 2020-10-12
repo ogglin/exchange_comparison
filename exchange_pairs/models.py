@@ -60,6 +60,7 @@ class Settings(models.Model):
     koef_low = models.FloatField(verbose_name='Коэффициет минимума %', help_text='зеленая строка')
     koef_push = models.FloatField(verbose_name='Коэффициет в % ', help_text='для пуш уведомлений')
     freeze_percent = models.FloatField(verbose_name='Процент заморозки ', help_text='в %', default=1)
+    api_keys = models.JSONField(verbose_name='API keys', null=True, blank=True)
 
     def __str__(self):
         return 'Кастройки коэффициентов'
@@ -81,6 +82,19 @@ class SettingsModules(models.Model):
         db_table = 'settings_modules'
         verbose_name = 'Настройка модуля'
         verbose_name_plural = 'Настройки модулей'
+
+
+class WebsocketLog(models.Model):
+    datetime = models.DateTimeField(verbose_name='Дата', auto_now_add=True, editable=False)
+    log = models.TextField(verbose_name='Лог')
+
+    def __str__(self):
+        return self.datetime
+
+    class Meta:
+        db_table = 'websocket_log'
+        verbose_name = 'Логи вебсокета'
+        verbose_name_plural = 'Лог вебсокета'
 
 
 class CustomSql(models.Model):

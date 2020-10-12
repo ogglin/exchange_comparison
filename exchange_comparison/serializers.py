@@ -4,7 +4,7 @@ from idex_module.models import Idex
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap, UniswapOne
-from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs
+from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs, WebsocketLog
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -53,7 +53,8 @@ class ExchangePairSerializer(serializers.HyperlinkedModelSerializer):
 class SettingsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Settings
-        fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push', 'freeze_percent']
+        fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push', 'freeze_percent',
+                  'api_keys']
 
 
 class SettingsModulesSerializer(serializers.HyperlinkedModelSerializer):
@@ -67,3 +68,8 @@ class TrustedPairsSerializer(serializers.HyperlinkedModelSerializer):
         model = TrustedPairs
         fields = ['token', ]
 
+
+class WebsocketLogSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = WebsocketLog
+        fields = ['datetime', 'log']
