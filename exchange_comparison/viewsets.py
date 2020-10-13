@@ -85,7 +85,7 @@ class TrustedPairsSet(viewsets.ModelViewSet):
 
 class WebsocketLogSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = WebsocketLog.objects.all()
+    queryset = WebsocketLog.objects.order_by('-id')[:10]
     serializer_class = WebsocketLogSerializer
 
 
