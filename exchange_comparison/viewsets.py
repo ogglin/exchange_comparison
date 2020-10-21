@@ -92,25 +92,19 @@ class WebsocketLogSet(viewsets.ModelViewSet):
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''
-        SELECT ep.id, ep.exch_direction, 
+    SELECT tp.id, tp.token, 
         mi.highest_bid idexbid, mi.lowest_ask idexask, 
         mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
         mk.highest_bid kyberbid, mk.lowest_ask kyberask,
         mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
         muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
-        FROM exchange_pairs ep
-        LEFT JOIN module_idex mi ON ep.idex_direction_id = mi.id AND mi.is_active
-        LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
-        LEFT JOIN module_kyber mk ON ep.kyber_direction_id = mk.id AND mk.is_active
-        LEFT JOIN module_uniswap mu ON ep.uniswap_direction_id = mu.id AND mu.is_active
-        LEFT JOIN module_uniswap_one muo ON ep.uniswap_one_direction_id = muo.id AND muo.is_active
-        WHERE idex_direction_id is not null and 
-        (
-        bancor_direction_id is not null or 
-        kyber_direction_id is not null or 
-        uniswap_direction_id is not null or 
-        uniswap_one_direction_id is not null) 
-        ORDER BY ep.exch_direction
+        FROM trusted_pairs tp
+        LEFT JOIN module_idex mi ON tp.token = mi.exch_direction AND mi.is_active
+        LEFT JOIN module_bancor mb ON tp.token = mb.exch_direction AND mb.is_active
+        LEFT JOIN module_kyber mk ON tp.token = mk.exch_direction AND mk.is_active
+        LEFT JOIN module_uniswap mu ON tp.token = mu.exch_direction AND mu.is_active AND tp.contract = mu.tokenid
+        LEFT JOIN module_uniswap_one muo ON tp.token = muo.exch_direction AND muo.is_active AND tp.contract = muo.tokenid
+        WHERE tp.is_active = TRUE ORDER BY tp.token
         ''')
     serializer_class = ExchangePairSerializer
 
@@ -121,25 +115,19 @@ class ExchangePairSet(viewsets.ModelViewSet):
                 % self.__class__.__name__
         )
         queryset = CustomSql.objects.raw('''
-        SELECT ep.id, ep.exch_direction, 
-        mi.highest_bid idexbid, mi.lowest_ask idexask, 
-        mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
-        mk.highest_bid kyberbid, mk.lowest_ask kyberask,
-        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
-        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
-        FROM exchange_pairs ep
-        LEFT JOIN module_idex mi ON ep.idex_direction_id = mi.id AND mi.is_active
-        LEFT JOIN module_bancor mb ON ep.bancor_direction_id = mb.id AND mb.is_active
-        LEFT JOIN module_kyber mk ON ep.kyber_direction_id = mk.id AND mk.is_active
-        LEFT JOIN module_uniswap mu ON ep.uniswap_direction_id = mu.id AND mu.is_active
-        LEFT JOIN module_uniswap_one muo ON ep.uniswap_one_direction_id = muo.id AND muo.is_active
-        WHERE idex_direction_id is not null and 
-        (
-        bancor_direction_id is not null or 
-        kyber_direction_id is not null or 
-        uniswap_direction_id is not null or 
-        uniswap_one_direction_id is not null) 
-        ORDER BY ep.exch_direction
+        SELECT tp.id, tp.token, 
+            mi.highest_bid idexbid, mi.lowest_ask idexask, 
+            mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
+            mk.highest_bid kyberbid, mk.lowest_ask kyberask,
+            mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
+            muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
+            FROM trusted_pairs tp
+            LEFT JOIN module_idex mi ON tp.token = mi.exch_direction AND mi.is_active
+            LEFT JOIN module_bancor mb ON tp.token = mb.exch_direction AND mb.is_active
+            LEFT JOIN module_kyber mk ON tp.token = mk.exch_direction AND mk.is_active
+            LEFT JOIN module_uniswap mu ON tp.token = mu.exch_direction AND mu.is_active AND tp.contract = mu.tokenid
+            LEFT JOIN module_uniswap_one muo ON tp.token = muo.exch_direction AND muo.is_active AND tp.contract = muo.tokenid
+            WHERE tp.is_active = TRUE ORDER BY tp.token
         ''')
         return queryset
 
