@@ -92,19 +92,19 @@ class WebsocketLogSet(viewsets.ModelViewSet):
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''
-    SELECT tp.id, tp.token, 
-        mi.highest_bid idexbid, mi.lowest_ask idexask, 
-        mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
-        mk.highest_bid kyberbid, mk.lowest_ask kyberask,
-        mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
-        muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
-        FROM trusted_pairs tp
-        LEFT JOIN module_idex mi ON tp.token = mi.exch_direction AND mi.is_active
-        LEFT JOIN module_bancor mb ON tp.token = mb.exch_direction AND mb.is_active
-        LEFT JOIN module_kyber mk ON tp.token = mk.exch_direction AND mk.is_active
-        LEFT JOIN module_uniswap mu ON tp.token = mu.exch_direction AND mu.is_active AND tp.contract = mu.tokenid
-        LEFT JOIN module_uniswap_one muo ON tp.token = muo.exch_direction AND muo.is_active AND tp.contract = muo.tokenid
-        WHERE tp.is_active = TRUE ORDER BY tp.token
+        SELECT tp.id, tp.token exch_direction, 
+            mi.highest_bid idexbid, mi.lowest_ask idexask, 
+            mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
+            mk.highest_bid kyberbid, mk.lowest_ask kyberask,
+            mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
+            muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
+            FROM trusted_pairs tp
+            LEFT JOIN module_idex mi ON tp.token = mi.exch_direction AND mi.is_active
+            LEFT JOIN module_bancor mb ON tp.token = mb.exch_direction AND mb.is_active
+            LEFT JOIN module_kyber mk ON tp.token = mk.exch_direction AND mk.is_active
+            LEFT JOIN module_uniswap mu ON tp.token = mu.exch_direction AND mu.is_active AND tp.contract = mu.tokenid
+            LEFT JOIN module_uniswap_one muo ON tp.token = muo.exch_direction AND muo.is_active AND tp.contract = muo.tokenid
+            WHERE tp.is_active = TRUE ORDER BY tp.token
         ''')
     serializer_class = ExchangePairSerializer
 
@@ -115,7 +115,7 @@ class ExchangePairSet(viewsets.ModelViewSet):
                 % self.__class__.__name__
         )
         queryset = CustomSql.objects.raw('''
-        SELECT tp.id, tp.token, 
+        SELECT tp.id, tp.token exch_direction, 
             mi.highest_bid idexbid, mi.lowest_ask idexask, 
             mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
             mk.highest_bid kyberbid, mk.lowest_ask kyberask,
