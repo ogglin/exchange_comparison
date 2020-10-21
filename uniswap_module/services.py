@@ -91,11 +91,11 @@ def set_all_currencies():
     CustomSql.objects.raw('''
         UPDATE exchange_pairs SET uniswap_direction_id = s.id
         FROM (SELECT mu.id, mu.exch_direction FROM module_uniswap mu
-        LEFT JOIN exchange_pairs ep ON replace(ep.exch_direction, 'ETH_', '') = mu.exch_direction) s
-        WHERE s.exch_direction = replace(exchange_pairs.exch_direction, 'ETH_', '');
+        LEFT JOIN exchange_pairs ep ON ep.exch_direction = mu.exch_direction) s
+        WHERE s.exch_direction = exchange_pairs.exch_direction;
 
         UPDATE exchange_pairs SET uniswap_one_direction_id = s.id
         FROM (SELECT muo.id, muo.exch_direction FROM module_uniswap_one muo
-        LEFT JOIN exchange_pairs ep ON replace(ep.exch_direction, 'ETH_', '') = muo.exch_direction) s
-        WHERE s.exch_direction = replace(exchange_pairs.exch_direction, 'ETH_', '');
+        LEFT JOIN exchange_pairs ep ON ep.exch_direction = muo.exch_direction) s
+        WHERE s.exch_direction = exchange_pairs.exch_direction;
         ''')
