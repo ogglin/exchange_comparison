@@ -14,7 +14,7 @@ def currencies_update(direction, lowest_ask, highest_bid, name, link_id):
                                                           highest_bid=highest_bid, name=name, link_id=link_id)
     else:
         pair = Bancor(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, name=name,
-                      link_id=link_id)
+                      link_id=link_id, is_active=True)
         pair.save()
 
 
