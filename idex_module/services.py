@@ -2,17 +2,16 @@ import json
 
 import requests
 
-# from .models import *
+from .models import *
 
 
 def currencies_update(token_pair, ask, bid):
-    print(token_pair, ask, bid)
-    # pair_id = Idex.objects.filter(exch_direction=token_pair).values('id')
-    # if len(pair_id) > 0:
-    #     Idex.objects.filter(id=pair_id[0]['id']).update(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid)
-    # else:
-    #     pair = Idex(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid, is_active=True)
-    #     pair.save()
+    pair_id = Idex.objects.filter(exch_direction=token_pair).values('id')
+    if len(pair_id) > 0:
+        Idex.objects.filter(id=pair_id[0]['id']).update(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid)
+    else:
+        pair = Idex(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid, is_active=True)
+        pair.save()
 
 
 def set_currencies():
@@ -22,12 +21,9 @@ def set_currencies():
     for data in jData:
         ask = 0
         bid = 0
-        print(data, type(data['ask']), data['ask'], type(data['bid']), data['bid'], data['market'])
         token_pair = data['market'].replace('ETH', '').replace('-', '')
         if data['ask']:
             ask = data['ask']
         if data['bid']:
             bid = data['bid']
         currencies_update(token_pair, ask, bid)
-
-set_currencies()
