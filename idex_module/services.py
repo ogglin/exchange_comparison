@@ -6,7 +6,6 @@ from .models import *
 
 
 def currencies_update(token_pair, ask, bid):
-    print(token_pair, ask, bid)
     pair_id = Idex.objects.filter(exch_direction=token_pair).values('id')
     if len(pair_id) > 0:
         Idex.objects.filter(id=pair_id[0]['id']).update(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid)
