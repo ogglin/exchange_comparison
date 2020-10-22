@@ -42,7 +42,7 @@ def set_currencies_v1(date, trusted_tokens):
                 highest_bid = lowest_ask * koef
                 tokenid = data['tokenAddress']
                 for row in trusted_tokens:
-                    if row[1].lower() == direction.lower() and row[2].lower() == tokenid.lower():
+                    if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
                         currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
     except:
         pass
@@ -66,7 +66,7 @@ def set_currencies_v2(date, trusted_tokens):
                     lowest_ask = float(data['derivedETH'])
                     tokenid = data['id']
                     for row in trusted_tokens:
-                        if row[1].lower() == direction.lower() and row[2].lower() == tokenid.lower():
+                        if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
                             currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
     except:
         pass
