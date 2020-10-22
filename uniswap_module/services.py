@@ -1,5 +1,5 @@
 import json
-
+import csv
 import requests
 
 from exchange_pairs.models import TrustedPairs, CustomSql
@@ -42,7 +42,7 @@ def set_currencies_v1(date, trusted_tokens):
                 highest_bid = lowest_ask * koef
                 tokenid = data['tokenAddress']
                 for row in trusted_tokens:
-                    if row['token'] == direction and row['contract'] == tokenid:
+                    if row[1].lower() == direction.lower() and row[2].lower() == tokenid.lower():
                         currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
     except:
         pass
@@ -66,7 +66,7 @@ def set_currencies_v2(date, trusted_tokens):
                     lowest_ask = float(data['derivedETH'])
                     tokenid = data['id']
                     for row in trusted_tokens:
-                        if row['token'] == direction and row['contract'] == tokenid:
+                        if row[1].lower() == direction.lower() and row[2].lower() == tokenid.lower():
                             currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
     except:
         pass
@@ -75,6 +75,10 @@ def set_currencies_v2(date, trusted_tokens):
 def set_all_currencies():
     trusted_tokens = TrustedPairs.objects.all().values()
     # trusted_tokens = []
+    # with open('trusted_pairs.csv', newline='') as File:
+    #     reader = csv.reader(File)
+    #     for row in reader:
+    #         trusted_tokens.append(row)
     pages_v1 = 6
     pages_v2 = 12
     for i in range(pages_v2):
@@ -99,3 +103,5 @@ def set_all_currencies():
         LEFT JOIN exchange_pairs ep ON ep.exch_direction = muo.exch_direction) s
         WHERE s.exch_direction = exchange_pairs.exch_direction;
         ''')
+
+
