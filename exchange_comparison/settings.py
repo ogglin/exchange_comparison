@@ -28,7 +28,7 @@ SECRET_KEY = '-0$08j$t%r$28%3^n2v6)gs&$vdh8=(ffsz3)i5h3%nydj%5p0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['xc.vp4.ru', 'exc.vp4.ru', 'localhost', '127.0.0.1', '[::1]', '*']
+ALLOWED_HOSTS = ['xc.vp4.ru', 'exc.vp4.ru', 'localhost', '127.0.0.1', '[::1]', '*', 'localhost:4200']
 
 # Application definition
 
@@ -213,6 +213,9 @@ CORS_ORIGIN_WHITELIST = (
     "https://exc.vp4.ru:80",
     "http://exc.vp4.ru",
     "https://exc.vp4.ru",
+    "http://xc.vp4.ru",
+    "https://xc.vp4.ru",
+    "*",
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
     'localhost:4200',
