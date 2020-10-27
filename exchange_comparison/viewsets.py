@@ -99,11 +99,11 @@ class ExchangePairSet(viewsets.ModelViewSet):
             mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
             muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
             FROM trusted_pairs tp
-            LEFT JOIN module_idex mi ON tp.token = mi.exch_direction AND mi.is_active
-            LEFT JOIN module_bancor mb ON tp.token = mb.exch_direction AND mb.is_active
-            LEFT JOIN module_kyber mk ON tp.token = mk.exch_direction AND mk.is_active
-            LEFT JOIN module_uniswap mu ON tp.token = mu.exch_direction AND mu.is_active AND tp.contract = mu.tokenid
-            LEFT JOIN module_uniswap_one muo ON tp.token = muo.exch_direction AND muo.is_active AND tp.contract = muo.tokenid
+            LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active
+            LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active
+            LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
+            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND tp.contract = mu.tokenid
+            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active AND tp.contract = muo.tokenid
             WHERE tp.is_active = TRUE ORDER BY tp.token
         ''')
     serializer_class = ExchangePairSerializer
@@ -122,11 +122,11 @@ class ExchangePairSet(viewsets.ModelViewSet):
             mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
             muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
             FROM trusted_pairs tp
-            LEFT JOIN module_idex mi ON tp.token = mi.exch_direction AND mi.is_active
-            LEFT JOIN module_bancor mb ON tp.token = mb.exch_direction AND mb.is_active
-            LEFT JOIN module_kyber mk ON tp.token = mk.exch_direction AND mk.is_active
-            LEFT JOIN module_uniswap mu ON tp.token = mu.exch_direction AND mu.is_active AND tp.contract = mu.tokenid
-            LEFT JOIN module_uniswap_one muo ON tp.token = muo.exch_direction AND muo.is_active AND tp.contract = muo.tokenid
+            LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active
+            LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active
+            LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
+            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND tp.contract = mu.tokenid
+            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active AND tp.contract = muo.tokenid
             WHERE tp.is_active = TRUE ORDER BY tp.token
         ''')
         return queryset
