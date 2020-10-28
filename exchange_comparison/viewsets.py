@@ -104,7 +104,13 @@ class ExchangePairSet(viewsets.ModelViewSet):
             LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
             LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND tp.contract = mu.tokenid
             LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active AND tp.contract = muo.tokenid
-            WHERE tp.is_active = TRUE ORDER BY tp.token
+            WHERE tp.is_active = TRUE and (
+            mi.highest_bid is not null or mi.lowest_ask is not null or 
+            mb.lowest_ask is not null or mb.lowest_ask is not null or 
+            mk.lowest_ask is not null or mk.lowest_ask is not null or 
+            mu.lowest_ask is not null or mu.lowest_ask is not null or 
+            muo.lowest_ask is not null or	muo.lowest_ask is not null 
+            ) ORDER BY tp.token
         ''')
     serializer_class = ExchangePairSerializer
 
@@ -127,7 +133,13 @@ class ExchangePairSet(viewsets.ModelViewSet):
             LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
             LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND tp.contract = mu.tokenid
             LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active AND tp.contract = muo.tokenid
-            WHERE tp.is_active = TRUE ORDER BY tp.token
+            WHERE tp.is_active = TRUE and (
+            mi.highest_bid is not null or mi.lowest_ask is not null or 
+            mb.lowest_ask is not null or mb.lowest_ask is not null or 
+            mk.lowest_ask is not null or mk.lowest_ask is not null or 
+            mu.lowest_ask is not null or mu.lowest_ask is not null or 
+            muo.lowest_ask is not null or	muo.lowest_ask is not null 
+            ) ORDER BY tp.token
         ''')
         return queryset
 
