@@ -215,10 +215,12 @@ CORS_ORIGIN_WHITELIST = (
     "https://exc.vp4.ru",
     "http://xc.vp4.ru",
     "https://xc.vp4.ru",
-    "*",
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
-    'localhost:4200',
+    r'^http:\/\/\localhost:\w+',
+    r'^https:\/\/\localhost:\w+',
+    r"^https://\w+\.vp4\.ru",
+    r"^http://\w+\.vp4\.ru",
 )
 CORS_ALLOW_HEADERS = [
     'accept',
