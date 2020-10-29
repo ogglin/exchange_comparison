@@ -7,10 +7,10 @@ from .services import set_currencies
 from .socket_services import get_wss
 
 
-@app.task(bind=True, task_track_started=True)
+@app.task(bind=True)
 # @app.shared_task(bind=True)
 def websock(self):
-    status = websock.AsyncResult(websock.request.id).state
+    status = self.AsyncResult(self.request.id).state
     print(status)
     print('Try Idex websocket connect ' + str(datetime.now() + timedelta(seconds=10)))
     get_wss()
