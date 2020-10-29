@@ -37,8 +37,4 @@ app.conf.beat_schedule = {
         'task': 'exchange_comparison.tasks.tokens_update',
         'schedule': crontab(minute='*/1'),
     },
-    'websocket_run': {
-        'task': 'idex_module.tasks.websock',
-        'schedule': crontab(minute='*/1'),
-    },
 }
