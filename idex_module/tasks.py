@@ -7,8 +7,8 @@ from .services import set_currencies
 from .socket_services import get_wss
 
 
-# @app.task
-@app.shared_task(bind=True)
+@app.task
+# @app.shared_task(bind=True)
 def websock():
     print('Idex websocket connect try')
     get_wss()
