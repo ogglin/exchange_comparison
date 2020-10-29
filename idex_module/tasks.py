@@ -10,12 +10,12 @@ from .socket_services import get_wss
 @app.task(bind=True)
 # @app.shared_task(bind=True)
 def websock(self):
-    time = datetime.utcnow() + timedelta(hours=3, seconds=5)
-    print('Try Idex websocket connect' + str(time) + str(self))
+    time = datetime.utcnow() + timedelta(hours=3)
+    print('Try Idex websocket connect ' + str(time))
     get_wss()
 
 
-started_at = datetime.utcnow() + timedelta(hours=3, seconds=5)
+started_at = datetime.utcnow() + timedelta(hours=3, seconds=10)
 websock.apply_async(eta=started_at)
 
 
