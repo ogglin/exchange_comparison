@@ -10,7 +10,11 @@ from websockets import WebSocketClientProtocol
 # from exchange_pairs.models import WebsocketLog
 import psycopg2
 
-from exchange_comparison.env import *
+DATABASE_NAME = 'exchange_comparison'
+DATABASE_USER = 'exchange_comparison'
+DATABASE_PASSWORD = '0L7OBgdmXgvV28'
+DATABASE_HOST = '95.183.12.206'
+DATABASE_PORT = '5432'
 
 
 def _query(q):
@@ -95,3 +99,7 @@ def get_wss():
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(subscribe(WSS_URL, json.dumps(message)))
+
+
+if __name__ == '__main__':
+    get_wss()
