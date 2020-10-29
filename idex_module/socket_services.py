@@ -69,5 +69,3 @@ def get_wss():
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(subscribe(WSS_URL, json.dumps(message)))
-
-# get_wss()

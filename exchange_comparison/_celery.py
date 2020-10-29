@@ -30,6 +30,7 @@ task_routes = {
     'uniswap_module.tasks.*': {'queue': 'high'},
     'bancor_module.tasks.*': {'queue': 'low'},
     'kyber_module.tasks.*': {'queue': 'low'},
+    'idex_module.socket_tasks.*': {'queue': 'socket'},
 }
 
 # celery beat tasks
@@ -39,7 +40,7 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute='*/1'),
     },
     # 'websocket_run': {
-    #     'task': 'idex_module.tasks.websock',
+    #     'task': 'idex_module.socket_tasks.websock',
     #     'schedule': crontab(minute='*/1'),
     # },
 }

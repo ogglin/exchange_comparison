@@ -12,5 +12,3 @@ def websock(*args, **kwargs):
 
 started_at = datetime.utcnow() + timedelta(hours=3, seconds=30)
 websock.apply_async((), countdown=30)
-
-
