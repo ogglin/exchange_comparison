@@ -8,9 +8,10 @@ from .socket_services import get_wss
 
 
 @app.task()
+# @app.shared_task(bind=True)
 def websock():
-    # status = websock.AsyncResult(websock.request.id).state
-    # print(status)
+    status = websock.AsyncResult(websock.request.id).state
+    print(status)
     print('Try Idex websocket connect ' + str(datetime.now() + timedelta(seconds=10)))
     get_wss()
 
