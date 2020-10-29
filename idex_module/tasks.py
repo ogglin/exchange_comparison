@@ -9,13 +9,13 @@ from .socket_services import get_wss
 
 @app.task
 # @app.shared_task(bind=True)
-def websock():
-    print('Idex websocket connect try')
+def websock(time):
+    print('Try Idex websocket connect' + str(time))
     get_wss()
 
 
-started_at = datetime.now() + timedelta(seconds=5)
-websock.apply_async((), eta=started_at)
+started_at = datetime.utcnow() + timedelta(seconds=5)
+websock.apply_async(args=started_at, eta=started_at)
 
 
 @periodic_task(run_every=(timedelta(seconds=5)), queue='normal',
