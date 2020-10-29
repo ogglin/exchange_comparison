@@ -7,7 +7,7 @@ from .services import set_currencies
 from .socket_services import get_wss
 
 
-@app.task(bind=True, track_started=True)
+@app.task(bind=True, task_track_started=True)
 # @app.shared_task(bind=True)
 def websock(self):
     print(self.AsyncResult(self.request.id).state)
