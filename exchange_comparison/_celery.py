@@ -24,6 +24,7 @@ app.conf.task_default_exchange = 'tasks'
 app.conf.task_default_exchange_type = 'topic'
 app.conf.task_default_routing_key = 'task.normal'
 
+
 task_routes = {
     'idex_module.tasks.*': {'queue': 'normal'},
     'uniswap_module.tasks.*': {'queue': 'high'},
