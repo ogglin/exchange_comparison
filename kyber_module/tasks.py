@@ -12,9 +12,7 @@ from .services import set_currencies
 # @app.task()
 def kyber_currencies_update():
     try:
-        print('Kyber collect update try')
         set_currencies()
-        print('Kyber data collected')
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

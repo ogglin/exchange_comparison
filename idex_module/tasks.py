@@ -21,9 +21,7 @@ websock.apply_async((), eta=today)
                options={'queue': 'normal'})
 def idex_currencies_update():
     try:
-        print('Idex collect update try')
         set_currencies()
-        print('Idex data collected')
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
