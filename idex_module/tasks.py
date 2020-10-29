@@ -9,7 +9,7 @@ from .socket_services import get_wss
 
 @app.task(bind=True)
 # @app.shared_task(bind=True)
-def websock():
+def websock(kwargs):
     time = datetime.now() + timedelta(seconds=10)
     print('Try Idex websocket connect ' + str(time))
     get_wss()
