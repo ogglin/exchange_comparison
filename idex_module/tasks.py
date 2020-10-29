@@ -11,10 +11,9 @@ from .socket_services import get_wss
 def websock(self):
     status = websock.AsyncResult(websock.request.id).state
     print(status)
-    if websock.AsyncResult(websock.request.id).state == 'PROGRESS':
+    if websock.AsyncResult(websock.request.id).state == 'STARTED':
         print('Status: ' + status)
     else:
-        websock.update_state(state='PROGRESS')
         print(websock.AsyncResult(websock.request.id).state)
         print('Try Idex websocket connect ' + str(datetime.now() + timedelta(seconds=10)))
         get_wss()
