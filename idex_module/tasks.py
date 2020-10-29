@@ -8,7 +8,6 @@ from .socket_services import get_wss
 
 
 @app.task()
-# @app.shared_task(bind=True)
 def websock():
     # status = websock.AsyncResult(websock.request.id).state
     # print(status)
