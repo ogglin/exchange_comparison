@@ -14,16 +14,6 @@ app = Celery('exchange_comparison')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
-# CELERY_QUEUES = (
-#     Queue('high', Exchange('high'), routing_key='high'),
-#     Queue('normal', Exchange('normal'), routing_key='normal'),
-#     Queue('low', Exchange('low'), routing_key='low'),
-# )
-#
-# CELERY_DEFAULT_QUEUE = 'normal'
-# CELERY_DEFAULT_EXCHANGE = 'normal'
-# CELERY_DEFAULT_ROUTING_KEY = 'normal'
-
 app.conf.task_default_queue = 'normal'
 app.conf.task_queues = {
     Queue('high', Exchange('high'), routing_key='high'),

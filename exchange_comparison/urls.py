@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework import routers
+from idex_module.socket_services import get_wss
 
 # Serializers define the API representation.
 from . import settings
@@ -45,3 +46,5 @@ urlpatterns = [
                   url(r'^api-auth/', include('rest_framework.urls')),
                   path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+get_wss()

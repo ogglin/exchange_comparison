@@ -3,9 +3,11 @@ import json
 import logging
 import ssl
 import time
+import requests
 
 import websockets
 from websockets import WebSocketClientProtocol
+from exchange_pairs.models import WebsocketLog
 
 logging.basicConfig(level=logging.INFO)
 
@@ -14,40 +16,37 @@ logging.basicConfig(level=logging.INFO)
 # ssl_context.load_verify_locations(localhost_pem)
 context = ssl.SSLContext()
 API_KEY = 'api:rbXUPt_TeOMzWRBpd8O_d'
-WSS_URL = "wss://datastream.idex.market"
+WSS_URL = 'wss://websocket.idex.io/v1'
+MarketURL = 'https://api.idex.io/v1/markets'
 
 
 def log_message(message: str) -> None:
     logging.info(f"Message: {message}")
 
 
+def get_tokens():
+    response = requests.get(url=MarketURL)
+    m_data = json.loads(response.content)
+    tokens = []
+    for data in m_data:
+        tokens.append(data['market'])
+    return tokens
+
+
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
         log_message(json.loads(message))
+        try:
+            log = WebsocketLog(datetime=time.ctime(), log=json.loads(message))
+            log.save()
+        except:
+            pass
 
 
-async def consume(host) -> None:
+async def subscribe(host, message) -> None:
     async with websockets.connect(host) as websocket:
-        await consumer_handler(websocket)
-
-
-async def subscribe(host, handshake, req, payload) -> None:
-    async with websockets.connect(host) as websocket:
-        print(handshake)
-        await websocket.send(handshake)
-        greeting = await websocket.recv()
-        print(greeting)
-        sid = json.loads(greeting)['sid']
-        req = {
-            "sid": sid,
-            "request": req,
-            "payload": payload
-        }
-        reqs = json.dumps(req)
-        print(reqs)
-        time.sleep(1)
-        await websocket.send(reqs)
+        await websocket.send(message)
         subs = await websocket.recv()
         print('Subs: ', subs)
         await consumer_handler(websocket)
@@ -59,76 +58,16 @@ async def produce(message: str, host: str) -> None:
         await websocket.recv()
 
 
-async def hello(api):
-    token = 'ETH_QNT'
-    headers = ''
-    handshake = {
-        "request": "handshake",
-        "payload": "{\"version\": \"1.0.0\", \"key\": \"" + api + "\"}"
-    }
-    sHandshake = json.dumps(handshake)
-    # handshake = '{"request": "handshake","payload": "{\\"version\\": \\"1.0.0\\", \\"key\\": \\"' + api + '\\"}" }'
-    async with websockets.connect(
-            WSS_URL, ssl=context, extra_headers=headers
-    ) as websocket:
-        await websocket.send(sHandshake)
-        print(sHandshake)
-
-        greeting = await websocket.recv()
-        print(f"received: {greeting}")
-        sid = json.loads(greeting)['sid']
-        reqs = '{"sid": "' + sid + '","request": "subscribeToMarkets",' \
-                                   '"payload": "{\\"topics\\": [\\"' + token + '\\", \"ETH_IDXM\"], ' \
-                                   '\\"events\\": [\\"market_trades\\"] }"}'
-        time.sleep(0.2)
-        await websocket.send(reqs)
-        print(reqs)
-        # while True:
-        #     return await websocket.recv()
-        # print(f"received: {greeting}")
-
-
 def get_wss():
-    tokens = '[\"ETH_ETH\",\"ETH_PLU\",\"ETH_1ST\",\"ETH_DGD\",\"ETH_RLC\",\"ETH_TRST\",\"ETH_GNO\",\"ETH_WINGS\",\"ETH_TKN\",\"ETH_HMQ\",\"ETH_ANT\",\"ETH_BAT\",\"ETH_MYST\",\"ETH_BNT\",\"ETH_SNT\",\"ETH_SNM\",\"ETH_NMR\",\"ETH_PAY\",\"ETH_PPT\",\"ETH_FUN\",\"ETH_STORJ\",\"ETH_ADX\",\"ETH_MTL\",\"ETH_PLR\",\"ETH_CVC\",\"ETH_DNT\",\"ETH_VGX\",\"ETH_DENT\",\"ETH_SAN\",\"ETH_ZRX\",\"ETH_MCO\",\"ETH_POE\",\"ETH_SCL\",\"ETH_RVT\",\"ETH_TNT\",\"ETH_MANA\",\"ETH_MTH\",\"ETH_WTC\",\"ETH_ART\",\"ETH_PRO2\",\"ETH_HBT\",\"ETH_KNC\",\"ETH_RLX\",\"ETH_LINK\",\"ETH_RPL\",\"ETH_CND\",\"ETH_BTM\",\"ETH_SALT\",\"ETH_HVN\",\"ETH_EVX\",\"ETH_ENG\",\"ETH_AST\",\"ETH_REQ\",\"ETH_ENJ\",\"ETH_DATA\",\"ETH_VIB\",\"ETH_RCN\",\"ETH_BLUE\",\"ETH_ARN\",\"ETH_LIFE\",\"ETH_EPY\",\"ETH_RDN\",\"ETH_GRID\",\"ETH_GVT\",\"ETH_ASTRO\",\"ETH_DNA\",\"ETH_LEND\",\"ETH_ITT\",\"ETH_DRGN\",\"ETH_GET\",\"ETH_BNTY\",\"ETH_CAJ\",\"ETH_SPANK\",\"ETH_BLT\",\"ETH_EXRN\",\"ETH_CAT\",\"ETH_MKR\",\"ETH_DMT\",\"ETH_TAU\",\"ETH_CRED\",\"ETH_VEE\",\"ETH_UFR\",\"ETH_SXUT\",\"ETH_WABI\",\"ETH_APPC\",\"ETH_BDG\",\"ETH_WAND\",\"ETH_LEV\",\"ETH_REF\",\"ETH_INS\",\"ETH_NEU\",\"ETH_HQX\",\"ETH_KEY\",\"ETH_PRFT\",\"ETH_STK\",\"ETH_CRPT\",\"ETH_SAL\",\"ETH_ELF\",\"ETH_QSP\",\"ETH_QNT\"]'
-    handshake = json.dumps({
-        "request": "handshake",
-        "payload": "{\"version\": \"1.0.0\", \"key\": \"" + API_KEY + "\"}"
-    })
-    req = "subscribeToMarkets"
-    payload = '{\"topics\": ' + tokens + ', \"events\": [\"market_trades\"] }'
+    tokens = get_tokens()
+    message = {
+        'method': 'subscribe',
+        'markets': tokens,
+        'subscriptions': ['trades', ]
+    }
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(subscribe(WSS_URL, handshake, req, payload))
-
-    # return data
-
+    loop.run_until_complete(subscribe(WSS_URL, json.dumps(message)))
 
 # get_wss()
-
-
-# def get_wss():
-#     # rT = threading.Thread(target=receving, args=("ResvThread", s))
-#     host = socket.gethostbyname(socket.gethostname())
-#     port = 0
-#     #
-#     rid = 'pair_request'
-#     cid = ''
-#     request = ''
-#     status = ''
-#     server = ('wss://datastream.idex.market', 443)
-#     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#     client.bind((host, port))
-#     client.setblocking(False)
-#     # client.connect((host, port))
-#     handshake = {
-#         "request": "handshake",
-#         "payload": "{\"version\": \"1.0.0\", \"key\": \"api:rbXUPt_TeOMzWRBpd8O_d\"}"
-#     }
-#     time.sleep(1)
-#     client.sendto(str(handshake).encode("utf-8"), server)
-#     reciv = client.recv(5242880)
-#     print(json.loads(reciv))
-#     while True:
-#         data = client.recv(5242880)
-#         return data
