@@ -7,7 +7,7 @@ from .services import set_currencies
 from .socket_services import get_wss
 
 
-@app.task
+@app.task(bind=True)
 # @app.shared_task(bind=True)
 def websock(time):
     print('Try Idex websocket connect' + time)
@@ -15,7 +15,6 @@ def websock(time):
 
 
 started_at = datetime.utcnow() + timedelta(seconds=5)
-print(started_at)
 websock.apply_async((str(started_at), ), eta=started_at)
 
 
