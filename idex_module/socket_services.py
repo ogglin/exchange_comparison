@@ -2,12 +2,38 @@ import asyncio
 import json
 import logging
 import ssl
-import time
+from datetime import datetime
 import requests
 
 import websockets
 from websockets import WebSocketClientProtocol
-from exchange_pairs.models import WebsocketLog
+# from exchange_pairs.models import WebsocketLog
+import psycopg2
+
+from exchange_comparison.env import *
+
+
+def _query(q):
+    print(q)
+    con = psycopg2.connect(
+        database=DATABASE_NAME,
+        user=DATABASE_USER,
+        password=DATABASE_PASSWORD,
+        host=DATABASE_HOST,
+        port=DATABASE_PORT
+    )
+    cur = con.cursor()
+    try:
+        cur.execute(q)
+        data = cur.fetchall()
+    except psycopg2.DatabaseError as err:
+        print("Error: ", err)
+    else:
+        return data
+    finally:
+        con.commit()
+
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -38,8 +64,8 @@ async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     async for message in websocket:
         log_message(json.loads(message))
         try:
-            log = WebsocketLog(datetime=time.ctime(), log=json.loads(message))
-            log.save()
+            log = f'INSERT INTO websocket_log (datetime, log) VALUES ({datetime.utcnow()}, {message});'
+            _query(log)
         except:
             pass
 

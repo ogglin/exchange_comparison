@@ -30,7 +30,6 @@ task_routes = {
     'uniswap_module.tasks.*': {'queue': 'high'},
     'bancor_module.tasks.*': {'queue': 'low'},
     'kyber_module.tasks.*': {'queue': 'low'},
-    'idex_module.socket_tasks.*': {'queue': 'socket'},
 }
 
 # celery beat tasks
