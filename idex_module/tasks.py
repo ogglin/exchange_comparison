@@ -7,16 +7,16 @@ from .services import set_currencies
 from .socket_services import get_wss
 
 
-@app.task(bind=True)
+@app.task(bind=True, track_started=True)
 # @app.shared_task(bind=True)
-def websock(kwargs):
-    time = datetime.now() + timedelta(seconds=10)
-    print('Try Idex websocket connect ' + str(time))
+def websock(self):
+    print(self.AsyncResult(self.request.id).state)
+    print('Try Idex websocket connect ' + str(datetime.now() + timedelta(seconds=10)))
     get_wss()
 
 
-started_at = datetime.utcnow() + timedelta(hours=3, seconds=10)
-websock.apply_async(eta=started_at)
+# started_at = datetime.utcnow() + timedelta(hours=3, seconds=10)
+# websock.apply_async(eta=started_at)
 
 
 @periodic_task(run_every=(timedelta(seconds=5)), queue='normal',
