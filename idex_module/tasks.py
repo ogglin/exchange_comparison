@@ -15,7 +15,7 @@ def websock(time):
 
 
 started_at = datetime.utcnow() + timedelta(seconds=5)
-websock.apply_async(started_at, eta=started_at)
+websock.apply_async((str(started_at), ), eta=started_at)
 
 
 @periodic_task(run_every=(timedelta(seconds=5)), queue='normal',
