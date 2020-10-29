@@ -14,6 +14,8 @@ def websock(self):
 
 
 started_at = datetime.utcnow() + timedelta(hours=3, seconds=10)
+print(datetime.utcnow() + timedelta(hours=3, seconds=10))
+print(datetime.now() + timedelta(seconds=10))
 websock.apply_async(eta=started_at)
 
 
