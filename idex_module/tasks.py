@@ -8,13 +8,13 @@ from .socket_services import get_wss
 
 
 @app.task(bind=True)
-def websock(self):
+def websock(*args, **kwargs):
     print('Try Idex websocket connect ' + str(datetime.utcnow() + timedelta(hours=3)))
     get_wss()
 
 
 started_at = datetime.utcnow() + timedelta(hours=3, seconds=30)
-websock.apply_async(countdown=10)
+websock.apply_async((), countdown=10)
 
 
 @periodic_task(run_every=(timedelta(seconds=5)), queue='normal',
