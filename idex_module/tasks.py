@@ -6,16 +6,19 @@ from exchange_comparison._celery import app
 from .services import set_currencies
 from .socket_services import get_wss
 
+isStart = False
 
 @app.task(bind=True)
 def websock(self):
+    global isStart
     status = websock.AsyncResult(websock.request.id).state
-    print(status)
-    if websock.AsyncResult(websock.request.id).state == 'STARTED':
+    print(status, isStart)
+    if websock.AsyncResult(websock.request.id).state == 'STARTED' and isStart:
         print('Status: ' + status)
     else:
         print(websock.AsyncResult(websock.request.id).state)
         print('Try Idex websocket connect ' + str(datetime.now() + timedelta(seconds=10)))
+        isStart = True
         get_wss()
 
 
