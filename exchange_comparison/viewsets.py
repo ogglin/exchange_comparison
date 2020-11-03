@@ -102,8 +102,10 @@ class ExchangePairSet(viewsets.ModelViewSet):
             LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active
             LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active
             LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
-            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND tp.contract = mu.tokenid
-            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active AND tp.contract = muo.tokenid
+            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active 
+            AND lower(tp.contract) = lower(mu.tokenid)
+            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active 
+            AND lower(tp.contract) = lower(muo.tokenid)
             WHERE tp.is_active = TRUE and (
             mi.highest_bid is not null or mi.lowest_ask is not null or 
             mb.lowest_ask is not null or mb.lowest_ask is not null or 
@@ -131,8 +133,10 @@ class ExchangePairSet(viewsets.ModelViewSet):
             LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active
             LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active
             LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
-            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND tp.contract = mu.tokenid
-            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active AND tp.contract = muo.tokenid
+            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active 
+            AND lower(tp.contract) = lower(mu.tokenid)
+            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active 
+            AND lower(tp.contract) = lower(muo.tokenid)
             WHERE tp.is_active = TRUE and (
             mi.highest_bid is not null or mi.lowest_ask is not null or 
             mb.lowest_ask is not null or mb.lowest_ask is not null or 

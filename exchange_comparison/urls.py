@@ -41,6 +41,7 @@ urlpatterns = [
                   path('', include(router.urls)),
                   path('contact/', include('send_mail.urls')),
                   path('idex/', include('idex_module.urls')),
+                  path('uni/', include('uniswap_module.urls')),
                   path('admin/', admin.site.urls),
                   url(r'^api-auth/', include('rest_framework.urls')),
                   path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

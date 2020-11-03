@@ -79,8 +79,8 @@ def set_all_currencies():
     #     reader = csv.reader(File)
     #     for row in reader:
     #         trusted_tokens.append(row)
-    pages_v1 = 6
-    pages_v2 = 12
+    pages_v1 = 5
+    pages_v2 = 19
     for i in range(pages_v2):
         req_v2 = f'''
             {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
@@ -103,5 +103,4 @@ def set_all_currencies():
         LEFT JOIN exchange_pairs ep ON ep.exch_direction = muo.exch_direction) s
         WHERE s.exch_direction = exchange_pairs.exch_direction;
         ''')
-
 

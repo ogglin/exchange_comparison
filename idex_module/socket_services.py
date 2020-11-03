@@ -38,7 +38,6 @@ def _query(q):
         con.commit()
 
 
-
 logging.basicConfig(level=logging.INFO)
 
 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -66,9 +65,10 @@ def get_tokens():
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
-        log_message(json.loads(message))
+        data = json.loads(message).data
+        log_message(data)
         try:
-            log = f"INSERT INTO websocket_log (datetime, log) VALUES ('{datetime.utcnow()}', '{message}');"
+            log = f"INSERT INTO websocket_log (datetime, log) VALUES ('{datetime.utcnow()}', '{data}');"
             _query(log)
         except:
             pass

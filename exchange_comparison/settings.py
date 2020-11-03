@@ -196,14 +196,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 # CELERY_TASK_ALWAYS_EAGER = True
 # CELERY_TIMEZONE = 'UTC'
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        # 'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        # 'LOCATION': 'exc_cache_table',
-        # 'TIMEOUT': 1,
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+#         # 'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#         # 'LOCATION': 'exc_cache_table',
+#         # 'TIMEOUT': 1,
+#     }
+# }
 
 # Cors configs
 CORS_ORIGIN_ALLOW_ALL = True
