@@ -65,13 +65,17 @@ def get_tokens():
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
-        data = json.loads(message).data
-        log_message(data)
         try:
-            log = f"INSERT INTO websocket_log (datetime, log) VALUES ('{datetime.utcnow()}', '{data}');"
-            _query(log)
+            data = json.loads(message).data
+            log_message(data)
+            try:
+                log = f"INSERT INTO websocket_log (datetime, log) VALUES ('{datetime.utcnow()}', '{data}');"
+                _query(log)
+            except:
+                pass
         except:
             pass
+
 
 
 async def subscribe(host, message) -> None:
