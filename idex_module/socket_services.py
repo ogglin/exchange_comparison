@@ -65,9 +65,9 @@ def get_tokens():
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
-        data = json.loads(message).data
+        data = json.loads(message)['data']
         log_message(data)
-        if data.subscriptions:
+        if data['subscriptions']:
             pass
         else:
             try:

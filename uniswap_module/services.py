@@ -1,3 +1,4 @@
+import datetime
 import json
 import csv
 import requests
@@ -72,35 +73,54 @@ def set_currencies_v2(date, trusted_tokens):
         pass
 
 
+def get_uni2_price(tokenid, token):
+    url_v2 = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
+    req = {'query': '{token(id: "' + tokenid + '"){ symbol totalLiquidity derivedETH } }'}
+    response = requests.post(url=url_v2, data=json.dumps(req))
+    jData = json.loads(response.content)['data']['token']
+    if jData is not None and jData['totalLiquidity'] is not None:
+        if float(jData['derivedETH']) > 0 and float(jData['totalLiquidity']) > 1:
+            highest_bid = float(jData['derivedETH']) * koef
+            lowest_ask = float(jData['derivedETH'])
+            currencies_update_v2(token, lowest_ask, highest_bid, tokenid)
+
+
 def set_all_currencies():
+    # print(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S"))
     trusted_tokens = TrustedPairs.objects.all().values()
+    token_uni2 = Uniswap.objects.all().values()
+    # token_uni = UniswapOne.objects.all().values()
+    # print(token_uni)
+    for token in token_uni2:
+        get_uni2_price(token['tokenid'], token['exch_direction'])
+
     # trusted_tokens = []
     # with open('trusted_pairs.csv', newline='') as File:
     #     reader = csv.reader(File)
     #     for row in reader:
     #         trusted_tokens.append(row)
-    pages_v1 = 5
-    pages_v2 = 19
-    for i in range(pages_v2):
-        req_v2 = f'''
-            {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
-        '''
-        set_currencies_v2(req_v2, trusted_tokens)
-
-    for i in range(pages_v1):
+    # pages_v1 = 5
+    # pages_v2 = 19
+    # for i in range(pages_v2):
+    #     req_v2 = f'''
+    #         {{"query":"{{ tokens (first: 1000, skip: {i * 1000}) {{ id derivedETH symbol name totalLiquidity tradeVolume }} }}","variables":{{}}}}
+    #     '''
+    #     set_currencies_v2(req_v2, trusted_tokens)
+    #
+    for i in range(5):
         req_v1 = f'''
             {{"query":"{{exchanges(first: 1000, skip: {i * 1000}) {{ ethBalance ethLiquidity tokenAddress price tokenName tokenSymbol}}}}","variables":{{}}}}
         '''
         set_currencies_v1(req_v1, trusted_tokens)
-    CustomSql.objects.raw('''
-        UPDATE exchange_pairs SET uniswap_direction_id = s.id
-        FROM (SELECT mu.id, mu.exch_direction FROM module_uniswap mu
-        LEFT JOIN exchange_pairs ep ON ep.exch_direction = mu.exch_direction) s
-        WHERE s.exch_direction = exchange_pairs.exch_direction;
-
-        UPDATE exchange_pairs SET uniswap_one_direction_id = s.id
-        FROM (SELECT muo.id, muo.exch_direction FROM module_uniswap_one muo
-        LEFT JOIN exchange_pairs ep ON ep.exch_direction = muo.exch_direction) s
-        WHERE s.exch_direction = exchange_pairs.exch_direction;
-        ''')
-
+    # print(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S"))
+    # CustomSql.objects.raw('''
+    #     UPDATE exchange_pairs SET uniswap_direction_id = s.id
+    #     FROM (SELECT mu.id, mu.exch_direction FROM module_uniswap mu
+    #     LEFT JOIN exchange_pairs ep ON ep.exch_direction = mu.exch_direction) s
+    #     WHERE s.exch_direction = exchange_pairs.exch_direction;
+    #
+    #     UPDATE exchange_pairs SET uniswap_one_direction_id = s.id
+    #     FROM (SELECT muo.id, muo.exch_direction FROM module_uniswap_one muo
+    #     LEFT JOIN exchange_pairs ep ON ep.exch_direction = muo.exch_direction) s
+    #     WHERE s.exch_direction = exchange_pairs.exch_direction;
+    #     ''')
