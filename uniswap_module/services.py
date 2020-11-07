@@ -126,4 +126,4 @@ def set_all_currencies():
     #     ''')
 
 
-set_all_currencies()
+# set_all_currencies()
