@@ -43,7 +43,9 @@ def get_ticker():
             volume = float(data['vol'])
             token = data['symbol'].replace('_ETH', '').replace('_BTC', '')
             if (buy > 0 or sell > 0) and volume > 0:
-                if 'BTC' in data['symbol'] and 'ETH' not in data['symbol']:
+                if 'ETH_BTC' in data['symbol']:
+                    set_prices('BTC', 'ETH/BTC', 1/buy, 1/sell, volume)
+                elif 'BTC' in data['symbol'] and 'ETH' not in data['symbol']:
                     buy = buy * ask_btc
                     sell = sell * ask_btc
                     set_prices(token, data['symbol'].replace('_BTC', '') + '/BTC', buy, sell, volume)
