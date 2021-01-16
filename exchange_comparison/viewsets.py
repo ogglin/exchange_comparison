@@ -47,7 +47,7 @@ class IdexViewSet(viewsets.ModelViewSet):
 
 class HotbitViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = Idex.objects.all()
+    queryset = Hotbit.objects.all()
     serializer_class = HotbitSerializer
 
 
