@@ -1,9 +1,7 @@
 import psycopg2
 from django.db import connection
-from rest_framework import viewsets, generics
-from rest_framework.mixins import ListModelMixin
+from rest_framework import viewsets
 from rest_framework_api_key.permissions import HasAPIKey
-from django.db.models.query import QuerySet
 
 from .serializers import *
 

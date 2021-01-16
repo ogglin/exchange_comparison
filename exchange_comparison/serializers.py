@@ -16,13 +16,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class HotbitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Idex
+        model = Hotbit
         fields = ['exch_direction', 'buy', 'sell', 'symbol', 'is_active']
 
 
 class IdexSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Hotbit
+        model = Idex
         fields = ['exch_direction', 'lowest_ask', 'highest_bid']
 
 
