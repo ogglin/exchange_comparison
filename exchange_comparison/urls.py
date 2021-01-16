@@ -27,6 +27,7 @@ from .viewsets import *
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'idex', IdexViewSet)
+router.register(r'hotbit', HotbitViewSet)
 router.register(r'bancor', BancorViewSet)
 router.register(r'kyber', KyberViewSet)
 router.register(r'uniswap', UniswapViewSet)

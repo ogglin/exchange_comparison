@@ -47,6 +47,12 @@ class IdexViewSet(viewsets.ModelViewSet):
     serializer_class = IdexSerializer
 
 
+class HotbitViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = Idex.objects.all()
+    serializer_class = HotbitSerializer
+
+
 class BancorViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = Bancor.objects.all()

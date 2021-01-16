@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'bancor_module',
     'kyber_module',
     'uniswap_module',
+    'hotbit_module',
     'send_mail',
     'exchange_pairs',
 ]

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from idex_module.models import Idex
+from hotbit_module.models import Hotbit
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap, UniswapOne
@@ -16,6 +17,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class IdexSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Idex
+        fields = ['exch_direction', 'buy', 'sell', 'symbol', 'is_active']
+
+
+class HotbitSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Hotbit
         fields = ['exch_direction', 'lowest_ask', 'highest_bid']
 
 
