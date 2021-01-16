@@ -52,7 +52,7 @@ def get_ticker():
 
 
 def currencies_update(token, symbol, buy, sell, volume):
-    pair_id = Hotbit.objects.filter(exch_direction=symbol).values('id')
+    pair_id = Hotbit.objects.filter(symbol=symbol).values('id')
     if len(pair_id) > 0:
         Hotbit.objects.filter(id=pair_id[0]['id']).update(exch_direction=token, symbol=symbol, buy=buy, sell=sell,
                                                           volume=volume)
