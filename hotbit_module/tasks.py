@@ -6,7 +6,7 @@ from celery.task import periodic_task
 from .functions import set_currencies
 
 
-@periodic_task(run_every=(timedelta(seconds=10)), queue='normal',
+@periodic_task(run_every=(timedelta(seconds=600)), queue='normal',
                options={'queue': 'normal'})
 def hotbit_currencies_update():
     try:
