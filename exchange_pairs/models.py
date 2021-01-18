@@ -1,4 +1,6 @@
 from django.db import models
+
+from hotbit_module.models import Hotbit
 from idex_module.models import Idex
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
@@ -43,6 +45,7 @@ class ExchangePairs(models.Model):
                                               blank=True)
     bancor_direction = models.ForeignKey(Bancor, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
     kyber_direction = models.ForeignKey(Kyber, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
+    hotbit = models.ForeignKey(Hotbit, on_delete=models.DO_NOTHING, related_name='+', null=True, blank=True)
 
     def __str__(self):
         return self.exch_direction

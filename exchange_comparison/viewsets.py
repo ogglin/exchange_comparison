@@ -93,6 +93,12 @@ class WebsocketLogSet(viewsets.ModelViewSet):
     serializer_class = WebsocketLogSerializer
 
 
+class ExchangePairViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = ExchangePairs.objects.all()
+    serializer_class = ExchangePairViewSerializer
+
+
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''

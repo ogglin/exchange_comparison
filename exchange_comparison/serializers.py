@@ -5,7 +5,7 @@ from hotbit_module.models import Hotbit
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap, UniswapOne
-from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs, WebsocketLog
+from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs, WebsocketLog, ExchangePairs
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -48,6 +48,13 @@ class UniswapOneSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UniswapOne
         fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+
+
+class ExchangePairViewSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ExchangePairs
+        fields = ['exch_direction', 'idex_direction', 'uniswap_direction', 'uniswap_one_direction', 'bancor_direction',
+                  'kyber_direction', 'hotbit']
 
 
 class ExchangePairSerializer(serializers.HyperlinkedModelSerializer):

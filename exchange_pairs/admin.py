@@ -5,7 +5,7 @@ from .models import *
 # Register your models here.
 @admin.register(ExchangePairs)
 class ExchangePairAdmin(admin.ModelAdmin):
-    list_display = ('exch_direction', 'idex_direction', 'uniswap_direction', 'bancor_direction', 'kyber_direction')
+    list_display = ('exch_direction', 'idex_direction', 'uniswap_direction', 'bancor_direction', 'kyber_direction', 'hotbit')
     search_fields = ('exch_direction',)
 
 

@@ -34,6 +34,7 @@ router.register(r'uniswap', UniswapViewSet)
 router.register(r'uniswapone', UniswapOneViewSet)
 router.register(r'exchpair', ExchangePairSet, basename='ExchangePair')
 router.register(r'trustpair', TrustedPairsSet, basename='TrustedPairs')
+router.register(r'exchpairset', ExchangePairViewSet, basename='ExchangePairSet')
 router.register(r'settings', SettingsViewSet, basename='settings')
 router.register(r'websocket_log', WebsocketLogSet, basename='WebsocketLog')
 router.register(r'settings_modules', SettingsModulesViewSet, basename='settings_modules')
@@ -42,6 +43,7 @@ urlpatterns = [
                   path('', include(router.urls)),
                   path('contact/', include('send_mail.urls')),
                   path('idex/', include('idex_module.urls')),
+                  path('hotbitv/', include('hotbit_module.urls')),
                   path('uni/', include('uniswap_module.urls')),
                   path('admin/', admin.site.urls),
                   url(r'^api-auth/', include('rest_framework.urls')),

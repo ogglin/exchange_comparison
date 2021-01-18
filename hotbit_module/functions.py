@@ -2,6 +2,7 @@ import json
 
 import requests
 
+from exchange_pairs.models import TrustedPairs
 from .models import Hotbit
 
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
@@ -53,22 +54,32 @@ def get_ticker():
                     set_prices(token, data['symbol'].replace('_ETH', '') + '/ETH', buy, sell, volume)
 
 
-def currencies_update(token, symbol, buy, sell, volume):
+def currencies_update(token, symbol, buy, sell, volume, contract, decimals):
     pair_id = Hotbit.objects.filter(symbol=symbol).values('id')
     if len(pair_id) > 0:
         Hotbit.objects.filter(id=pair_id[0]['id']).update(exch_direction=token, symbol=symbol, buy=buy, sell=sell,
-                                                          volume=volume)
+                                                          volume=volume, contract=contract, decimals=decimals)
     else:
-        pair = Hotbit(exch_direction=token, symbol=symbol, buy=buy, sell=sell, volume=volume, is_active=True)
+        pair = Hotbit(exch_direction=token, symbol=symbol, buy=buy, sell=sell, volume=volume, is_active=True,
+                      contract=contract, decimals=decimals)
         pair.save()
 
 
 def set_currencies():
     get_ticker()
+    trusted_pair = list(TrustedPairs.objects.all().values_list())
+    contract = None
+    decimals = None
     for price in prices:
         token = list(price.keys())[0]
         p = list(list(price.values()))[0]
-        currencies_update(token, p[0], p[1], p[2], p[3])
+        for pair in trusted_pair:
+            if token == pair[1]:
+                contract = pair[2]
+                decimals = pair[3]
+        currencies_update(token, p[0], p[1], p[2], p[3], contract, decimals)
+        contract = None
+        decimals = None
 
 
 # set_currencies()
