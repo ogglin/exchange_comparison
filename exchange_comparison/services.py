@@ -13,7 +13,7 @@ from kyber_module.models import *
 
 
 def token_exchange_set():
-    trusted_pair = list(TrustedPairs.objects.all().values_list())
+    trusted_pair = list(TrustedPairs.objects.filter(is_active=True).values_list())
     for pair in trusted_pair:
         token = pair[1]
         print(token)

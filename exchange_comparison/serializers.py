@@ -50,7 +50,7 @@ class UniswapOneSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['exch_direction', 'lowest_ask', 'highest_bid']
 
 
-class ExchangePairViewSerializer(serializers.HyperlinkedModelSerializer):
+class ExchangePairViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExchangePairs
         fields = ['exch_direction', 'idex_direction', 'uniswap_direction', 'uniswap_one_direction', 'bancor_direction',
