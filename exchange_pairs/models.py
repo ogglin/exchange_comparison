@@ -64,6 +64,8 @@ class Settings(models.Model):
     koef_push = models.FloatField(verbose_name='Коэффициет в % ', help_text='для пуш уведомлений')
     freeze_percent = models.FloatField(verbose_name='Процент заморозки ', help_text='в %', default=1)
     api_keys = models.JSONField(verbose_name='API keys', null=True, blank=True)
+    market_percent = models.FloatField(verbose_name='Процент бирж', help_text='для сравнения бирж в %', null=True, blank=True)
+    market_koef = models.FloatField(verbose_name='Коэффициет бирж', help_text='учет отклонения для сравнения бирж в %', null=True, blank=True)
 
     def __str__(self):
         return 'Кастройки коэффициентов'
