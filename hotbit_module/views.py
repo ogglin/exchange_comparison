@@ -113,10 +113,10 @@ async def compare(asks, bids, where, to, symbols, percent):
     w_symbol = ''
     t_symbol = ''
 
-    if where == 'idex':
+    if where == 'IDEX':
         w_symbol = symbols[0]
         t_symbol = symbols[1]
-    if where == 'hotbit':
+    if where == 'HOTBIT':
         w_symbol = symbols[1]
         t_symbol = symbols[0]
 
@@ -161,10 +161,10 @@ async def compare_markets(symbol, percent, proxy):
             idex_bid = None
         hotbit_asks = hotbit_depth['result']['asks']
         hotbit_bids = hotbit_depth['result']['bids']
-        a = await compare(idex_ask, hotbit_bids, 'idex', 'hotbit', symbol, percent)
+        a = await compare(idex_ask, hotbit_bids, 'IDEX', 'HOTBIT', symbol, percent)
         if a is not None:
             compares.append(a)
-        b = await compare(hotbit_asks, idex_bid, 'hotbit', 'idex', symbol, percent)
+        b = await compare(hotbit_asks, idex_bid, 'HOTBIT', 'IDEX', symbol, percent)
         if b is not None:
             compares.append(b)
     return compares
