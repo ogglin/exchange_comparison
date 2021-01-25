@@ -3,6 +3,6 @@ from . import views
 
 app_name = 'hotbit_module'
 urlpatterns = [
-    path('', views.hotbit.as_view(), name='hotbit'),
+    # path('', views.hotbit.as_view(), name='hotbit'),
 ]
 

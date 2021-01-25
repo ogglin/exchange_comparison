@@ -162,3 +162,9 @@ class SettingsModulesViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = SettingsModules.objects.all()
     serializer_class = SettingsModulesSerializer
+
+
+class ProfitExchangesViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasAPIKey]
+    queryset = ProfitExchanges.objects.all()
+    serializer_class = ProfitExchangesSerializer

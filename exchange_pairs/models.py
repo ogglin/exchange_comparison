@@ -64,8 +64,10 @@ class Settings(models.Model):
     koef_push = models.FloatField(verbose_name='Коэффициет в % ', help_text='для пуш уведомлений')
     freeze_percent = models.FloatField(verbose_name='Процент заморозки ', help_text='в %', default=1)
     api_keys = models.JSONField(verbose_name='API keys', null=True, blank=True)
-    market_percent = models.FloatField(verbose_name='Процент бирж', help_text='для сравнения бирж в %', null=True, blank=True)
-    market_koef = models.FloatField(verbose_name='Коэффициет бирж', help_text='учет отклонения для сравнения бирж в %', null=True, blank=True)
+    market_percent = models.FloatField(verbose_name='Процент бирж', help_text='для сравнения бирж в %', null=True,
+                                       blank=True)
+    market_koef = models.FloatField(verbose_name='Коэффициет бирж', help_text='учет отклонения для сравнения бирж в %',
+                                    null=True, blank=True)
 
     def __str__(self):
         return 'Кастройки коэффициентов'
@@ -120,3 +122,23 @@ class CustomSql(models.Model):
 
     class Meta:
         managed = False
+
+
+class ProfitExchanges(models.Model):
+    pair = models.CharField(max_length=100)
+    buy_name = models.CharField(max_length=100)
+    buy = models.FloatField()
+    sell_name = models.CharField(max_length=100)
+    sell = models.FloatField()
+    percent = models.FloatField()
+    tokenid = models.CharField(max_length=100)
+    buyurl = models.CharField(max_length=200)
+    sellurl = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.pair
+
+    class Meta:
+        db_table = 'profit_exchanges'
+        verbose_name = 'Выгодные обмены'
+        verbose_name_plural = 'Выгодный обмен'

@@ -5,7 +5,8 @@ from hotbit_module.models import Hotbit
 from bancor_module.models import Bancor
 from kyber_module.models import Kyber
 from uniswap_module.models import Uniswap, UniswapOne
-from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs, WebsocketLog, ExchangePairs
+from exchange_pairs.models import CustomSql, Settings, SettingsModules, TrustedPairs, WebsocketLog, ExchangePairs, \
+    ProfitExchanges
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -75,6 +76,12 @@ class SettingsModulesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SettingsModules
         fields = ['module_name', 'is_active']
+
+
+class ProfitExchangesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ProfitExchanges
+        fields = ['pair', 'buy_name', 'buy', 'sell_name', 'sell', 'percent', 'tokenid', 'buyurl', 'sellurl']
 
 
 class TrustedPairsSerializer(serializers.HyperlinkedModelSerializer):
