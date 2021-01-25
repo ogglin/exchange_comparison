@@ -86,7 +86,7 @@ async def get_hotbit_depth(symbol, proxy):
             return json.loads(html)
 
 
-async def compare(asks, bids, where, to, symbols, percent):
+async def compare(asks, bids, where, to, symbols, percent, currency):
     volume = 0
     ask_price = 0
     bid_price = 0
@@ -104,16 +104,16 @@ async def compare(asks, bids, where, to, symbols, percent):
 
     if type(asks) is float:
         for bid in bids:
-            if float(bid[0]) > (asks * percent / 100 + asks):
-                full_price += float(bid[0])
+            if float(bid[0])/currency > (asks * percent / 100 + asks):
+                full_price += float(bid[0])/currency
                 volume += float(bid[1])
                 ask_price = asks
         bid_price = full_price / count
 
     if type(bids) is float:
         for ask in asks:
-            if (float(ask[0]) + float(ask[0]) * percent / 100) < bids:
-                full_price += float(ask[0])
+            if (float(ask[0])/currency + float(ask[0]) * percent / 100) < bids:
+                full_price += float(ask[0])/currency
                 volume += float(ask[1])
                 bid_price = bids
         ask_price = full_price / count
@@ -128,10 +128,14 @@ async def compare(asks, bids, where, to, symbols, percent):
         return None
 
 
-async def compare_markets(symbol, percent, proxy):
+async def compare_markets(symbol, percent, currency, proxy):
     compares = []
     idex_ticker = await get_idex_market(symbol[0], proxy)
     hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
+    if 'BTC' in symbol:
+        pass
+    else:
+        currency = 1
     if hotbit_depth['error'] is None and idex_ticker is not None:
         if idex_ticker['ask']:
             idex_ask = float(idex_ticker['ask'])
@@ -143,23 +147,23 @@ async def compare_markets(symbol, percent, proxy):
             idex_bid = None
         hotbit_asks = hotbit_depth['result']['asks']
         hotbit_bids = hotbit_depth['result']['bids']
-        a = await compare(idex_ask, hotbit_bids, 'IDEX', 'HOTBIT', symbol, percent)
+        a = await compare(idex_ask, hotbit_bids, 'IDEX', 'HOTBIT', symbol, percent, currency)
         if a is not None:
             compares.append(a)
-        b = await compare(hotbit_asks, idex_bid, 'HOTBIT', 'IDEX', symbol, percent)
+        b = await compare(hotbit_asks, idex_bid, 'HOTBIT', 'IDEX', symbol, percent, currency)
         if b is not None:
             compares.append(b)
     return compares
 
 
-async def init(symbols, percent):
+async def init(symbols, percent, currency):
     global idex_tiker_all
     idex_tiker_all = await get_idex_tiker_all()
     async_tasks = []
     # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
     for symbol in symbols:
         rn = randrange(len(proxys))
-        async_tasks.append(compare_markets(symbol, percent, proxys[rn]))
+        async_tasks.append(compare_markets(symbol, percent, currency, proxys[rn]))
     # print('end  collect symbols: ' + str(len(async_tasks)) + str(datetime.datetime.now()))
     results = await asyncio.gather(*async_tasks)
     return results
@@ -173,17 +177,19 @@ def save_profits():
                      f'LEFT JOIN module_hotbit mh ON mh.id = hotbit_id '
                      f'LEFT JOIN module_idex mi ON mi.id = idex_direction_id '
                      f'WHERE hotbit_id is not null and idex_direction_id is not null ORDER BY hotbit_id LIMIT 40;')
+    currency = get_eth_btc('ETH/BTC', 20)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-    init_result = loop.run_until_complete(init(symbols, percent))
+    init_result = loop.run_until_complete(init(symbols, percent, currency))
     compare_result = []
     ProfitExchanges.objects.all().delete()
     buyurl = ''
     sellurl = ''
     for result in init_result:
         if len(result) > 0:
+            print(result[0])
             compare_result.append(result[0])
             pair = result[0][0]
             buy_name = result[0][1]
