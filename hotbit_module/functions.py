@@ -202,9 +202,9 @@ def save_profits():
             if result[0][1] == 'HOTBIT':
                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
             if result[0][1] == 'IDEX':
-                buyurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
+                buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
             if result[0][4] == 'HOTBIT':
-                sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
+                sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
             if result[0][4] == 'IDEX':
                 sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
             pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
