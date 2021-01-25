@@ -184,7 +184,6 @@ def save_profits():
     sellurl = ''
     for result in init_result:
         if len(result) > 0:
-            print(result[0])
             compare_result.append(result[0])
             pair = result[0][0]
             buy_name = result[0][1]
@@ -201,7 +200,6 @@ def save_profits():
                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
             if result[0][4] == 'IDEX':
                 sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
-            print(pair, buy_name, buy, sell_name, sell, percent, tokenid, buyurl, sellurl)
             pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
                                    percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
             pair.save()
