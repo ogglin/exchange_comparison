@@ -176,7 +176,7 @@ def save_profits():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
-    loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=200))
+    loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     init_result = loop.run_until_complete(init(symbols, percent))
     compare_result = []
     ProfitExchanges.objects.all().delete()
@@ -281,5 +281,6 @@ def set_currencies():
         currencies_update(token, p[0], p[1], p[2], p[3], contract, decimals)
         contract = None
         decimals = None
+
 
 # set_currencies()
