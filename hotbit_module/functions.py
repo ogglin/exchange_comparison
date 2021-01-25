@@ -105,10 +105,11 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
     if type(asks) is float:
         for bid in bids:
             if float(bid[0])/currency > (asks * percent / 100 + asks):
-                full_price += float(bid[0])/currency
+                print(symbols, float(bid[0]), currency, float(bid[0]) / currency, asks, (asks * percent / 100 + asks))
+                full_price += float(bid[0])
                 volume += float(bid[1])
                 ask_price = asks
-        bid_price = full_price / count
+        bid_price = full_price / count / currency
 
     if type(bids) is float:
         for ask in asks:
@@ -116,7 +117,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
                 full_price += float(ask[0])/currency
                 volume += float(ask[1])
                 bid_price = bids
-        ask_price = full_price / count
+        ask_price = full_price / count / currency
 
     if bid_price > ask_price > 0 and volume > 0:
         # print('/--------------------------')
@@ -132,7 +133,7 @@ async def compare_markets(symbol, percent, currency, proxy):
     compares = []
     idex_ticker = await get_idex_market(symbol[0], proxy)
     hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
-    if 'BTC' in symbol:
+    if 'BTC' in symbol[1]:
         pass
     else:
         currency = 1
@@ -177,7 +178,7 @@ def save_profits():
                      f'LEFT JOIN module_hotbit mh ON mh.id = hotbit_id '
                      f'LEFT JOIN module_idex mi ON mi.id = idex_direction_id '
                      f'WHERE hotbit_id is not null and idex_direction_id is not null ORDER BY hotbit_id LIMIT 40;')
-    currency = get_eth_btc('ETH/BTC', 20)
+    currency = get_eth_btc()
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
@@ -219,20 +220,21 @@ def set_prices(token, symbol, buy, sell, volume):
     prices.append({token: [symbol, buy, sell, volume]})
 
 
-def get_eth_btc(token, limit):
-    response = requests.get(f'https://api.hotbit.io/api/v1/order.depth?market={token}&limit={limit}&interval=1e-8')
-    asks = json.loads(response.content)['result']['asks']
-    bids = json.loads(response.content)['result']['bids']
-    all_ask = 0
-    for ask in asks:
-        # print(ask[0], ask[1])
-        all_ask += float(ask[0])
-
-    all_bid = 0
-    for bid in bids:
-        # print(bid[0], bid[1])
-        all_bid += float(bid[0])
-    return 1 / (all_ask / len(asks)), 1 / (all_bid / len(bids))
+def get_eth_btc():
+    response = requests.get(f'https://api.hotbit.io/api/v1/market.status?market=ETH/BTC&period=10')
+    currency = float(json.loads(response.content)['result']['last'])
+    return currency
+    # bids = json.loads(response.content)['result']['bids']
+    # all_ask = 0
+    # for ask in asks:
+    #     # print(ask[0], ask[1])
+    #     all_ask += float(ask[0])
+    #
+    # all_bid = 0
+    # for bid in bids:
+    #     # print(bid[0], bid[1])
+    #     all_bid += float(bid[0])
+    # return 1 / (all_ask / len(asks)), 1 / (all_bid / len(bids))
 
 
 def get_ticker():
