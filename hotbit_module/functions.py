@@ -91,7 +91,6 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
     ask_price = 0
     bid_price = 0
     full_price = 0
-    count = 1
     w_symbol = ''
     t_symbol = ''
 
@@ -103,8 +102,9 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
         t_symbol = symbols[0]
 
     if type(asks) is float:
+        count = len(bids)
         for bid in bids:
-            if float(bid[0])/currency > (asks * percent / 100 + asks):
+            if float(bid[0]) / currency > (asks * percent / 100 + asks):
                 print(symbols, float(bid[0]), currency, float(bid[0]) / currency, asks, (asks * percent / 100 + asks))
                 full_price += float(bid[0])
                 volume += float(bid[1])
@@ -112,14 +112,16 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
         bid_price = full_price / count / currency
 
     if type(bids) is float:
+        count = len(asks)
         for ask in asks:
-            if (float(ask[0])/currency + float(ask[0]) * percent / 100) < bids:
-                full_price += float(ask[0])/currency
+            if (float(ask[0]) / currency + float(ask[0]) * percent / 100) < bids:
+                full_price += float(ask[0]) / currency
                 volume += float(ask[1])
                 bid_price = bids
-        ask_price = full_price / count / currency
+        ask_price = (full_price / currency) / count
 
     if bid_price > ask_price > 0 and volume > 0:
+        # print(currency, asks, bids)
         # print('/--------------------------')
         # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' /')
         # print('/ ask ' + str(ask_price) + ' bid ' + str(bid_price) + ' volume ' + str(volume) + ' /')
@@ -190,7 +192,6 @@ def save_profits():
     sellurl = ''
     for result in init_result:
         if len(result) > 0:
-            print(result[0])
             compare_result.append(result[0])
             pair = result[0][0]
             buy_name = result[0][1]
@@ -287,6 +288,5 @@ def set_currencies():
         currencies_update(token, p[0], p[1], p[2], p[3], contract, decimals)
         contract = None
         decimals = None
-
 
 # set_currencies()
