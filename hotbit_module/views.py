@@ -28,6 +28,5 @@ class hotbit(APIView):
         return Response(json.loads(response.text))
 
     def post(self, request):
-        save_profits()
-        compare_result = []
+        compare_result = save_profits()
         return Response(compare_result)
