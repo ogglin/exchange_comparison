@@ -275,8 +275,8 @@ def save_profits():
             if result[0][4] == 'UNISWAP_ONE':
                 sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
 
-            compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-                                   'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+            # compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+            #                        'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
             pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
                                    percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
 
