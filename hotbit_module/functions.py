@@ -237,50 +237,53 @@ def save_profits():
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     init_result = loop.run_until_complete(init(all_symbols, percent, currency))
     compare_result = []
-    ProfitExchanges.objects.all().delete()
-    buyurl = ''
-    sellurl = ''
-    for result in init_result:
-        if len(result) > 0:
-            pair = result[0][0]
-            buy_name = result[0][1]
-            buy = result[0][2]
-            sell_name = result[0][4]
-            sell = result[0][5]
-            percent = result[0][7]
-            tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            if result[0][1] == 'HOTBIT':
-                buyurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
-            if result[0][1] == 'IDEX':
-                buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
-            if result[0][1] == 'BANKOR':
-                buyurl = 'https://www.bancor.network/?q=' + result[0][0]
-            if result[0][1] == 'KYBER':
-                buyurl = 'https://kyberswap.com/swap/ent-' + result[0][0]
-            if result[0][1] == 'UNISWAP':
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
-            if result[0][1] == 'UNISWAP_ONE':
-                buyurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+    print(len(init_result[0]))
+    print(init_result[0])
+    if len(init_result[0]) > 0:
+        ProfitExchanges.objects.all().delete()
+        buyurl = ''
+        sellurl = ''
+        for result in init_result:
+            if len(result) > 0:
+                pair = result[0][0]
+                buy_name = result[0][1]
+                buy = result[0][2]
+                sell_name = result[0][4]
+                sell = result[0][5]
+                percent = result[0][7]
+                tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
+                if result[0][1] == 'HOTBIT':
+                    buyurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
+                if result[0][1] == 'IDEX':
+                    buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
+                if result[0][1] == 'BANKOR':
+                    buyurl = 'https://www.bancor.network/?q=' + result[0][0]
+                if result[0][1] == 'KYBER':
+                    buyurl = 'https://kyberswap.com/swap/ent-' + result[0][0]
+                if result[0][1] == 'UNISWAP':
+                    buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
+                if result[0][1] == 'UNISWAP_ONE':
+                    buyurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
 
-            if result[0][4] == 'HOTBIT':
-                sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
-            if result[0][4] == 'IDEX':
-                sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
-            if result[0][4] == 'BANKOR':
-                sellurl = 'https://www.bancor.network/?q=' + result[0][3]
-            if result[0][4] == 'KYBER':
-                sellurl = 'https://kyberswap.com/swap/ent-' + result[0][3]
-            if result[0][4] == 'UNISWAP':
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
-            if result[0][4] == 'UNISWAP_ONE':
-                sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+                if result[0][4] == 'HOTBIT':
+                    sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
+                if result[0][4] == 'IDEX':
+                    sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
+                if result[0][4] == 'BANKOR':
+                    sellurl = 'https://www.bancor.network/?q=' + result[0][3]
+                if result[0][4] == 'KYBER':
+                    sellurl = 'https://kyberswap.com/swap/ent-' + result[0][3]
+                if result[0][4] == 'UNISWAP':
+                    sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
+                if result[0][4] == 'UNISWAP_ONE':
+                    sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
 
-            # compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-            #                        'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
-            pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
-                                   percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
+                # compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                #                        'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+                pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
+                                       percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
 
-            pair.save()
+                pair.save()
     loop.close()
     return compare_result
     # print('end: ' + str(datetime.datetime.now()))
