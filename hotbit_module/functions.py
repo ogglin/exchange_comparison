@@ -1,4 +1,5 @@
 import json
+import random
 
 import requests
 import asyncio
@@ -86,7 +87,8 @@ async def get_hotbit_depth(symbol, proxy):
             return json.loads(html)
 
 
-async def compare(asks, bids, where, to, symbols, percent, currency):
+async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
+    # print('---------/ ', cnt, '/---------')
     volume = 0
     ask_price = asks
     bid_price = bids
@@ -105,77 +107,82 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
     if type(asks) is float:
         for bid in bids:
             if float(bid[0]) / currency > (asks * percent / 100 + asks):
-                # print('bids', bid, float(bid[0]) / currency, '>', asks * percent / 100 + asks)
                 count += 1
                 full_price += float(bid[0]) / currency
                 volume += float(bid[1]) / currency
         if count == 0:
             count = 1
+        if volume > 0:
+            print('float asks', asks)
+            print(bids)
         bid_price = full_price / count
 
     elif type(bids) is float:
         for ask in asks:
             if (float(ask[0]) / currency * percent / 100) + (float(ask[0]) / currency) < bids:
-                # print('asks', ask, float(ask[0]) / currency, '<', bids * percent / 100 + bids)
                 count += 1
                 full_price += float(ask[0]) / currency
                 volume += float(ask[1]) / currency
         if count == 0:
             count = 1
+        if volume > 0:
+            print('float bids', bids)
+            print(asks)
         ask_price = full_price / count
 
     if bid_price > ask_price > 0 and volume > 0:
-        # print('/--------------------------')
-        # print('ask type', type(asks))
-        # print('bid type', type(bids))
-        # print(where, asks, to, bids, symbols, percent, currency)
-        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-        #     (bid_price - ask_price) / bid_price * 100) + ' /')
-        # print('--------------------------/')
+        print('/--------------------------')
+        print('ask type', type(asks))
+        print('bid type', type(bids))
+        print(where, asks, to, bids, symbols, percent, currency)
+        print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
+        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+            (bid_price - ask_price) / bid_price * 100) + ' /')
+        print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100]
     else:
         return None
 
 
-async def compare_markets(symbol, percent, currency, proxy):
+async def compare_markets(symbol, percent, currency, proxy, cnt):
+    await asyncio.sleep(random.randint(0, 10))
     compares = []
     hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
     if 'BTC' in symbol[1]:
         pass
     else:
         currency = 1
-    try:
-        if hotbit_depth['error'] is None:
-            hotbit_asks = hotbit_depth['result']['asks']
-            hotbit_bids = hotbit_depth['result']['bids']
-            if 'idex' in symbol[3]:
-                idex_ticker = await get_idex_market(symbol[0], proxy)
-                # print(idex_ticker)
-                if idex_ticker is not None:
-                    if idex_ticker['ask'] is not None:
-                        idex_ask = float(idex_ticker['ask'])
-                        # print('ask', idex_ask)
-                        a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to='HOTBIT', symbols=symbol,
-                                          percent=percent, currency=currency)
-                        if a is not None:
-                            compares.append(a)
-                    if idex_ticker['bid'] is not None:
-                        idex_bid = float(idex_ticker['bid'])
-                        # print('bid', idex_bid)
-                        b = await compare(asks=hotbit_asks, bids=idex_bid, where='HOTBIT', to='IDEX', symbols=symbol,
-                                          percent=percent, currency=currency)
-                        if b is not None:
-                            compares.append(b)
-            if symbol[4] > 0:
-                a = await compare(symbol[4], hotbit_bids, symbol[3].upper(), 'HOTBIT', symbol, percent, currency)
-                if a is not None:
-                    compares.append(a)
-            if symbol[5] > 0:
-                b = await compare(hotbit_asks, symbol[5], 'HOTBIT', symbol[3].upper(), symbol, percent, currency)
-                if b is not None:
-                    compares.append(b)
-    except:
+    # print(cnt)
+    if 'error' in hotbit_depth:
+        hotbit_asks = hotbit_depth['result']['asks']
+        hotbit_bids = hotbit_depth['result']['bids']
+        # if 'idex' in symbol[3]:
+        #     idex_ticker = await get_idex_market(symbol[0], proxy)
+        #     # print(idex_ticker)
+        #     if idex_ticker is not None:
+        #         if idex_ticker['ask'] is not None:
+        #             idex_ask = float(idex_ticker['ask'])
+        #             # print('ask', idex_ask)
+        #             a = await compare(asks=symbol[4], bids=hotbit_bids, where='IDEX', to='HOTBIT', symbols=symbol,
+        #                               percent=percent, currency=currency)
+        #             if a is not None:
+        #                 compares.append(a)
+        #         if idex_ticker['bid'] is not None:
+        #             idex_bid = float(idex_ticker['bid'])
+        #             # print('bid', idex_bid)
+        #             b = await compare(asks=hotbit_asks, bids=symbol[5], where='HOTBIT', to='IDEX', symbols=symbol,
+        #                               percent=percent, currency=currency)
+        #             if b is not None:
+        #                 compares.append(b)
+        if symbol[5] > 0:
+            a = await compare(symbol[5], hotbit_bids, symbol[3].upper(), 'HOTBIT', symbol, percent, currency, cnt)
+            if a is not None:
+                compares.append(a)
+        if symbol[4] > 0:
+            b = await compare(hotbit_asks, symbol[4], 'HOTBIT', symbol[3].upper(), symbol, percent, currency, cnt)
+            if b is not None:
+                compares.append(b)
+    else:
         pass
     return compares
 
@@ -185,9 +192,11 @@ async def init(symbols, percent, currency):
     idex_tiker_all = await get_idex_tiker_all()
     async_tasks = []
     # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
+    cnt = 0
     for symbol in symbols:
+        cnt += 1
         rn = randrange(len(proxys))
-        async_tasks.append(compare_markets(symbol, percent, currency, proxys[rn]))
+        async_tasks.append(compare_markets(symbol, percent, currency, proxys[rn], cnt))
     # print('end  collect symbols: ' + str(len(async_tasks)) + str(datetime.datetime.now()))
     results = await asyncio.gather(*async_tasks)
     return results
@@ -237,53 +246,50 @@ def save_profits():
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     init_result = loop.run_until_complete(init(all_symbols, percent, currency))
     compare_result = []
-    print(len(init_result[0]))
-    print(init_result[0])
-    if len(init_result[0]) > 0:
-        ProfitExchanges.objects.all().delete()
-        buyurl = ''
-        sellurl = ''
-        for result in init_result:
-            if len(result) > 0:
-                pair = result[0][0]
-                buy_name = result[0][1]
-                buy = result[0][2]
-                sell_name = result[0][4]
-                sell = result[0][5]
-                percent = result[0][7]
-                tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
-                if result[0][1] == 'HOTBIT':
-                    buyurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
-                if result[0][1] == 'IDEX':
-                    buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
-                if result[0][1] == 'BANKOR':
-                    buyurl = 'https://www.bancor.network/?q=' + result[0][0]
-                if result[0][1] == 'KYBER':
-                    buyurl = 'https://kyberswap.com/swap/ent-' + result[0][0]
-                if result[0][1] == 'UNISWAP':
-                    buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
-                if result[0][1] == 'UNISWAP_ONE':
-                    buyurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+    ProfitExchanges.objects.all().delete()
+    buyurl = ''
+    sellurl = ''
+    for result in init_result:
+        if len(result) > 0:
+            pair = result[0][0]
+            buy_name = result[0][1]
+            buy = result[0][2]
+            sell_name = result[0][4]
+            sell = result[0][5]
+            percent = result[0][7]
+            tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
+            if result[0][1] == 'HOTBIT':
+                buyurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
+            if result[0][1] == 'IDEX':
+                buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
+            if result[0][1] == 'BANKOR':
+                buyurl = 'https://www.bancor.network/?q=' + result[0][0]
+            if result[0][1] == 'KYBER':
+                buyurl = 'https://kyberswap.com/swap/ent-' + result[0][0]
+            if result[0][1] == 'UNISWAP':
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
+            if result[0][1] == 'UNISWAP_ONE':
+                buyurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
 
-                if result[0][4] == 'HOTBIT':
-                    sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
-                if result[0][4] == 'IDEX':
-                    sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
-                if result[0][4] == 'BANKOR':
-                    sellurl = 'https://www.bancor.network/?q=' + result[0][3]
-                if result[0][4] == 'KYBER':
-                    sellurl = 'https://kyberswap.com/swap/ent-' + result[0][3]
-                if result[0][4] == 'UNISWAP':
-                    sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
-                if result[0][4] == 'UNISWAP_ONE':
-                    sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+            if result[0][4] == 'HOTBIT':
+                sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
+            if result[0][4] == 'IDEX':
+                sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
+            if result[0][4] == 'BANKOR':
+                sellurl = 'https://www.bancor.network/?q=' + result[0][3]
+            if result[0][4] == 'KYBER':
+                sellurl = 'https://kyberswap.com/swap/ent-' + result[0][3]
+            if result[0][4] == 'UNISWAP':
+                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
+            if result[0][4] == 'UNISWAP_ONE':
+                sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
 
-                # compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-                #                        'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
-                pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
-                                       percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
+            compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                                   'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+            pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
+                                   percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
 
-                pair.save()
+            pair.save()
     loop.close()
     return compare_result
     # print('end: ' + str(datetime.datetime.now()))
