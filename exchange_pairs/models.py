@@ -68,6 +68,7 @@ class Settings(models.Model):
                                        blank=True)
     market_koef = models.FloatField(verbose_name='Коэффициет бирж', help_text='учет отклонения для сравнения бирж в %',
                                     null=True, blank=True)
+    currency = models.FloatField(verbose_name='ETH/BTC', help_text='Курс ETH к BTC', null=True, blank=True)
 
     def __str__(self):
         return 'Кастройки коэффициентов'

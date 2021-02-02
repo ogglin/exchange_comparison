@@ -88,8 +88,8 @@ async def get_hotbit_depth(symbol, proxy):
 
 async def compare(asks, bids, where, to, symbols, percent, currency):
     volume = 0
-    ask_price = 0
-    bid_price = 0
+    ask_price = asks
+    bid_price = bids
     full_price = 0
     w_symbol = ''
     t_symbol = ''
@@ -109,27 +109,29 @@ async def compare(asks, bids, where, to, symbols, percent, currency):
                 count += 1
                 full_price += float(bid[0]) / currency
                 volume += float(bid[1]) / currency
-                ask_price = asks
         if count == 0:
             count = 1
         bid_price = full_price / count
 
-    if type(bids) is float:
+    elif type(bids) is float:
         for ask in asks:
             if (float(ask[0]) / currency * percent / 100) + (float(ask[0]) / currency) < bids:
                 print('asks', ask, float(ask[0]) / currency, '<', bids * percent / 100 + bids)
                 count += 1
                 full_price += float(ask[0]) / currency
                 volume += float(ask[1]) / currency
-                bid_price = bids
         if count == 0:
             count = 1
         ask_price = full_price / count
 
     if bid_price > ask_price > 0 and volume > 0:
         print('/--------------------------')
+        print('ask type', type(asks))
+        print('bid type', type(bids))
+        print(where, asks, to, bids, symbols, percent, currency)
         print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str((bid_price - ask_price) / bid_price * 100) + ' /')
+        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+            (bid_price - ask_price) / bid_price * 100) + ' /')
         print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100]
     else:
@@ -148,29 +150,28 @@ async def compare_markets(symbol, percent, currency, proxy):
         hotbit_bids = hotbit_depth['result']['bids']
         if 'idex' in symbol[3]:
             idex_ticker = await get_idex_market(symbol[0], proxy)
+            # print(idex_ticker)
             if idex_ticker is not None:
-                if idex_ticker['ask']:
+                if idex_ticker['ask'] is not None:
                     idex_ask = float(idex_ticker['ask'])
-                else:
-                    idex_ask = None
-                if idex_ticker['bid']:
+                    # print('ask', idex_ask)
+                    a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to='HOTBIT', symbols=symbol, percent=percent, currency=currency)
+                    if a is not None:
+                        compares.append(a)
+                if idex_ticker['bid'] is not None:
                     idex_bid = float(idex_ticker['bid'])
-                else:
-                    idex_bid = None
-                a = await compare(idex_ask, hotbit_bids, 'IDEX', 'HOTBIT', symbol, percent, currency)
-                if a is not None:
-                    compares.append(a)
-                b = await compare(hotbit_asks, idex_bid, 'HOTBIT', 'IDEX', symbol, percent, currency)
-                if b is not None:
-                    compares.append(b)
-        if symbol[4] > 0:
-            a = await compare(symbol[4], hotbit_bids, symbol[3].upper(), 'HOTBIT', symbol, percent, currency)
-            if a is not None:
-                compares.append(a)
-        if symbol[5] > 0:
-            b = await compare(hotbit_asks, symbol[5], 'HOTBIT', symbol[3].upper(), symbol, percent, currency)
-            if b is not None:
-                compares.append(b)
+                    # print('bid', idex_bid)
+                    b = await compare(asks=hotbit_asks, bids=idex_bid, where='HOTBIT', to='IDEX', symbols=symbol, percent=percent, currency=currency)
+                    if b is not None:
+                        compares.append(b)
+        # if symbol[4] > 0:
+        #     a = await compare(symbol[4], hotbit_bids, symbol[3].upper(), 'HOTBIT', symbol, percent, currency)
+        #     if a is not None:
+        #         compares.append(a)
+        # if symbol[5] > 0:
+        #     b = await compare(hotbit_asks, symbol[5], 'HOTBIT', symbol[3].upper(), symbol, percent, currency)
+        #     if b is not None:
+        #         compares.append(b)
     return compares
 
 
@@ -236,7 +237,6 @@ def save_profits():
     sellurl = ''
     for result in init_result:
         if len(result) > 0:
-            compare_result.append(result[0])
             pair = result[0][0]
             buy_name = result[0][1]
             buy = result[0][2]
@@ -269,10 +269,12 @@ def save_profits():
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
             if result[0][4] == 'UNISWAP_ONE':
                 sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
-            pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
-                                   percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
+            # pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
+            #                        percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
 
             # pair.save()
+            compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                                   'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
     loop.close()
     return compare_result
     # print('end: ' + str(datetime.datetime.now()))
@@ -287,9 +289,10 @@ def set_prices(token, symbol, buy, sell, volume):
 
 
 def get_eth_btc():
-    response = requests.get(f'https://api.hotbit.io/api/v1/market.status?market=ETH/BTC&period=10')
-    currency = float(json.loads(response.content)['result']['last'])
-    return currency
+    # response = requests.get(f'https://api.hotbit.io/api/v1/market.status?market=ETH/BTC&period=10')
+    # currency = float(json.loads(response.content)['result']['last'])
+    currency = Settings.objects.all().values()[0]
+    return currency['currency']
     # bids = json.loads(response.content)['result']['bids']
     # all_ask = 0
     # for ask in asks:
