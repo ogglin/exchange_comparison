@@ -1239,7 +1239,8 @@ __webpack_require__.r(__webpack_exports__);
 class ApiServiceService {
     constructor(http) {
         this.http = http;
-        this.apiUrl = 'http://xc.vp4.ru/';
+        this.apiUrl = 'http://dev.xc.vp4.ru/';
+        // apiUrl = 'http://xc.vp4.ru/';
         // apiUrl = 'http://127.0.0.1:8000/';
         this.headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]();
         this.headersPub = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]();
