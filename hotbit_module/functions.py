@@ -156,13 +156,15 @@ async def compare_markets(symbol, percent, currency, proxy):
                     if idex_ticker['ask'] is not None:
                         idex_ask = float(idex_ticker['ask'])
                         # print('ask', idex_ask)
-                        a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to='HOTBIT', symbols=symbol, percent=percent, currency=currency)
+                        a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to='HOTBIT', symbols=symbol,
+                                          percent=percent, currency=currency)
                         if a is not None:
                             compares.append(a)
                     if idex_ticker['bid'] is not None:
                         idex_bid = float(idex_ticker['bid'])
                         # print('bid', idex_bid)
-                        b = await compare(asks=hotbit_asks, bids=idex_bid, where='HOTBIT', to='IDEX', symbols=symbol, percent=percent, currency=currency)
+                        b = await compare(asks=hotbit_asks, bids=idex_bid, where='HOTBIT', to='IDEX', symbols=symbol,
+                                          percent=percent, currency=currency)
                         if b is not None:
                             compares.append(b)
             if symbol[4] > 0:
@@ -272,12 +274,13 @@ def save_profits():
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
             if result[0][4] == 'UNISWAP_ONE':
                 sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+
+            compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                                   'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
             pair = ProfitExchanges(pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
                                    percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
 
             pair.save()
-            compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-                                   'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
     loop.close()
     return compare_result
     # print('end: ' + str(datetime.datetime.now()))
