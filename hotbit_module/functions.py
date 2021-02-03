@@ -1,14 +1,12 @@
-import json
-import random
-
-import requests
 import asyncio
 import concurrent.futures
+import json
+import random
 from random import randrange
 
 import aiohttp
-from rest_framework.response import Response
-from rest_framework.views import APIView
+import requests
+from aiohttp_socks import SocksConnector, SocksVer
 
 from exchange_comparison.utils import _query
 from exchange_pairs.models import Settings, ProfitExchanges, TrustedPairs
@@ -20,16 +18,16 @@ prices = []
 PRODUCERS_COUNT = 20
 idex_tiker_all = None
 proxys = [
-    ['185.36.189.232', '16714', 'user53105', '3x7cyr'],
-    ['193.111.152.90', '16714', 'user53105', '3x7cyr'],
-    ['193.111.154.94', '16714', 'user53105', '3x7cyr'],
-    ['193.111.152.191', '16714', 'user53105', '3x7cyr'],
-    ['185.161.211.192', '16714', 'user53105', '3x7cyr'],
-    ['185.20.185.157', '16714', 'user53105', '3x7cyr'],
-    ['185.161.210.27', '16714', 'user53105', '3x7cyr'],
-    ['193.111.152.110', '16714', 'user53105', '3x7cyr'],
-    ['193.111.152.131', '16714', 'user53105', '3x7cyr'],
-    ['185.161.210.125', '16714', 'user53105', '3x7cyr']
+    ['193.111.152.28', '16881', 'user53105', '3x7cyr'],
+    ['185.161.211.209', '16881', 'user53105', '3x7cyr'],
+    ['193.111.155.237', '16881', 'user53105', '3x7cyr'],
+    ['193.111.152.168', '16881', 'user53105', '3x7cyr'],
+    ['185.20.187.218', '16881', 'user53105', '3x7cyr'],
+    ['193.111.154.67', '16881', 'user53105', '3x7cyr'],
+    ['185.161.209.185', '16881', 'user53105', '3x7cyr'],
+    ['185.36.189.145', '16881', 'user53105', '3x7cyr'],
+    ['185.36.190.130', '16881', 'user53105', '3x7cyr'],
+    ['193.111.152.90', '16881', 'user53105', '3x7cyr']
 ]
 
 
@@ -81,14 +79,37 @@ async def get_idex_market(token, proxy):
 
 async def get_hotbit_depth(symbol, proxy):
     url = f"https://api.hotbit.io/api/v1/order.depth?interval=1e-8&&limit=20&market={symbol}"
-    async with aiohttp.ClientSession() as session:
+    socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
+    # reader, writer = await open_connection(
+    #     # socks_url='socks5://user:password@127.0.0.1:1080',
+    #     proxy_url=socks_url,
+    #     host=url,
+    #     port=80
+    # )
+    # request = (b"GET /ip HTTP/1.1\r\n"
+    #            b"Host: api.hotbit.io\r\n"
+    #            b"Connection: close\r\n\r\n")
+    #
+    # writer.write(request)
+    # print('socks', reader.read(-1))
+    # return await reader.read(-1)
+    connector = SocksConnector.from_url(socks_url)
+    # connector = SocksConnector(
+    #     proxy_type=SocksVer.SOCKS5,
+    #     host=proxy[0],
+    #     port=16881,
+    #     username='user53105',
+    #     password='3x7cyr',
+    #     rdns=True
+    # )
+    async with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url) as response:
             html = await response.text()
             return json.loads(html)
 
 
 async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
-    print('---------/ ', cnt, currency, '/---------')
+    # print('---------/ ', cnt, currency, '/---------')
     # print(where, asks, to, bids, symbols, percent, currency)
     volume = 0
     ask_price = asks
@@ -113,9 +134,9 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 volume += float(bid[1]) / currency
         if count == 0:
             count = 1
-        if volume > 0:
-            print('float asks', asks)
-            print(bids)
+        # if volume > 0:
+        #     print('float asks', asks)
+        #     print(bids)
         bid_price = full_price / count
 
     elif type(bids) is float:
@@ -126,20 +147,20 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 volume += float(ask[1]) / currency
         if count == 0:
             count = 1
-        if volume > 0:
-            print('float bids', bids)
-            print(asks)
+        # if volume > 0:
+        #     print('float bids', bids)
+        #     print(asks)
         ask_price = full_price / count
 
     if bid_price > ask_price > 0 and volume > 0:
-        print('/--------------------------')
-        print('ask type', type(asks))
-        print('bid type', type(bids))
-        print(where, asks, to, bids, symbols, percent, currency)
-        print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-            (bid_price - ask_price) / bid_price * 100) + ' /')
-        print('--------------------------/')
+        # print('/--------------------------')
+        # print('ask type', type(asks))
+        # print('bid type', type(bids))
+        # print(where, asks, to, bids, symbols, percent, currency)
+        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
+        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+        #     (bid_price - ask_price) / bid_price * 100) + ' /')
+        # print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100]
     else:
         return None
