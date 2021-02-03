@@ -136,12 +136,9 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 volume += float(bid[1]) / currency
         if count == 0:
             count = 1
-        if volume > 0:
-            print(volume)
-            volume = volume * asks
-            print('float asks', asks)
-            print('full vol:', volume)
         bid_price = full_price / count
+        if volume > 0:
+            volume = volume * bid_price
 
     elif type(bids) is float:
         for ask in asks:
@@ -151,21 +148,22 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 volume += float(ask[1]) / currency
         if count == 0:
             count = 1
-        if volume > 0:
-            print(volume)
-            volume = volume * bids
-            print('float bids', bids)
-            print('full vol:', volume)
         ask_price = full_price / count
+        if volume > 0:
+            volume = volume * ask_price
+
 
     if bid_price > ask_price > 0 and volume > 1 and token_volume >= 1:
-        print('/--------------------------')
-        print(volume, token_volume)
-        print(where, asks, to, bids, symbols, percent, currency)
-        print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-            (bid_price - ask_price) / bid_price * 100) + ' /')
-        print('--------------------------/')
+        # print('/--------------------------')
+        # print('token vol:', token_volume)
+        # print('bids', bids)
+        # print('asks', asks)
+        # print('full vol:', volume)
+        # print(where, asks, to, bids, symbols, percent, currency)
+        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
+        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+        #     (bid_price - ask_price) / bid_price * 100) + ' /')
+        # print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100,
                 token_id]
     else:
