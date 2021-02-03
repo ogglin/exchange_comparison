@@ -118,6 +118,8 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
     w_symbol = ''
     t_symbol = ''
     count = 0
+    token_id = symbols[6]
+    token_volume = symbols[7]
 
     if where != 'HOTBIT':
         w_symbol = symbols[0]
@@ -134,9 +136,11 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 volume += float(bid[1]) / currency
         if count == 0:
             count = 1
-        # if volume > 0:
-        #     print('float asks', asks)
-        #     print(bids)
+        if volume > 0:
+            print(volume)
+            volume = volume * asks
+            print('float asks', asks)
+            print('full vol:', volume)
         bid_price = full_price / count
 
     elif type(bids) is float:
@@ -147,21 +151,23 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 volume += float(ask[1]) / currency
         if count == 0:
             count = 1
-        # if volume > 0:
-        #     print('float bids', bids)
-        #     print(asks)
+        if volume > 0:
+            print(volume)
+            volume = volume * bids
+            print('float bids', bids)
+            print('full vol:', volume)
         ask_price = full_price / count
 
-    if bid_price > ask_price > 0 and volume > 0:
-        # print('/--------------------------')
-        # print('ask type', type(asks))
-        # print('bid type', type(bids))
-        # print(where, asks, to, bids, symbols, percent, currency)
-        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-        #     (bid_price - ask_price) / bid_price * 100) + ' /')
-        # print('--------------------------/')
-        return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100]
+    if bid_price > ask_price > 0 and volume > 1 and token_volume >= 1:
+        print('/--------------------------')
+        print(volume, token_volume)
+        print(where, asks, to, bids, symbols, percent, currency)
+        print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
+        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+            (bid_price - ask_price) / bid_price * 100) + ' /')
+        print('--------------------------/')
+        return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100,
+                token_id]
     else:
         return None
 
@@ -230,33 +236,38 @@ def save_profits():
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     all_symbols = []
-    symbols_idex = _query(f"SELECT mi.exch_direction, mh.symbol, mh.decimals,'idex', mi.highest_bid, mi.lowest_ask "
+    symbols_idex = _query(f"SELECT mi.exch_direction, mh.symbol, mh.decimals,'idex', mi.highest_bid, mi.lowest_ask, "
+                          f"mi.token_id, mi.volume "
                           f"FROM exchange_pairs "
                           f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
                           f"LEFT JOIN module_idex mi ON mi.id = idex_direction_id "
                           f"WHERE hotbit_id is not null and idex_direction_id is not null ORDER BY hotbit_id;")
     all_symbols.extend(symbols_idex)
-    symbols_bankor = _query(f"SELECT mb.exch_direction, mh.symbol, mh.decimals,'bankor', mb.highest_bid, mb.lowest_ask "
+    symbols_bankor = _query(f"SELECT mb.exch_direction, mh.symbol, mh.decimals,'bankor', mb.highest_bid, mb.lowest_ask,"
+                            f" mb.link_id, mb.volume "
                             f"FROM exchange_pairs "
                             f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
                             f"LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id "
                             f"WHERE hotbit_id is not null and bancor_direction_id is not null ORDER BY hotbit_id;")
     all_symbols.extend(symbols_bankor)
-    symbols_kyber = _query(f"SELECT mk.exch_direction, mh.symbol, mh.decimals,'kyber', mk.highest_bid, mk.lowest_ask "
+    symbols_kyber = _query(f"SELECT mk.exch_direction, mh.symbol, mh.decimals,'kyber', mk.highest_bid, mk.lowest_ask, "
+                           f"mk.token_id, mk.volume "
                            f"FROM exchange_pairs "
                            f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
                            f"LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id "
                            f"WHERE hotbit_id is not null and kyber_direction_id is not null ORDER BY hotbit_id;")
     all_symbols.extend(symbols_kyber)
     symbols_uniswap = _query(
-        f"SELECT mu.exch_direction, mh.symbol, mh.decimals, 'uniswap', mu.highest_bid, mu.lowest_ask, mu.tokenid "
+        f"SELECT mu.exch_direction, mh.symbol, mh.decimals, 'uniswap', mu.highest_bid, mu.lowest_ask, mu.tokenid, "
+        f"mu.volume "
         f"FROM exchange_pairs "
         f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
         f"LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id "
         f"WHERE hotbit_id is not null and uniswap_direction_id is not null ORDER BY hotbit_id;")
     all_symbols.extend(symbols_uniswap)
     symbols_uniswap_one = _query(
-        f"SELECT muo.exch_direction, mh.symbol, mh.decimals, 'uniswap_one', muo.highest_bid, muo.lowest_ask, muo.tokenid "
+        f"SELECT muo.exch_direction, mh.symbol, mh.decimals, 'uniswap_one', muo.highest_bid, muo.lowest_ask, "
+        f"muo.tokenid, muo.volume "
         f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
         f"LEFT JOIN module_uniswap_one muo ON muo.id = uniswap_one_direction_id "
         f"WHERE hotbit_id is not null and uniswap_one_direction_id is not null ORDER BY hotbit_id;")
@@ -286,9 +297,9 @@ def save_profits():
             if result[0][1] == 'IDEX':
                 buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
             if result[0][1] == 'BANKOR':
-                buyurl = 'https://www.bancor.network/?q=' + result[0][0]
+                buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + result[0][8]
             if result[0][1] == 'KYBER':
-                buyurl = 'https://kyberswap.com/swap/ent-' + result[0][0]
+                buyurl = 'https://kyberswap.com/swap/eth-' + result[0][0]
             if result[0][1] == 'UNISWAP':
                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
             if result[0][1] == 'UNISWAP_ONE':
@@ -299,13 +310,13 @@ def save_profits():
             if result[0][4] == 'IDEX':
                 sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
             if result[0][4] == 'BANKOR':
-                sellurl = 'https://www.bancor.network/?q=' + result[0][3]
+                sellurl = 'https://app.bancor.network/eth/swap?from=' + result[0][8] + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
             if result[0][4] == 'KYBER':
-                sellurl = 'https://kyberswap.com/swap/ent-' + result[0][3]
+                sellurl = 'https://kyberswap.com/swap/eth-' + result[0][3]
             if result[0][4] == 'UNISWAP':
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
+                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
             if result[0][4] == 'UNISWAP_ONE':
-                sellurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+                sellurl = 'https://exchange.idex.io/trading/' + str(result[0][8]) + '&use=v1'
 
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})

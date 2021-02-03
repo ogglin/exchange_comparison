@@ -7,14 +7,15 @@ from .models import Bancor
 koef = 0.99
 
 
-def currencies_update(direction, lowest_ask, highest_bid, name, link_id):
+def currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume):
     pair_id = Bancor.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
         Bancor.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
+                                                          volume=volume,
                                                           highest_bid=highest_bid, name=name, link_id=link_id)
     else:
         pair = Bancor(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, name=name,
-                      link_id=link_id, is_active=True)
+                      volume=volume, link_id=link_id, is_active=True)
         pair.save()
 
 
@@ -34,6 +35,5 @@ def set_currencies():
             lowest_ask = data['price']
             name = data['name']
             link_id = data['id']
-            currencies_update(direction, lowest_ask, highest_bid, name, link_id)
-
-
+            volume = data['liquidityDepth']
+            currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)

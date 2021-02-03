@@ -5,12 +5,13 @@ import requests
 from .models import *
 
 
-def currencies_update(token_pair, ask, bid):
+def currencies_update(token_pair, ask, bid, volume):
     pair_id = Idex.objects.filter(exch_direction=token_pair).values('id')
     if len(pair_id) > 0:
-        Idex.objects.filter(id=pair_id[0]['id']).update(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid)
+        Idex.objects.filter(id=pair_id[0]['id']).update(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid,
+                                                        volume=volume)
     else:
-        pair = Idex(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid, is_active=True)
+        pair = Idex(exch_direction=token_pair, lowest_ask=ask, highest_bid=bid, is_active=True, volume=volume)
         pair.save()
 
 
@@ -26,4 +27,5 @@ def set_currencies():
             ask = data['ask']
         if data['bid']:
             bid = data['bid']
-        currencies_update(token_pair, ask, bid)
+        volume = data['quoteVolume']
+        currencies_update(token_pair, ask, bid, volume)

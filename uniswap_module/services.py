@@ -9,25 +9,25 @@ from .models import Uniswap, UniswapOne
 koef = 0.99
 
 
-def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid):
+def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume):
     pair_id = UniswapOne.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
         UniswapOne.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
-                                                              highest_bid=highest_bid, tokenid=tokenid)
+                                                              volume=volume, highest_bid=highest_bid, tokenid=tokenid)
     else:
         pair = UniswapOne(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, is_active=True,
-                          tokenid=tokenid)
+                          volume=volume, tokenid=tokenid)
         pair.save()
 
 
-def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid):
+def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid, volume):
     pair_id = Uniswap.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
         Uniswap.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
-                                                           highest_bid=highest_bid, tokenid=tokenid)
+                                                           volume=volume, highest_bid=highest_bid, tokenid=tokenid)
     else:
         pair = Uniswap(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, is_active=True,
-                       tokenid=tokenid)
+                       volume=volume, tokenid=tokenid)
         pair.save()
 
 
@@ -42,9 +42,10 @@ def set_currencies_v1(date, trusted_tokens):
                 lowest_ask = 1.003 / float(data['price'])
                 highest_bid = lowest_ask * koef
                 tokenid = data['tokenAddress']
+                volume = data['ethBalance']
                 for row in trusted_tokens:
                     if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
-                        currencies_update_v1(direction, lowest_ask, highest_bid, tokenid)
+                        currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume)
     except:
         pass
 
@@ -65,10 +66,11 @@ def set_currencies_v2(date, trusted_tokens):
                     direction = data['symbol']
                     highest_bid = float(data['derivedETH']) * koef
                     lowest_ask = float(data['derivedETH'])
+                    volume = float(data['totalLiquidity'])
                     tokenid = data['id']
                     for row in trusted_tokens:
                         if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
-                            currencies_update_v2(direction, lowest_ask, highest_bid, tokenid)
+                            currencies_update_v2(direction, lowest_ask, highest_bid, tokenid, volume)
     except:
         pass
 
@@ -82,7 +84,8 @@ def get_uni2_price(tokenid, token):
         if float(jData['derivedETH']) > 0 and float(jData['totalLiquidity']) > 1:
             highest_bid = float(jData['derivedETH']) * koef
             lowest_ask = float(jData['derivedETH'])
-            currencies_update_v2(token, lowest_ask, highest_bid, tokenid)
+            volume = float(jData['totalLiquidity'])
+            currencies_update_v2(token, lowest_ask, highest_bid, tokenid, volume)
 
 
 def set_all_currencies():
