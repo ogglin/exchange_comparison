@@ -303,7 +303,7 @@ def save_profits():
             if result[0][1] == 'UNISWAP':
                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
             if result[0][1] == 'UNISWAP_ONE':
-                buyurl = 'https://exchange.idex.io/trading/' + str(result[0][6]) + '&use=v1'
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6]) + '&use=v1'
 
             if 'HOTBIT' in result[0][4]:
                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
@@ -317,7 +317,7 @@ def save_profits():
             if result[0][4] == 'UNISWAP':
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
             if result[0][4] == 'UNISWAP_ONE':
-                sellurl = 'https://exchange.idex.io/trading/' + str(result[0][8]) + '&use=v1'
+                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
 
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
