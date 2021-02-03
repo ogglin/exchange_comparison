@@ -301,9 +301,9 @@ def save_profits():
             if result[0][1] == 'KYBER':
                 buyurl = 'https://kyberswap.com/swap/eth-' + result[0][0]
             if result[0][1] == 'UNISWAP':
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6])
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
             if result[0][1] == 'UNISWAP_ONE':
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][6]) + '&use=v1'
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
 
             if 'HOTBIT' in result[0][4]:
                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
