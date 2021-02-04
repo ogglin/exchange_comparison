@@ -221,18 +221,26 @@ class MainTableComponent {
             this.api.getApi('profit_exchanges/').subscribe(res => {
                 this.TableData = [];
                 res.forEach(item => {
-                    const elem = {
-                        pair: item.pair,
-                        buy_name: item.buy_name,
-                        buy: item.buy,
-                        sell_name: item.sell_name,
-                        sell: item.sell,
-                        percent: item.percent,
-                        tokenid: item.tokenid,
-                        buyurl: item.buyurl,
-                        sellurl: item.sellurl
-                    };
-                    this.TableData.push(elem);
+                    let isHide = false;
+                    this.hideDirection.forEach(hide => {
+                        if (hide.pair === item.pair && hide.buy === item.buy_name && hide.sell === item.sell_name) {
+                            isHide = !Number(((item.sell - item.buy) / (item.buy / 100)).toFixed(2)) <= hide.percent + this.freezePercent;
+                        }
+                    });
+                    if (!isHide) {
+                        const elem = {
+                            pair: item.pair,
+                            buy_name: item.buy_name,
+                            buy: item.buy,
+                            sell_name: item.sell_name,
+                            sell: item.sell,
+                            percent: item.percent,
+                            tokenid: item.tokenid,
+                            buyurl: item.buyurl,
+                            sellurl: item.sellurl
+                        };
+                        this.TableData.push(elem);
+                    }
                 });
             });
         };
