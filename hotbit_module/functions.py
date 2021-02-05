@@ -142,38 +142,33 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
 
     if type(asks) is float:
         for bid in bids:
-            if float(bid[0]) / currency > (asks * percent / 100 + asks):
+            if float(bid[0]) / currency > (asks * percent / 100 + asks) and full_volume <= 1:
                 count += 1
                 full_price += float(bid[0]) / currency
-                full_volume += float(bid[1])
+                full_volume += float(bid[1]) * float(bid[0]) * currency
         if count == 0:
             count = 1
         bid_price = full_price / count
-        if full_volume > 0:
-            volume = full_volume * bid_price * currency
 
     elif type(bids) is float:
         for ask in asks:
-            if (float(ask[0]) / currency * percent / 100) + (float(ask[0]) / currency) < bids:
+            if (float(ask[0]) / currency * percent / 100) + (float(ask[0]) / currency) < bids and full_volume <= 1:
                 count += 1
                 full_price += float(ask[0]) / currency
-                full_volume += float(ask[1])
+                full_volume += float(ask[1]) * float(ask[0]) * currency
         if count == 0:
             count = 1
         ask_price = full_price / count
-        if full_volume > 0:
-            volume = full_volume * ask_price * currency
 
-    if bid_price > ask_price > 0 and volume > 0.8 and token_volume >= 0.8:
+    if bid_price > ask_price > 0 and full_volume > 0.8 and token_volume >= 0.8:
         print('/--------------------------')
-        print('compare: ' + str(datetime.datetime.now()))
-        # print('token vol:', token_volume)
-        # print('full vol:', full_volume)
-        # print('vol:', volume)
-        # print(where, asks, to, bids, symbols, percent, currency)
-        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-        #     (bid_price - ask_price) / bid_price * 100) + ' /')
+        print('token vol:', token_volume)
+        print('full vol:', full_volume)
+        print('vol:', volume)
+        print(where, asks, to, bids, symbols, percent, currency)
+        print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
+        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+            (bid_price - ask_price) / bid_price * 100) + ' /')
         print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100,
                 token_id]
