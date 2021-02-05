@@ -1,5 +1,6 @@
 import asyncio
 import concurrent.futures
+import datetime
 import json
 import random
 from random import randrange
@@ -27,7 +28,17 @@ proxys = [
     ['185.161.209.185', '16881', 'user53105', '3x7cyr'],
     ['185.36.189.145', '16881', 'user53105', '3x7cyr'],
     ['185.36.190.130', '16881', 'user53105', '3x7cyr'],
-    ['193.111.152.90', '16881', 'user53105', '3x7cyr']
+    ['193.111.152.90', '16881', 'user53105', '3x7cyr'],
+    ['213.32.84.200', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.143', '11565', 'user53105', '3x7cyr'],
+    ['79.137.15.162', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.176', '11565', 'user53105', '3x7cyr'],
+    ['147.135.175.235', '11565', 'user53105', '3x7cyr'],
+    ['178.32.67.197', '11565', 'user53105', '3x7cyr'],
+    ['178.32.67.151', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.202', '11565', 'user53105', '3x7cyr'],
+    ['147.135.206.67', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.46', '11565', 'user53105', '3x7cyr'],
 ]
 
 
@@ -153,8 +164,9 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
         if full_volume > 0:
             volume = full_volume * ask_price * currency
 
-    if bid_price > ask_price > 0 and volume > 1 and token_volume >= 1:
-        # print('/--------------------------')
+    if bid_price > ask_price > 0 and volume > 0.8 and token_volume >= 0.8:
+        print('/--------------------------')
+        print('compare: ' + str(datetime.datetime.now()))
         # print('token vol:', token_volume)
         # print('full vol:', full_volume)
         # print('vol:', volume)
@@ -162,7 +174,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
         # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
         # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
         #     (bid_price - ask_price) / bid_price * 100) + ' /')
-        # print('--------------------------/')
+        print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100,
                 token_id]
     else:
@@ -170,7 +182,6 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
 
 
 async def compare_markets(symbol, percent, currency, proxy, cnt):
-    await asyncio.sleep(random.randint(0, 10))
     compares = []
     hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
     exchange_name = 'HOTBIT'
@@ -222,62 +233,58 @@ async def init(symbols, percent, currency):
     # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
     cnt = 0
     for symbol in symbols:
+        async_tasks.append(compare_markets(symbol, percent, currency, proxys[cnt], cnt))
         cnt += 1
-        rn = randrange(len(proxys))
-        async_tasks.append(compare_markets(symbol, percent, currency, proxys[rn], cnt))
+        if cnt >= len(proxys):
+            cnt = 0
     # print('end  collect symbols: ' + str(len(async_tasks)) + str(datetime.datetime.now()))
     results = await asyncio.gather(*async_tasks)
     return results
 
 
 def save_profits():
-    # print('start: ' + str(datetime.datetime.now()))
+    print('start: ' + str(datetime.datetime.now()))
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
-    all_symbols = []
-    symbols_idex = _query(f"SELECT mi.exch_direction, mh.symbol, mh.decimals,'idex', mi.highest_bid, mi.lowest_ask, "
-                          f"mi.token_id, mi.volume "
-                          f"FROM exchange_pairs "
-                          f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                          f"LEFT JOIN module_idex mi ON mi.id = idex_direction_id "
-                          f"WHERE hotbit_id is not null and idex_direction_id is not null ORDER BY hotbit_id;")
-    all_symbols.extend(symbols_idex)
-    symbols_bankor = _query(f"SELECT mb.exch_direction, mh.symbol, mh.decimals,'bankor', mb.highest_bid, mb.lowest_ask,"
-                            f" mb.link_id, mb.volume "
-                            f"FROM exchange_pairs "
-                            f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                            f"LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id "
-                            f"WHERE hotbit_id is not null and bancor_direction_id is not null ORDER BY hotbit_id;")
-    all_symbols.extend(symbols_bankor)
-    symbols_kyber = _query(f"SELECT mk.exch_direction, mh.symbol, mh.decimals,'kyber', mk.highest_bid, mk.lowest_ask, "
-                           f"mk.token_id, mk.volume "
-                           f"FROM exchange_pairs "
-                           f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                           f"LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id "
-                           f"WHERE hotbit_id is not null and kyber_direction_id is not null ORDER BY hotbit_id;")
-    all_symbols.extend(symbols_kyber)
-    symbols_uniswap = _query(
-        f"SELECT mu.exch_direction, mh.symbol, mh.decimals, 'uniswap', mu.highest_bid, mu.lowest_ask, mu.tokenid, "
-        f"mu.volume "
-        f"FROM exchange_pairs "
-        f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-        f"LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id "
-        f"WHERE hotbit_id is not null and uniswap_direction_id is not null ORDER BY hotbit_id;")
-    all_symbols.extend(symbols_uniswap)
-    symbols_uniswap_one = _query(
-        f"SELECT muo.exch_direction, mh.symbol, mh.decimals, 'uniswap_one', muo.highest_bid, muo.lowest_ask, "
-        f"muo.tokenid, muo.volume "
-        f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-        f"LEFT JOIN module_uniswap_one muo ON muo.id = uniswap_one_direction_id "
-        f"WHERE hotbit_id is not null and uniswap_one_direction_id is not null ORDER BY hotbit_id;")
-    all_symbols.extend(symbols_uniswap_one)
+    all_symbols = _query(f"WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, "
+                         f"mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume FROM exchange_pairs "
+                         f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
+                         f"LEFT JOIN module_idex mi ON mi.id = idex_direction_id "
+                         f"WHERE hotbit_id is not null and idex_direction_id is not null and mi.volume >= 1 "
+                         f"ORDER BY hotbit_id), bankor as (SELECT mb.exch_direction, mh.symbol, mh.decimals, "
+                         f"'bankor' as site, mb.highest_bid, mb.lowest_ask, mb.link_id token_id, mb.volume "
+                         f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
+                         f"LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id "
+                         f"WHERE hotbit_id is not null and bancor_direction_id is not null and mb.volume >= 1 "
+                         f"ORDER BY hotbit_id), kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, "
+                         f"'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs "
+                         f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
+                         f"LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id "
+                         f"WHERE hotbit_id is not null and kyber_direction_id is not null and mk.volume >= 1 "
+                         f"ORDER BY hotbit_id), uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, "
+                         f"'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume "
+                         f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
+                         f"LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id "
+                         f"WHERE hotbit_id is not null and uniswap_direction_id is not null and mu.volume >= 1 "
+                         f"ORDER BY hotbit_id), uniswap_one as (SELECT muo.exch_direction, mh.symbol, mh.decimals, "
+                         f"'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, "
+                         f"muo.volume FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
+                         f"LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id "
+                         f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
+                         f"ORDER BY hotbit_id) SELECT * FROM idex "
+                         f"UNION ALL SELECT * FROM bankor "
+                         f"UNION ALL SELECT * FROM kyber "
+                         f"UNION ALL SELECT * FROM uniswap "
+                         f"UNION ALL SELECT * FROM uniswap_one;")
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
+    print('start loop: ' + str(datetime.datetime.now()))
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     init_result = loop.run_until_complete(init(all_symbols, percent, currency))
+    print('end loop: ' + str(datetime.datetime.now()))
     compare_result = []
     ProfitExchanges.objects.all().delete()
     buyurl = ''
@@ -326,8 +333,8 @@ def save_profits():
 
             pair.save()
     loop.close()
+    print('end: ' + str(datetime.datetime.now()))
     return compare_result
-    # print('end: ' + str(datetime.datetime.now()))
     # except:
     #     print('False')
     #     return {'error': 'False'}
