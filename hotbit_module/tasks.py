@@ -8,7 +8,7 @@ from .functions import hotbit_init
 
 
 # @periodic_task(run_every=(timedelta(seconds=7)), queue='hotbit', options={'queue': 'hotbit'}, ignore_result=True)
-@task(ignore_result=True, queue='hotbit', options={'queue': 'hotbit'})
+@task(queue='hotbit', options={'queue': 'hotbit'})
 def hotbit_profits():
     try:
         hotbit_init()
