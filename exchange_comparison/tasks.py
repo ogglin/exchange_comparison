@@ -27,7 +27,7 @@ def token_exchange():
 
 
 @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
-def uniswap_currencies_update():
+def uniswap_one_currencies_update():
     while True:
         uniswap_v1_init()
     # try:
@@ -71,7 +71,7 @@ def idex_currencies_update():
 
 
 @task(queue='hotbit', options={'queue': 'hotbit'})
-def hotbit_profits():
+def hotbit_currencies_update():
     while True:
         hotbit_init()
     # try:
@@ -118,3 +118,11 @@ def send_beat_email():
             [contact.email],
             fail_silently=False,
         )
+
+
+uniswap_one_currencies_update.apply_async((), retry=False)
+uniswap_currencies_update.apply_async((), retry=False)
+kyber_currencies_update.apply_async((), retry=False)
+bancor_currencies_update.apply_async((), retry=False)
+idex_currencies_update.apply_async((), retry=False)
+hotbit_currencies_update.apply_async((), retry=False)
