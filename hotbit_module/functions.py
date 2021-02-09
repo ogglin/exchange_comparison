@@ -161,15 +161,15 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
         ask_price = full_price / count
 
     if bid_price > ask_price > 0 and full_volume > 0.8 and token_volume >= 0.8:
-        print('/--------------------------')
-        print('token vol:', token_volume)
-        print('full vol:', full_volume)
-        print('vol:', volume)
-        print(where, asks, to, bids, symbols, percent, currency)
-        print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-            (bid_price - ask_price) / bid_price * 100) + ' /')
-        print('--------------------------/')
+        # print('/--------------------------')
+        # print('token vol:', token_volume)
+        # print('full vol:', full_volume)
+        # print('vol:', volume)
+        # print(where, asks, to, bids, symbols, percent, currency)
+        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
+        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
+        #     (bid_price - ask_price) / bid_price * 100) + ' /')
+        # print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100,
                 token_id]
     else:
