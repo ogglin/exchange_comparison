@@ -9,8 +9,7 @@ from .services import kyber_init
 @task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 def kyber_currencies_update():
     try:
-        # kyber_init()
-        pass
+        kyber_init()
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
