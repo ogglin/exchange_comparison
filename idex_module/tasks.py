@@ -6,8 +6,7 @@ from celery.task import periodic_task
 from .services import set_currencies
 
 
-@periodic_task(run_every=(timedelta(seconds=7)), queue='idex',
-               options={'queue': 'idex'})
+@periodic_task(run_every=(timedelta(seconds=7)), queue='idex', options={'queue': 'idex'}, ignore_result=True)
 def idex_currencies_update():
     try:
         set_currencies()

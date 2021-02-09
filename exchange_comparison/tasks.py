@@ -10,7 +10,7 @@ from send_mail.services import send
 from .services import token_set, token_exchange_set
 
 
-@periodic_task(run_every=(timedelta(minutes=120)))
+@periodic_task(run_every=(timedelta(minutes=120)), ignore_result=True)
 def token_exchange():
     try:
         print('Try set exchange tokens')

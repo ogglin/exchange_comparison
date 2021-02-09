@@ -2,12 +2,11 @@ import sys
 from datetime import timedelta
 
 from celery.task import periodic_task
-from exchange_comparison._celery import app
+
 from .services import set_all_currencies
 
 
-@periodic_task(run_every=(timedelta(seconds=200)), queue='uniswap',
-               options={'uniswap': 'uniswap'})
+@periodic_task(run_every=(timedelta(seconds=200)), queue='uniswap', options={'uniswap': 'uniswap'}, ignore_result=True)
 # @app.task()
 def uniswap_currencies_update():
     try:

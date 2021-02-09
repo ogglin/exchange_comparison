@@ -7,8 +7,7 @@ from exchange_comparison._celery import app
 from .services import set_currencies
 
 
-@periodic_task(run_every=(timedelta(seconds=10)), queue='kyber',
-               options={'queue': 'kyber'})
+@periodic_task(run_every=(timedelta(seconds=10)), queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 # @app.task()
 def kyber_currencies_update():
     try:
