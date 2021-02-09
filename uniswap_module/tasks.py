@@ -10,9 +10,7 @@ from .services import uniswap_init
 @task(queue='uniswap', options={'uniswap': 'uniswap'}, ignore_result=True)
 def uniswap_currencies_update():
     try:
-        print('start uniswap: ' + str(datetime.datetime.now()))
         uniswap_init()
-        print('end uniswap: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

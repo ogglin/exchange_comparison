@@ -1,4 +1,3 @@
-import datetime
 import sys
 
 from celery.task import periodic_task, task
@@ -10,9 +9,7 @@ from .services import kyber_init
 @task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 def kyber_currencies_update():
     try:
-        print('start kyber: ' + str(datetime.datetime.now()))
         kyber_init()
-        print('end kyber: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

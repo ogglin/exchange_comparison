@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import requests
@@ -42,4 +43,6 @@ def set_currencies():
 
 def bankor_init():
     while True:
+        print('start bancor: ' + str(datetime.datetime.now()))
         set_currencies()
+        print('end bancor: ' + str(datetime.datetime.now()))

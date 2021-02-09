@@ -11,9 +11,7 @@ from .services import idex_init
 @task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
 def idex_currencies_update():
     try:
-        print('start idex: ' + str(datetime.datetime.now()))
         idex_init()
-        print('end idex: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

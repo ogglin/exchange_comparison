@@ -134,4 +134,6 @@ def set_all_currencies():
 # set_all_currencies()
 def uniswap_init():
     while True:
+        print('start uniswap: ' + str(datetime.datetime.now()))
         set_all_currencies()
+        print('end uniswap: ' + str(datetime.datetime.now()))

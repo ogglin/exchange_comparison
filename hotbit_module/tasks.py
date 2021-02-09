@@ -11,9 +11,7 @@ from .functions import hotbit_init
 @task(ignore_result=True, queue='hotbit', options={'queue': 'hotbit'})
 def hotbit_profits():
     try:
-        print('start hotbit: ' + str(datetime.datetime.now()))
         hotbit_init()
-        print('end hotbit: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

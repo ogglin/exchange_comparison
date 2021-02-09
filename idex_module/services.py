@@ -38,4 +38,6 @@ def set_currencies():
 
 def idex_init():
     while True:
+        print('start idex: ' + str(datetime.datetime.now()))
         set_currencies()
+        print('end idex: ' + str(datetime.datetime.now()))

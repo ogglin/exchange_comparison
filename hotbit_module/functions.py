@@ -238,7 +238,6 @@ async def init(symbols, percent, currency):
 
 
 def save_profits():
-    print('start: ' + str(datetime.datetime.now()))
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     all_symbols = _query(f"WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, "
@@ -273,13 +272,11 @@ def save_profits():
                          f"UNION ALL SELECT * FROM uniswap_one;")
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
-    print('start loop: ' + str(datetime.datetime.now()))
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     init_result = loop.run_until_complete(init(all_symbols, percent, currency))
-    print('end loop: ' + str(datetime.datetime.now()))
     compare_result = []
     ProfitExchanges.objects.all().delete()
     buyurl = ''
@@ -330,7 +327,6 @@ def save_profits():
 
             pair.save()
     loop.close()
-    print('end: ' + str(datetime.datetime.now()))
     return compare_result
     # except:
     #     print('False')
@@ -418,4 +414,6 @@ def set_currencies():
 
 def hotbit_init():
     while True:
+        print('start hotbit: ' + str(datetime.datetime.now()))
         save_profits()
+        print('end hotbit: ' + str(datetime.datetime.now()))
