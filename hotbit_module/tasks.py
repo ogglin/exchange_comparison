@@ -6,8 +6,8 @@ from celery.task import periodic_task
 from .functions import set_currencies, save_profits
 
 
-@periodic_task(run_every=(timedelta(seconds=6)), queue='high',
-               options={'queue': 'high'})
+@periodic_task(run_every=(timedelta(seconds=6)), queue='hotbit',
+               options={'queue': 'hotbit'})
 def hotbit_profits():
     try:
         save_profits()
