@@ -10,8 +10,7 @@ koef = 0.99
 def currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume):
     pair_id = Bancor.objects.filter(exch_direction=direction).values('id')
     if len(pair_id) > 0:
-        Bancor.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
-                                                          volume=volume,
+        Bancor.objects.filter(id=pair_id[0]['id']).update(lowest_ask=lowest_ask, volume=volume,
                                                           highest_bid=highest_bid, name=name, link_id=link_id)
     else:
         pair = Bancor(exch_direction=direction, lowest_ask=lowest_ask, highest_bid=highest_bid, name=name,
@@ -28,6 +27,7 @@ def set_currencies():
     # response = requests.get(url=url, proxies=proxies)
     response = requests.get(url=url)
     jData = json.loads(response.content)['data']['page']
+    Bancor.objects.all().update(volume=0)
     for data in jData:
         if data['price'] is not None:
             direction = data['code']
@@ -35,5 +35,6 @@ def set_currencies():
             lowest_ask = data['price']
             name = data['name']
             link_id = data['id']
-            volume = data['liquidityDepth']
-            currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
+            volume = float(data['liquidityDepth'])
+            if volume > 0:
+                currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
