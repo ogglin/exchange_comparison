@@ -19,7 +19,7 @@ app.conf.task_queues = {
     Queue('high', Exchange('high'), routing_key='high'),
     Queue('normal', Exchange('normal'), routing_key='normal'),
     Queue('low', Exchange('low'), routing_key='low'),
-    # Queue('hotbit', Exchange('hotbit'), routing_key='hotbit'),
+    Queue('hotbit', Exchange('hotbit'), routing_key='hotbit'),
 }
 app.conf.task_default_exchange = 'tasks'
 app.conf.task_default_exchange_type = 'topic'
@@ -31,7 +31,7 @@ task_routes = {
     'uniswap_module.tasks.*': {'queue': 'high'},
     'bancor_module.tasks.*': {'queue': 'low'},
     'kyber_module.tasks.*': {'queue': 'low'},
-    # 'hotbit_module.tasks.*': {'queue': 'hotbit'},
+    'hotbit_module.tasks.*': {'queue': 'hotbit'},
 }
 
 # celery beat tasks
