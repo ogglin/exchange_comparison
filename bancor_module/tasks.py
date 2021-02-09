@@ -1,17 +1,18 @@
+import datetime
 import sys
-from datetime import timedelta
 
-from exchange_comparison._celery import app
-from celery.task import periodic_task
+from celery.task import task
 
-from .services import set_currencies
+from .services import bankor_init
 
 
-@periodic_task(run_every=(timedelta(seconds=10)), queue='bancor', options={'queue': 'bancor'}, ignore_result=True)
-# @app.task()
+# @periodic_task(run_every=(timedelta(seconds=10)), queue='bancor', options={'queue': 'bancor'}, ignore_result=True)
+@task(queue='bancor', options={'queue': 'bancor'}, ignore_result=True)
 def bancor_currencies_update():
     try:
-        set_currencies()
+        print('start bancor: ' + str(datetime.datetime.now()))
+        bankor_init()
+        print('end bancor: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

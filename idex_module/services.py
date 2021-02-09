@@ -3,7 +3,6 @@ import json
 
 import requests
 
-
 from .models import *
 
 
@@ -37,4 +36,6 @@ def set_currencies():
     # print('end idex: ' + str(datetime.datetime.now()))
 
 
-set_currencies()
+def idex_init():
+    while True:
+        set_currencies()

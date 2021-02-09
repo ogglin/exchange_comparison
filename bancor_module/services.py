@@ -38,3 +38,8 @@ def set_currencies():
             volume = float(data['liquidityDepth'])
             if volume > 0:
                 currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
+
+
+def bankor_init():
+    while True:
+        set_currencies()

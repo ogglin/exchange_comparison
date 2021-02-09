@@ -31,3 +31,8 @@ def set_currencies():
         volume = float(data['eth_24h_volume'])
         if volume > 0:
             currencies_update(direction, lowest_ask, highest_bid, token_id, volume)
+
+
+def kyber_init():
+    while True:
+        set_currencies()

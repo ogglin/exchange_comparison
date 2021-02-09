@@ -1,17 +1,18 @@
+import datetime
 import sys
-from datetime import timedelta
 
-from celery.task import periodic_task
+from celery.task import periodic_task, task
 
-from exchange_comparison._celery import app
-from .services import set_currencies
+from .services import kyber_init
 
 
-@periodic_task(run_every=(timedelta(seconds=10)), queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
-# @app.task()
+# @periodic_task(run_every=(timedelta(seconds=10)), queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
+@task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 def kyber_currencies_update():
     try:
-        set_currencies()
+        print('start kyber: ' + str(datetime.datetime.now()))
+        kyber_init()
+        print('end kyber: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise

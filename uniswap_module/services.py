@@ -93,7 +93,6 @@ def get_uni2_price(tokenid, token):
 
 
 def set_all_currencies():
-    print(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S"))
     trusted_tokens = TrustedPairs.objects.all().values()
     token_uni2 = Uniswap.objects.all().values()
     # token_uni = UniswapOne.objects.all().values()
@@ -119,7 +118,6 @@ def set_all_currencies():
             {{"query":"{{exchanges(first: 1000, skip: {i * 1000}) {{ ethBalance ethLiquidity tokenAddress price tokenName tokenSymbol}}}}","variables":{{}}}}
         '''
         set_currencies_v1(req_v1, trusted_tokens)
-    print(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S"))
     # CustomSql.objects.raw('''
     #     UPDATE exchange_pairs SET uniswap_direction_id = s.id
     #     FROM (SELECT mu.id, mu.exch_direction FROM module_uniswap mu
@@ -134,3 +132,6 @@ def set_all_currencies():
 
 
 # set_all_currencies()
+def uniswap_init():
+    while True:
+        set_all_currencies()

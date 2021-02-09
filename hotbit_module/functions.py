@@ -413,4 +413,9 @@ def set_currencies():
         contract = None
         decimals = None
 
+
 # set_currencies()
+
+def hotbit_init():
+    while True:
+        save_profits()

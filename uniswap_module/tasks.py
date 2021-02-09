@@ -1,18 +1,18 @@
+import datetime
 import sys
-from datetime import timedelta
 
-from celery.task import periodic_task
+from celery.task import periodic_task, task
 
-from .services import set_all_currencies
+from .services import uniswap_init
 
 
-@periodic_task(run_every=(timedelta(seconds=200)), queue='uniswap', options={'uniswap': 'uniswap'}, ignore_result=True)
-# @app.task()
+# @periodic_task(run_every=(timedelta(seconds=200)), queue='uniswap', options={'uniswap': 'uniswap'}, ignore_result=True)
+@task(queue='uniswap', options={'uniswap': 'uniswap'}, ignore_result=True)
 def uniswap_currencies_update():
     try:
-        print('Uniswap collect data try')
-        set_all_currencies()
-        print('Uniswap data collected')
+        print('start uniswap: ' + str(datetime.datetime.now()))
+        uniswap_init()
+        print('end uniswap: ' + str(datetime.datetime.now()))
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
