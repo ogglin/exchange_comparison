@@ -41,37 +41,37 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class IdexViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = Idex.objects.all()
+    queryset = Idex.objects.filter(volume__gt=0)
     serializer_class = IdexSerializer
 
 
 class HotbitViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = Hotbit.objects.all()
+    queryset = Hotbit.objects.filter(volume__gt=0)
     serializer_class = HotbitSerializer
 
 
 class BancorViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = Bancor.objects.all()
+    queryset = Bancor.objects.filter(volume__gt=0)
     serializer_class = BancorSerializer
 
 
 class KyberViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = Kyber.objects.all()
+    queryset = Kyber.objects.filter(volume__gt=0)
     serializer_class = KyberSerializer
 
 
 class UniswapViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = Uniswap.objects.all()
+    queryset = Uniswap.objects.filter(volume__gt=0)
     serializer_class = UniswapSerializer
 
 
 class UniswapOneViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = UniswapOne.objects.all()
+    queryset = UniswapOne.objects.filter(volume__gt=0)
     serializer_class = UniswapOneSerializer
 
 
