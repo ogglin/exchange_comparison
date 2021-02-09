@@ -3,6 +3,6 @@ from . import views
 
 app_name = 'uniswap_module'
 urlpatterns = [
-    path('', views.idex, name='idex'),
+    # path('', views.idex, name='idex'),
 ]
 
