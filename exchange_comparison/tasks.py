@@ -1,12 +1,17 @@
 import sys
 from datetime import timedelta
 
-from celery.task import periodic_task
+from celery.task import periodic_task, task
 from django.core.mail import send_mail
 
+from bancor_module.services import bankor_init
 from exchange_comparison._celery import app
+from hotbit_module.functions import hotbit_init
+from idex_module.services import idex_init
+from kyber_module.services import kyber_init
 from send_mail.models import Contacts
 from send_mail.services import send
+from uniswap_module.services import uniswap_v1_init, uniswap_v2_init
 from .services import token_set, token_exchange_set
 
 
@@ -19,6 +24,72 @@ def token_exchange():
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
+
+
+@task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+def uniswap_currencies_update():
+    while True:
+        uniswap_v1_init()
+    # try:
+    #
+    # except:
+    #     print("Unexpected error:", sys.exc_info()[0])
+    #     raise
+
+
+@task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
+def uniswap_currencies_update():
+    while True:
+        uniswap_v2_init()
+    # try:
+    #     pass
+    # except:
+    #     print("Unexpected error:", sys.exc_info()[0])
+    #     raise
+
+
+@task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
+def kyber_currencies_update():
+    while True:
+        kyber_init()
+    # try:
+    #     pass
+    # except:
+    #     print("Unexpected error:", sys.exc_info()[0])
+    #     raise
+
+
+@task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
+def idex_currencies_update():
+    while True:
+        idex_init()
+    # try:
+    #     pass
+    # except:
+    #     print("Unexpected error:", sys.exc_info()[0])
+    #     raise
+
+
+@task(queue='hotbit', options={'queue': 'hotbit'})
+def hotbit_profits():
+    while True:
+        hotbit_init()
+    # try:
+    #     pass
+    # except:
+    #     print("Unexpected error:", sys.exc_info()[0])
+    #     raise
+
+
+@task(queue='bancor', options={'queue': 'bancor'})
+def bancor_currencies_update():
+    while True:
+        bankor_init()
+    # try:
+    #     pass
+    # except:
+    #     print("Unexpected error:", sys.exc_info()[0])
+    #     raise
 
 
 @app.task()

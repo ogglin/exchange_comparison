@@ -413,7 +413,6 @@ def set_currencies():
 # set_currencies()
 
 def hotbit_init():
-    while True:
-        print('start hotbit: ' + str(datetime.datetime.now()))
-        save_profits()
-        print('end hotbit: ' + str(datetime.datetime.now()))
+    print('start hotbit: ' + str(datetime.datetime.now()))
+    save_profits()
+    print('end hotbit: ' + str(datetime.datetime.now()))

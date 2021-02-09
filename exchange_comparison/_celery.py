@@ -18,6 +18,7 @@ app.conf.task_default_queue = 'normal'
 app.conf.task_queues = {
     Queue('idex', Exchange('idex'), routing_key='idex'),
     Queue('uniswap', Exchange('uniswap'), routing_key='uniswap'),
+    Queue('uniswap_one', Exchange('uniswap_one'), routing_key='uniswap_one'),
     Queue('bancor', Exchange('bancor'), routing_key='bancor'),
     Queue('kyber', Exchange('kyber'), routing_key='kyber'),
     Queue('hotbit', Exchange('hotbit'), routing_key='hotbit'),
@@ -28,11 +29,11 @@ app.conf.task_default_routing_key = 'task.normal'
 
 
 task_routes = {
-    'idex_module.tasks.*': {'queue': 'idex'},
-    'uniswap_module.tasks.*': {'queue': 'uniswap'},
-    'bancor_module.tasks.*': {'queue': 'bancor'},
-    'kyber_module.tasks.*': {'queue': 'kyber'},
-    'hotbit_module.tasks.*': {'queue': 'hotbit'},
+    # 'idex_module.tasks.*': {'queue': 'idex'},
+    # 'uniswap_module.tasks.*': {'queue': 'uniswap'},
+    # 'bancor_module.tasks.*': {'queue': 'bancor'},
+    # 'kyber_module.tasks.*': {'queue': 'kyber'},
+    # 'hotbit_module.tasks.*': {'queue': 'hotbit'},
 }
 
 # celery beat tasks
