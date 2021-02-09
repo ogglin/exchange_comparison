@@ -36,16 +36,18 @@ def set_currencies_v1(date, trusted_tokens):
     response = requests.post(url=url_v1, data=date)
     try:
         jData = json.loads(response.content)['data']
+        UniswapOne.objects.filter.uptade(volume=0)
         for data in jData['exchanges']:
             if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
                 direction = data['tokenSymbol']
                 lowest_ask = 1.003 / float(data['price'])
                 highest_bid = lowest_ask * koef
                 tokenid = data['tokenAddress']
-                volume = data['ethBalance']
-                for row in trusted_tokens:
-                    if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
-                        currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume)
+                volume = float(data['ethBalance'])
+                if volume > 0:
+                    for row in trusted_tokens:
+                        if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
+                            currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume)
     except:
         pass
 
@@ -60,17 +62,19 @@ def set_currencies_v2(date, trusted_tokens):
     response = requests.post(url=url_v2, data=date)
     try:
         jData = json.loads(response.content)['data']
+        Uniswap.objects.filter.uptade(volume=0)
         for data in jData['tokens']:
             if data['totalLiquidity'] is not None:
                 if float(data['derivedETH']) > 0 and float(data['totalLiquidity']) > 1:
                     direction = data['symbol']
                     highest_bid = float(data['derivedETH']) * koef
                     lowest_ask = float(data['derivedETH'])
-                    volume = float(data['totalLiquidity'])
                     tokenid = data['id']
-                    for row in trusted_tokens:
-                        if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
-                            currencies_update_v2(direction, lowest_ask, highest_bid, tokenid, volume)
+                    volume = float(data['totalLiquidity'])
+                    if volume > 0:
+                        for row in trusted_tokens:
+                            if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
+                                currencies_update_v2(direction, lowest_ask, highest_bid, tokenid, volume)
     except:
         pass
 
