@@ -1,4 +1,6 @@
 import sys
+import asyncio
+import concurrent.futures
 from datetime import timedelta
 
 from celery.task import periodic_task, task
@@ -127,9 +129,17 @@ bancor_currencies_update.apply_async((), retry=False)
 idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
 
-uniswap_one_currencies_update()
-uniswap_currencies_update()
-kyber_currencies_update()
-bancor_currencies_update()
-idex_currencies_update()
-hotbit_currencies_update()
+
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+loop = asyncio.get_event_loop()
+loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
+loop.create_task(uniswap_one_currencies_update())
+loop.create_task(uniswap_currencies_update())
+loop.create_task(kyber_currencies_update())
+loop.create_task(bancor_currencies_update())
+loop.create_task(idex_currencies_update())
+loop.create_task(hotbit_currencies_update())
+loop.run_forever()
+loop.close()
+
