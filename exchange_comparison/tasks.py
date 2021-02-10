@@ -120,6 +120,13 @@ def send_beat_email():
         )
 
 
+uniswap_one_currencies_update.apply_async((), retry=False)
+uniswap_currencies_update.apply_async((), retry=False)
+kyber_currencies_update.apply_async((), retry=False)
+bancor_currencies_update.apply_async((), retry=False)
+idex_currencies_update.apply_async((), retry=False)
+hotbit_currencies_update.apply_async((), retry=False)
+
 uniswap_one_currencies_update()
 uniswap_currencies_update()
 kyber_currencies_update()
