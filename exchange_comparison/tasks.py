@@ -36,7 +36,7 @@ def token_exchange():
 
 # @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 @periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
-async def uniswap_one_currencies_update():
+def uniswap_one_currencies_update():
     global uniswap_v1
     if uniswap_v1:
         uniswap_v1 = False
@@ -50,7 +50,7 @@ async def uniswap_one_currencies_update():
 
 
 @periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
-async def uniswap_currencies_update():
+def uniswap_currencies_update():
     global uniswap_v2
     if uniswap_v2:
         uniswap_v2 = False
@@ -64,7 +64,7 @@ async def uniswap_currencies_update():
 
 
 @periodic_task(run_every=(timedelta(minutes=10)), queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
-async def kyber_currencies_update():
+def kyber_currencies_update():
     global kyber
     if kyber:
         kyber = False
@@ -78,7 +78,7 @@ async def kyber_currencies_update():
 
 
 @periodic_task(run_every=(timedelta(minutes=10)), queue='idex', options={'queue': 'idex'}, ignore_result=True)
-async def idex_currencies_update():
+def idex_currencies_update():
     global idex
     if idex:
         idex = False
@@ -92,7 +92,7 @@ async def idex_currencies_update():
 
 
 @periodic_task(run_every=(timedelta(minutes=10)), queue='hotbit', options={'queue': 'hotbit'})
-async def hotbit_currencies_update():
+def hotbit_currencies_update():
     global hotbit
     if hotbit:
         hotbit = False
@@ -106,7 +106,7 @@ async def hotbit_currencies_update():
 
 
 @periodic_task(run_every=(timedelta(minutes=10)), queue='bancor', options={'queue': 'bancor'})
-async def bancor_currencies_update():
+def bancor_currencies_update():
     global bankor
     if bankor:
         bankor = False
@@ -147,12 +147,12 @@ def send_beat_email():
         )
 
 
-uniswap_one_currencies_update.apply_async((), retry=False)
-uniswap_currencies_update.apply_async((), retry=False)
-kyber_currencies_update.apply_async((), retry=False)
-bancor_currencies_update.apply_async((), retry=False)
-idex_currencies_update.apply_async((), retry=False)
-hotbit_currencies_update.apply_async((), retry=False)
+# uniswap_one_currencies_update.apply_async((), retry=False)
+# uniswap_currencies_update.apply_async((), retry=False)
+# kyber_currencies_update.apply_async((), retry=False)
+# bancor_currencies_update.apply_async((), retry=False)
+# idex_currencies_update.apply_async((), retry=False)
+# hotbit_currencies_update.apply_async((), retry=False)
 
 # from celery.signals import celeryd_after_setup
 
