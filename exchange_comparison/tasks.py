@@ -1,6 +1,7 @@
 import sys
 from datetime import timedelta
 
+from celery.signals import celeryd_init
 from celery.task import periodic_task, task
 from django.core.mail import send_mail
 
@@ -126,3 +127,13 @@ kyber_currencies_update.apply_async((), retry=False)
 bancor_currencies_update.apply_async((), retry=False)
 idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
+
+
+@celeryd_init.connect(sender='worker12@example.com')
+def configure_worker12(**kwargs):
+    uniswap_one_currencies_update()
+    uniswap_currencies_update()
+    kyber_currencies_update()
+    bancor_currencies_update()
+    idex_currencies_update()
+    hotbit_currencies_update()
