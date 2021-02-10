@@ -27,7 +27,8 @@ def token_exchange():
         raise
 
 
-@task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+# @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+@periodic_task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 async def uniswap_one_currencies_update():
     while True:
         uniswap_v1_init()
@@ -38,7 +39,7 @@ async def uniswap_one_currencies_update():
     #     raise
 
 
-@task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
+@periodic_task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
 async def uniswap_currencies_update():
     while True:
         uniswap_v2_init()
@@ -49,7 +50,7 @@ async def uniswap_currencies_update():
     #     raise
 
 
-@task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
+@periodic_task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 async def kyber_currencies_update():
     while True:
         kyber_init()
@@ -60,7 +61,7 @@ async def kyber_currencies_update():
     #     raise
 
 
-@task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
+@periodic_task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
 async def idex_currencies_update():
     while True:
         idex_init()
@@ -71,7 +72,7 @@ async def idex_currencies_update():
     #     raise
 
 
-@task(queue='hotbit', options={'queue': 'hotbit'})
+@periodic_task(queue='hotbit', options={'queue': 'hotbit'})
 async def hotbit_currencies_update():
     while True:
         hotbit_init()
@@ -82,7 +83,7 @@ async def hotbit_currencies_update():
     #     raise
 
 
-@task(queue='bancor', options={'queue': 'bancor'})
+@periodic_task(queue='bancor', options={'queue': 'bancor'})
 async def bancor_currencies_update():
     while True:
         bankor_init()
@@ -128,23 +129,23 @@ bancor_currencies_update.apply_async((), retry=False)
 idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
 
-from celery.signals import celeryd_after_setup
+# from celery.signals import celeryd_after_setup
 
 
-@celeryd_after_setup.connect
-def setup_direct_queue(sender, instance, **kwargs):
-    queue_name = '{0}.dq'.format(sender)  # sender is the nodename of the worker
-    print('setup_direct_queue')
-    print(queue_name)
-    # instance.app.amqp.queues.select_add(queue_name)
-
-
-@celeryd_init.connect
-def start_tasks(sender=None, conf=None, **kwargs):
-    print('worker start', sender)
-    # uniswap_one_currencies_update()
-    # uniswap_currencies_update()
-    # kyber_currencies_update()
-    # bancor_currencies_update()
-    # idex_currencies_update()
-    # hotbit_currencies_update()
+# @celeryd_after_setup.connect
+# def setup_direct_queue(sender, instance, **kwargs):
+#     queue_name = '{0}.dq'.format(sender)  # sender is the nodename of the worker
+#     print('setup_direct_queue')
+#     print(queue_name)
+#     # instance.app.amqp.queues.select_add(queue_name)
+#
+#
+# @celeryd_init.connect
+# def start_tasks(sender=None, conf=None, **kwargs):
+#     print('worker start', sender)
+#     # uniswap_one_currencies_update()
+#     # uniswap_currencies_update()
+#     # kyber_currencies_update()
+#     # bancor_currencies_update()
+#     # idex_currencies_update()
+#     # hotbit_currencies_update()
