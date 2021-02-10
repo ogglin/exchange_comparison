@@ -18,37 +18,37 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class HotbitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Hotbit
-        fields = ['exch_direction', 'buy', 'sell', 'symbol', 'is_active']
+        fields = ['exch_direction', 'buy', 'sell', 'symbol', 'is_active', 'volume']
 
 
 class IdexSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Idex
-        fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+        fields = ['exch_direction', 'lowest_ask', 'highest_bid', 'volume']
 
 
 class BancorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bancor
-        fields = ['exch_direction', 'lowest_ask', 'highest_bid', 'link_id']
+        fields = ['exch_direction', 'lowest_ask', 'highest_bid', 'link_id', 'volume']
 
 
 class KyberSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Kyber
-        fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+        fields = ['exch_direction', 'lowest_ask', 'highest_bid', 'volume']
 
 
 class UniswapSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Uniswap
-        fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+        fields = ['exch_direction', 'lowest_ask', 'highest_bid', 'volume']
 
 
 class UniswapOneSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UniswapOne
-        fields = ['exch_direction', 'lowest_ask', 'highest_bid']
+        fields = ['exch_direction', 'lowest_ask', 'highest_bid', 'volume']
 
 
 class ExchangePairViewSerializer(serializers.ModelSerializer):
