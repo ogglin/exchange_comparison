@@ -17,6 +17,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 app.conf.task_default_queue = 'normal'
 app.conf.task_queues = {
+    Queue('normal', Exchange('normal'), routing_key='normal'),
     Queue('idex', Exchange('idex'), routing_key='idex'),
     Queue('uniswap', Exchange('uniswap'), routing_key='uniswap'),
     Queue('uniswap_one', Exchange('uniswap_one'), routing_key='uniswap_one'),
@@ -43,30 +44,30 @@ app.conf.beat_schedule = {
         'task': 'exchange_comparison.tasks.tokens_update',
         'schedule': crontab(minute='*/1'),
     },
-    'uniswap_one_currencies_update': {
-        'task': 'exchange_comparison.tasks.uniswap_one_currencies_update',
-        'schedule': timedelta(seconds=10),
-    },
-    'uniswap_currencies_update': {
-        'task': 'exchange_comparison.tasks.uniswap_currencies_update',
-        'schedule': timedelta(seconds=10),
-    },
-    'kyber_currencies_update': {
-        'task': 'exchange_comparison.tasks.kyber_currencies_update',
-        'schedule': timedelta(seconds=10),
-    },
-    'bancor_currencies_update': {
-        'task': 'exchange_comparison.tasks.bancor_currencies_update',
-        'schedule': timedelta(seconds=10),
-    },
-    'idex_currencies_update': {
-        'task': 'exchange_comparison.tasks.idex_currencies_update',
-        'schedule': timedelta(seconds=10),
-    },
-    'hotbit_currencies_update': {
-        'task': 'exchange_comparison.tasks.hotbit_currencies_update',
-        'schedule': timedelta(seconds=10),
-    }
+    # 'uniswap_one_currencies_update': {
+    #     'task': 'exchange_comparison.tasks.uniswap_one_currencies_update',
+    #     'schedule': timedelta(seconds=10),
+    # },
+    # 'uniswap_currencies_update': {
+    #     'task': 'exchange_comparison.tasks.uniswap_currencies_update',
+    #     'schedule': timedelta(seconds=10),
+    # },
+    # 'kyber_currencies_update': {
+    #     'task': 'exchange_comparison.tasks.kyber_currencies_update',
+    #     'schedule': timedelta(seconds=10),
+    # },
+    # 'bancor_currencies_update': {
+    #     'task': 'exchange_comparison.tasks.bancor_currencies_update',
+    #     'schedule': timedelta(seconds=10),
+    # },
+    # 'idex_currencies_update': {
+    #     'task': 'exchange_comparison.tasks.idex_currencies_update',
+    #     'schedule': timedelta(seconds=10),
+    # },
+    # 'hotbit_currencies_update': {
+    #     'task': 'exchange_comparison.tasks.hotbit_currencies_update',
+    #     'schedule': timedelta(seconds=10),
+    # }
     # 'websocket_run': {
     #     'task': 'idex_module.socket_tasks.websock',
     #     'schedule': crontab(minute='*/1'),

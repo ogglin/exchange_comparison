@@ -1,19 +1,10 @@
-import sys
-from datetime import timedelta
-
-from celery.signals import celeryd_init
-from celery.task import periodic_task, task
-from django.core.mail import send_mail
+from celery.task import task
 
 from bancor_module.services import bankor_init
-from exchange_comparison._celery import app
 from hotbit_module.functions import hotbit_init
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
-from send_mail.models import Contacts
-from send_mail.services import send
 from uniswap_module.services import uniswap_v1_init, uniswap_v2_init
-from .services import token_set, token_exchange_set
 
 uniswap_v1 = True
 uniswap_v2 = True
@@ -23,18 +14,6 @@ hotbit = True
 bankor = True
 
 
-@periodic_task(run_every=(timedelta(minutes=120)), ignore_result=True)
-def token_exchange():
-    try:
-        print('Try set exchange tokens')
-        token_exchange_set()
-        print('Tokens exchange set')
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        raise
-
-
-# @periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 def uniswap_one_currencies_update():
     global uniswap_v1
@@ -119,39 +98,12 @@ def hotbit_currencies_update():
     #     raise
 
 
-@app.task()
-def tokens_update():
-    try:
-        print('Try set new tokens')
-        token_set()
-        print('Tokens data collected')
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        raise
-
-
-@app.task()
-def send_spam_email(user_email):
-    send(user_email)
-
-
-@app.task()
-def send_beat_email():
-    for contact in Contacts.objects.all():
-        send_mail(
-            'Это рассылка писем',
-            'Рассылка важной информации каждую минуту',
-            'info@exchc.ru',
-            [contact.email],
-            fail_silently=False,
-        )
-
-# uniswap_one_currencies_update.apply_async((), retry=False)
-# uniswap_currencies_update.apply_async((), retry=False)
-# kyber_currencies_update.apply_async((), retry=False)
-# bancor_currencies_update.apply_async((), retry=False)
-# idex_currencies_update.apply_async((), retry=False)
-# hotbit_currencies_update.apply_async((), retry=False)
+uniswap_one_currencies_update.apply_async((), retry=False)
+uniswap_currencies_update.apply_async((), retry=False)
+kyber_currencies_update.apply_async((), retry=False)
+bancor_currencies_update.apply_async((), retry=False)
+idex_currencies_update.apply_async((), retry=False)
+hotbit_currencies_update.apply_async((), retry=False)
 
 # from celery.signals import celeryd_after_setup
 
