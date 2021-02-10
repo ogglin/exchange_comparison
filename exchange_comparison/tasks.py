@@ -1,6 +1,4 @@
 import sys
-import asyncio
-import concurrent.futures
 from datetime import timedelta
 
 from celery.task import periodic_task, task
@@ -29,7 +27,7 @@ def token_exchange():
 
 
 @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
-def uniswap_one_currencies_update():
+async def uniswap_one_currencies_update():
     while True:
         uniswap_v1_init()
     # try:
@@ -40,7 +38,7 @@ def uniswap_one_currencies_update():
 
 
 @task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
-def uniswap_currencies_update():
+async def uniswap_currencies_update():
     while True:
         uniswap_v2_init()
     # try:
@@ -51,7 +49,7 @@ def uniswap_currencies_update():
 
 
 @task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
-def kyber_currencies_update():
+async def kyber_currencies_update():
     while True:
         kyber_init()
     # try:
@@ -62,7 +60,7 @@ def kyber_currencies_update():
 
 
 @task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
-def idex_currencies_update():
+async def idex_currencies_update():
     while True:
         idex_init()
     # try:
@@ -73,7 +71,7 @@ def idex_currencies_update():
 
 
 @task(queue='hotbit', options={'queue': 'hotbit'})
-def hotbit_currencies_update():
+async def hotbit_currencies_update():
     while True:
         hotbit_init()
     # try:
@@ -84,7 +82,7 @@ def hotbit_currencies_update():
 
 
 @task(queue='bancor', options={'queue': 'bancor'})
-def bancor_currencies_update():
+async def bancor_currencies_update():
     while True:
         bankor_init()
     # try:
@@ -128,18 +126,3 @@ kyber_currencies_update.apply_async((), retry=False)
 bancor_currencies_update.apply_async((), retry=False)
 idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
-
-
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-loop = asyncio.get_event_loop()
-loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-loop.create_task(uniswap_one_currencies_update())
-loop.create_task(uniswap_currencies_update())
-loop.create_task(kyber_currencies_update())
-loop.create_task(bancor_currencies_update())
-loop.create_task(idex_currencies_update())
-loop.create_task(hotbit_currencies_update())
-loop.run_forever()
-loop.close()
-
