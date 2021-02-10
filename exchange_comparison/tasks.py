@@ -128,6 +128,16 @@ bancor_currencies_update.apply_async((), retry=False)
 idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
 
+from celery.signals import celeryd_after_setup
+
+
+@celeryd_after_setup.connect
+def setup_direct_queue(sender, instance, **kwargs):
+    queue_name = '{0}.dq'.format(sender)  # sender is the nodename of the worker
+    print('setup_direct_queue')
+    print(queue_name)
+    # instance.app.amqp.queues.select_add(queue_name)
+
 
 @celeryd_init.connect
 def start_tasks(sender=None, conf=None, **kwargs):
