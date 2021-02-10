@@ -31,50 +31,50 @@ app.conf.task_default_routing_key = 'task.normal'
 
 
 task_routes = {
-    # 'idex_module.tasks.*': {'queue': 'idex'},
-    # 'uniswap_module.tasks.*': {'queue': 'uniswap'},
-    # 'bancor_module.tasks.*': {'queue': 'bancor'},
-    # 'kyber_module.tasks.*': {'queue': 'kyber'},
-    # 'hotbit_module.tasks.*': {'queue': 'hotbit'},
+    'idex_module.tasks.*': {'queue': 'idex'},
+    'uniswap_module.tasks.*': {'queue': 'uniswap'},
+    'bancor_module.tasks.*': {'queue': 'bancor'},
+    'kyber_module.tasks.*': {'queue': 'kyber'},
+    'hotbit_module.tasks.*': {'queue': 'hotbit'},
 }
 
 # celery beat tasks
 app.conf.beat_schedule = {
-    'tokens_update-1-minute': {
-        'task': 'exchange_comparison.tasks.tokens_update',
-        'schedule': crontab(minute='*/1'),
-        'options': {'queue': 'normal'}
-    },
-    'uniswap_one_currencies_update': {
-        'task': 'exchange_pairs.tasks.uniswap_one_currencies_update',
-        'schedule': timedelta(seconds=11),
-        'options': {'queue': 'uniswap_one'}
-    },
-    'uniswap_currencies_update': {
-        'task': 'exchange_pairs.tasks.uniswap_currencies_update',
-        'schedule': timedelta(seconds=12),
-        'options': {'queue': 'uniswap'}
-    },
-    'kyber_currencies_update': {
-        'task': 'exchange_pairs.tasks.kyber_currencies_update',
-        'schedule': timedelta(seconds=13),
-        'options': {'queue': 'kyber'}
-    },
-    'bancor_currencies_update': {
-        'task': 'exchange_pairs.tasks.bancor_currencies_update',
-        'schedule': timedelta(seconds=14),
-        'options': {'queue': 'bancor'}
-    },
-    'idex_currencies_update': {
-        'task': 'exchange_pairs.tasks.idex_currencies_update',
-        'schedule': timedelta(seconds=15),
-        'options': {'queue': 'idex'}
-    },
-    'hotbit_currencies_update': {
-        'task': 'exchange_pairs.tasks.hotbit_currencies_update',
-        'schedule': timedelta(seconds=16),
-        'options': {'queue': 'hotbit'}
-    }
+    # 'tokens_update-1-minute': {
+    #     'task': 'exchange_comparison.tasks.tokens_update',
+    #     'schedule': crontab(minute='*/1'),
+    #     'options': {'queue': 'normal'}
+    # },
+    # 'uniswap_one_currencies_update': {
+    #     'task': 'exchange_pairs.tasks.uniswap_one_currencies_update',
+    #     'schedule': timedelta(seconds=11),
+    #     'options': {'queue': 'uniswap_one'}
+    # },
+    # 'uniswap_currencies_update': {
+    #     'task': 'exchange_pairs.tasks.uniswap_currencies_update',
+    #     'schedule': timedelta(seconds=12),
+    #     'options': {'queue': 'uniswap'}
+    # },
+    # 'kyber_currencies_update': {
+    #     'task': 'exchange_pairs.tasks.kyber_currencies_update',
+    #     'schedule': timedelta(seconds=13),
+    #     'options': {'queue': 'kyber'}
+    # },
+    # 'bancor_currencies_update': {
+    #     'task': 'exchange_pairs.tasks.bancor_currencies_update',
+    #     'schedule': timedelta(seconds=14),
+    #     'options': {'queue': 'bancor'}
+    # },
+    # 'idex_currencies_update': {
+    #     'task': 'exchange_pairs.tasks.idex_currencies_update',
+    #     'schedule': timedelta(seconds=15),
+    #     'options': {'queue': 'idex'}
+    # },
+    # 'hotbit_currencies_update': {
+    #     'task': 'exchange_pairs.tasks.hotbit_currencies_update',
+    #     'schedule': timedelta(seconds=16),
+    #     'options': {'queue': 'hotbit'}
+    # }
     # 'websocket_run': {
     #     'task': 'idex_module.socket_tasks.websock',
     #     'schedule': crontab(minute='*/1'),

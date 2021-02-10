@@ -1,4 +1,6 @@
-from celery.task import task
+from datetime import timedelta
+
+from celery.task import task, periodic_task
 from celery.signals import celeryd_after_setup, celeryd_init
 
 from bancor_module.services import bankor_init
@@ -15,7 +17,7 @@ hotbit = True
 bankor = True
 
 
-@task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+@periodic_task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def uniswap_one_currencies_update():
     global uniswap_v1
     print(uniswap_v1)
@@ -30,7 +32,7 @@ def uniswap_one_currencies_update():
     #     raise
 
 
-@task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
+@periodic_task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def uniswap_currencies_update():
     global uniswap_v2
     print(uniswap_v2)
@@ -45,7 +47,7 @@ def uniswap_currencies_update():
     #     raise
 
 
-@task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
+@periodic_task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def kyber_currencies_update():
     global kyber
     print(kyber)
@@ -60,7 +62,7 @@ def kyber_currencies_update():
     #     raise
 
 
-@task(queue='bancor', options={'queue': 'bancor'}, ignore_result=True)
+@periodic_task(queue='bancor', options={'queue': 'bancor'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def bancor_currencies_update():
     global bankor
     print(bankor)
@@ -75,7 +77,7 @@ def bancor_currencies_update():
     #     raise
 
 
-@task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
+@periodic_task(queue='idex', options={'queue': 'idex'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def idex_currencies_update():
     global idex
     print(idex)
@@ -90,7 +92,7 @@ def idex_currencies_update():
     #     raise
 
 
-@task(queue='hotbit', options={'queue': 'hotbit'}, ignore_result=True)
+@periodic_task(queue='hotbit', options={'queue': 'hotbit'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def hotbit_currencies_update():
     global hotbit
     print(hotbit)
@@ -105,12 +107,12 @@ def hotbit_currencies_update():
     #     raise
 
 
-uniswap_one_currencies_update.apply_async((), retry=False)
-uniswap_currencies_update.apply_async((), retry=False)
-kyber_currencies_update.apply_async((), retry=False)
-bancor_currencies_update.apply_async((), retry=False)
-idex_currencies_update.apply_async((), retry=False)
-hotbit_currencies_update.apply_async((), retry=False)
+# uniswap_one_currencies_update.apply_async((), retry=False)
+# uniswap_currencies_update.apply_async((), retry=False)
+# kyber_currencies_update.apply_async((), retry=False)
+# bancor_currencies_update.apply_async((), retry=False)
+# idex_currencies_update.apply_async((), retry=False)
+# hotbit_currencies_update.apply_async((), retry=False)
 
 
 @celeryd_after_setup.connect
