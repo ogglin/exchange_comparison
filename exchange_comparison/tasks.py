@@ -15,6 +15,13 @@ from send_mail.services import send
 from uniswap_module.services import uniswap_v1_init, uniswap_v2_init
 from .services import token_set, token_exchange_set
 
+uniswap_v1 = True
+uniswap_v2 = True
+kyber = True
+idex = True
+hotbit = True
+bankor = True
+
 
 @periodic_task(run_every=(timedelta(minutes=120)), ignore_result=True)
 def token_exchange():
@@ -28,10 +35,13 @@ def token_exchange():
 
 
 # @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
-@periodic_task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+@periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 async def uniswap_one_currencies_update():
-    while True:
-        uniswap_v1_init()
+    global uniswap_v1
+    if uniswap_v1:
+        uniswap_v1 = False
+        while True:
+            uniswap_v1_init()
     # try:
     #
     # except:
@@ -39,10 +49,13 @@ async def uniswap_one_currencies_update():
     #     raise
 
 
-@periodic_task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
+@periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
 async def uniswap_currencies_update():
-    while True:
-        uniswap_v2_init()
+    global uniswap_v2
+    if uniswap_v2:
+        uniswap_v2 = False
+        while True:
+            uniswap_v2_init()
     # try:
     #     pass
     # except:
@@ -50,10 +63,13 @@ async def uniswap_currencies_update():
     #     raise
 
 
-@periodic_task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
+@periodic_task(run_every=(timedelta(minutes=10)), queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 async def kyber_currencies_update():
-    while True:
-        kyber_init()
+    global kyber
+    if kyber:
+        kyber = False
+        while True:
+            kyber_init()
     # try:
     #     pass
     # except:
@@ -61,10 +77,13 @@ async def kyber_currencies_update():
     #     raise
 
 
-@periodic_task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
+@periodic_task(run_every=(timedelta(minutes=10)), queue='idex', options={'queue': 'idex'}, ignore_result=True)
 async def idex_currencies_update():
-    while True:
-        idex_init()
+    global idex
+    if idex:
+        idex = False
+        while True:
+            idex_init()
     # try:
     #     pass
     # except:
@@ -72,10 +91,13 @@ async def idex_currencies_update():
     #     raise
 
 
-@periodic_task(queue='hotbit', options={'queue': 'hotbit'})
+@periodic_task(run_every=(timedelta(minutes=10)), queue='hotbit', options={'queue': 'hotbit'})
 async def hotbit_currencies_update():
-    while True:
-        hotbit_init()
+    global hotbit
+    if hotbit:
+        hotbit = False
+        while True:
+            hotbit_init()
     # try:
     #     pass
     # except:
@@ -83,10 +105,13 @@ async def hotbit_currencies_update():
     #     raise
 
 
-@periodic_task(queue='bancor', options={'queue': 'bancor'})
+@periodic_task(run_every=(timedelta(minutes=10)), queue='bancor', options={'queue': 'bancor'})
 async def bancor_currencies_update():
-    while True:
-        bankor_init()
+    global bankor
+    if bankor:
+        bankor = False
+        while True:
+            bankor_init()
     # try:
     #     pass
     # except:
