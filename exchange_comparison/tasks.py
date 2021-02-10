@@ -129,12 +129,12 @@ idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
 
 
-@celeryd_init.connect(sender='celery@debian-2gb-hel1-1')
-def configure_worker2(**kwargs):
-    print('worker start')
-    uniswap_one_currencies_update()
-    uniswap_currencies_update()
-    kyber_currencies_update()
-    bancor_currencies_update()
-    idex_currencies_update()
-    hotbit_currencies_update()
+@celeryd_init.connect
+def start_tasks(sender=None, conf=None, **kwargs):
+    print('worker start', sender)
+    # uniswap_one_currencies_update()
+    # uniswap_currencies_update()
+    # kyber_currencies_update()
+    # bancor_currencies_update()
+    # idex_currencies_update()
+    # hotbit_currencies_update()
