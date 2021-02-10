@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
+from datetime import timedelta
 
 from celery import Celery
 from celery.schedules import crontab
@@ -42,6 +43,30 @@ app.conf.beat_schedule = {
         'task': 'exchange_comparison.tasks.tokens_update',
         'schedule': crontab(minute='*/1'),
     },
+    'uniswap_one_currencies_update': {
+        'task': 'exchange_comparison.tasks.uniswap_one_currencies_update',
+        'schedule': timedelta(seconds=10),
+    },
+    'uniswap_currencies_update': {
+        'task': 'exchange_comparison.tasks.uniswap_currencies_update',
+        'schedule': timedelta(seconds=10),
+    },
+    'kyber_currencies_update': {
+        'task': 'exchange_comparison.tasks.kyber_currencies_update',
+        'schedule': timedelta(seconds=10),
+    },
+    'bancor_currencies_update': {
+        'task': 'exchange_comparison.tasks.bancor_currencies_update',
+        'schedule': timedelta(seconds=10),
+    },
+    'idex_currencies_update': {
+        'task': 'exchange_comparison.tasks.idex_currencies_update',
+        'schedule': timedelta(seconds=10),
+    },
+    'hotbit_currencies_update': {
+        'task': 'exchange_comparison.tasks.hotbit_currencies_update',
+        'schedule': timedelta(seconds=10),
+    }
     # 'websocket_run': {
     #     'task': 'idex_module.socket_tasks.websock',
     #     'schedule': crontab(minute='*/1'),

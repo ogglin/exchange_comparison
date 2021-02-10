@@ -34,8 +34,8 @@ def token_exchange():
         raise
 
 
-# @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
-@periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+# @periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
+@task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 def uniswap_one_currencies_update():
     global uniswap_v1
     if uniswap_v1:
@@ -49,7 +49,7 @@ def uniswap_one_currencies_update():
     #     raise
 
 
-@periodic_task(run_every=(timedelta(minutes=10)), queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
+@task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
 def uniswap_currencies_update():
     global uniswap_v2
     if uniswap_v2:
@@ -63,7 +63,7 @@ def uniswap_currencies_update():
     #     raise
 
 
-@periodic_task(run_every=(timedelta(minutes=10)), queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
+@task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 def kyber_currencies_update():
     global kyber
     if kyber:
@@ -77,7 +77,7 @@ def kyber_currencies_update():
     #     raise
 
 
-@periodic_task(run_every=(timedelta(minutes=10)), queue='idex', options={'queue': 'idex'}, ignore_result=True)
+@task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
 def idex_currencies_update():
     global idex
     if idex:
@@ -91,7 +91,7 @@ def idex_currencies_update():
     #     raise
 
 
-@periodic_task(run_every=(timedelta(minutes=10)), queue='hotbit', options={'queue': 'hotbit'})
+@task(queue='hotbit', options={'queue': 'hotbit'})
 def hotbit_currencies_update():
     global hotbit
     if hotbit:
@@ -105,7 +105,7 @@ def hotbit_currencies_update():
     #     raise
 
 
-@periodic_task(run_every=(timedelta(minutes=10)), queue='bancor', options={'queue': 'bancor'})
+@task(run_every=(timedelta(minutes=10)), queue='bancor', options={'queue': 'bancor'})
 def bancor_currencies_update():
     global bankor
     if bankor:
@@ -145,7 +145,6 @@ def send_beat_email():
             [contact.email],
             fail_silently=False,
         )
-
 
 # uniswap_one_currencies_update.apply_async((), retry=False)
 # uniswap_currencies_update.apply_async((), retry=False)
