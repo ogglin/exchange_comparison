@@ -109,10 +109,10 @@ class ExchangePairSet(viewsets.ModelViewSet):
             mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
             muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
             FROM trusted_pairs tp
-            LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active
-            LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active
-            LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active
-            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active 
+            LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active AND mi.volume > 0
+            LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active AND mb.volume > 0
+            LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active AND mk.volume > 0
+            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND mu.volume > 0 
             AND lower(tp.contract) = lower(mu.tokenid)
             LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active 
             AND lower(tp.contract) = lower(muo.tokenid)
