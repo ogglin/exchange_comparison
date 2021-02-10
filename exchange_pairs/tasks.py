@@ -1,4 +1,5 @@
 from celery.task import task
+from celery.signals import celeryd_after_setup, celeryd_init
 
 from bancor_module.services import bankor_init
 from hotbit_module.functions import hotbit_init
@@ -105,23 +106,21 @@ bancor_currencies_update.apply_async((), retry=False)
 idex_currencies_update.apply_async((), retry=False)
 hotbit_currencies_update.apply_async((), retry=False)
 
-# from celery.signals import celeryd_after_setup
+
+@celeryd_after_setup.connect
+def setup_direct_queue(sender, instance, **kwargs):
+    queue_name = '{0}.dq'.format(sender)  # sender is the nodename of the worker
+    print('setup_direct_queue')
+    print(queue_name)
+    # instance.app.amqp.queues.select_add(queue_name)
 
 
-# @celeryd_after_setup.connect
-# def setup_direct_queue(sender, instance, **kwargs):
-#     queue_name = '{0}.dq'.format(sender)  # sender is the nodename of the worker
-#     print('setup_direct_queue')
-#     print(queue_name)
-#     # instance.app.amqp.queues.select_add(queue_name)
-#
-#
-# @celeryd_init.connect
-# def start_tasks(sender=None, conf=None, **kwargs):
-#     print('worker start', sender)
-#     # uniswap_one_currencies_update()
-#     # uniswap_currencies_update()
-#     # kyber_currencies_update()
-#     # bancor_currencies_update()
-#     # idex_currencies_update()
-#     # hotbit_currencies_update()
+@celeryd_init.connect
+def start_tasks(sender=None, conf=None, **kwargs):
+    print('worker start', sender)
+    # uniswap_one_currencies_update()
+    # uniswap_currencies_update()
+    # kyber_currencies_update()
+    # bancor_currencies_update()
+    # idex_currencies_update()
+    # hotbit_currencies_update()
