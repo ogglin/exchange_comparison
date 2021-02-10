@@ -46,27 +46,27 @@ app.conf.beat_schedule = {
     },
     'uniswap_one_currencies_update': {
         'task': 'exchange_pairs.tasks.uniswap_one_currencies_update',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=11),
     },
     'uniswap_currencies_update': {
         'task': 'exchange_pairs.tasks.uniswap_currencies_update',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=12),
     },
     'kyber_currencies_update': {
         'task': 'exchange_pairs.tasks.kyber_currencies_update',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=13),
     },
     'bancor_currencies_update': {
         'task': 'exchange_pairs.tasks.bancor_currencies_update',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=14),
     },
     'idex_currencies_update': {
         'task': 'exchange_pairs.tasks.idex_currencies_update',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=15),
     },
     'hotbit_currencies_update': {
         'task': 'exchange_pairs.tasks.hotbit_currencies_update',
-        'schedule': timedelta(seconds=10),
+        'schedule': timedelta(seconds=16),
     }
     # 'websocket_run': {
     #     'task': 'idex_module.socket_tasks.websock',

@@ -18,6 +18,7 @@ bankor = True
 @task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True)
 def uniswap_one_currencies_update():
     global uniswap_v1
+    print(uniswap_v1)
     if uniswap_v1:
         uniswap_v1 = False
         while True:
@@ -32,6 +33,7 @@ def uniswap_one_currencies_update():
 @task(queue='uniswap', options={'queue': 'uniswap'}, ignore_result=True)
 def uniswap_currencies_update():
     global uniswap_v2
+    print(uniswap_v2)
     if uniswap_v2:
         uniswap_v2 = False
         while True:
@@ -46,6 +48,7 @@ def uniswap_currencies_update():
 @task(queue='kyber', options={'queue': 'kyber'}, ignore_result=True)
 def kyber_currencies_update():
     global kyber
+    print(kyber)
     if kyber:
         kyber = False
         while True:
@@ -60,6 +63,7 @@ def kyber_currencies_update():
 @task(queue='bancor', options={'queue': 'bancor'}, ignore_result=True)
 def bancor_currencies_update():
     global bankor
+    print(bankor)
     if bankor:
         bankor = False
         while True:
@@ -74,6 +78,7 @@ def bancor_currencies_update():
 @task(queue='idex', options={'queue': 'idex'}, ignore_result=True)
 def idex_currencies_update():
     global idex
+    print(idex)
     if idex:
         idex = False
         while True:
@@ -88,6 +93,7 @@ def idex_currencies_update():
 @task(queue='hotbit', options={'queue': 'hotbit'}, ignore_result=True)
 def hotbit_currencies_update():
     global hotbit
+    print(hotbit)
     if hotbit:
         hotbit = False
         while True:
