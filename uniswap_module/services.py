@@ -67,7 +67,7 @@ def uniswap_v2_init():
     print('start uniswap_v2: ' + str(datetime.datetime.now()))
     token_uni2 = Uniswap.objects.all().values()
     url_v2 = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
-    Uniswap.objects.all().uptade(volume=0)
+    Uniswap.objects.all().update(volume=0)
     for token in token_uni2:
         tokenid = token['tokenid'].lower()
         token = token['exch_direction']
