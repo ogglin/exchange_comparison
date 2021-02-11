@@ -160,7 +160,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
             count = 1
         ask_price = full_price / count
 
-    if bid_price > 0 and ask_price > 0 and token_volume >= 0.1 and full_volume > 0.5:
+    if bid_price > 0 and ask_price > 0 and token_volume >= 0.1 and full_volume > 0.8:
         # print('/--------------------------')
         # print('token vol:', token_volume)
         # print('full vol:', full_volume)
