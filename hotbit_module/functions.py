@@ -145,7 +145,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
             if float(bid[0]) / currency > (asks * percent / 100 + asks) and full_volume <= 1:
                 count += 1
                 full_price += float(bid[0]) / currency
-                full_volume += float(bid[1]) * float(bid[0]) * currency
+                full_volume += float(bid[1]) * float(bid[0]) / currency
         if count == 0:
             count = 1
         bid_price = full_price / count
@@ -155,12 +155,12 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
             if (float(ask[0]) / currency * percent / 100) + (float(ask[0]) / currency) < bids and full_volume <= 1:
                 count += 1
                 full_price += float(ask[0]) / currency
-                full_volume += float(ask[1]) * float(ask[0]) * currency
+                full_volume += float(ask[1]) * float(ask[0]) / currency
         if count == 0:
             count = 1
         ask_price = full_price / count
 
-    if bid_price > ask_price > 0 and full_volume > 0.8 and token_volume >= 0.1:
+    if bid_price > 0 and ask_price > 0 and token_volume >= 0.1 and full_volume > 0.5:
         # print('/--------------------------')
         # print('token vol:', token_volume)
         # print('full vol:', full_volume)
@@ -322,10 +322,10 @@ def save_profits():
 
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
-            pair = ProfitExchanges(id=id, pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
-                                   percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
-
-            pair.save()
+            # pair = ProfitExchanges(id=id, pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
+            #                        percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
+            #
+            # pair.save()
     loop.close()
     return compare_result
     # except:
