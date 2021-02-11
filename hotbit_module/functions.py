@@ -296,9 +296,9 @@ def save_profits():
                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][0].replace('/', '_')
             if result[0][1] == 'IDEX':
                 buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
-            if result[0][1] == 'BANKOR':
-                buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
-                         result[0][8]
+            # if result[0][1] == 'BANKOR':
+            #     buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
+            #              result[0][8]
             if result[0][1] == 'KYBER':
                 buyurl = 'https://kyberswap.com/swap/eth-' + result[0][0]
             if result[0][1] == 'UNISWAP':
@@ -310,9 +310,9 @@ def save_profits():
                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
             if result[0][4] == 'IDEX':
                 sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
-            if result[0][4] == 'BANKOR':
-                sellurl = 'https://app.bancor.network/eth/swap?from=' + result[0][
-                    8] + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+            # if result[0][4] == 'BANKOR':
+            #     sellurl = 'https://app.bancor.network/eth/swap?from=' + result[0][
+            #         8] + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
             if result[0][4] == 'KYBER':
                 sellurl = 'https://kyberswap.com/swap/eth-' + result[0][3]
             if result[0][4] == 'UNISWAP':
