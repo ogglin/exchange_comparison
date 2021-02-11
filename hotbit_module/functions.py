@@ -322,10 +322,10 @@ def save_profits():
 
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
-            # pair = ProfitExchanges(id=id, pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
-            #                        percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
-            #
-            # pair.save()
+            pair = ProfitExchanges(id=id, pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
+                                   percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
+
+            pair.save()
     loop.close()
     return compare_result
     # except:
