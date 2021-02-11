@@ -160,7 +160,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
             count = 1
         ask_price = full_price / count
 
-    if bid_price > ask_price > 0 and full_volume > 0.8 and token_volume >= 0.8:
+    if bid_price > ask_price > 0 and full_volume > 0.8 and token_volume >= 0.1:
         # print('/--------------------------')
         # print('token vol:', token_volume)
         # print('full vol:', full_volume)
@@ -303,8 +303,8 @@ def save_profits():
                 buyurl = 'https://kyberswap.com/swap/eth-' + result[0][0]
             if result[0][1] == 'UNISWAP':
                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
-            if result[0][1] == 'UNISWAP_ONE':
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
+            # if result[0][1] == 'UNISWAP_ONE':
+            #     buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
 
             if 'HOTBIT' in result[0][4]:
                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + result[0][3].replace('/', '_')
@@ -317,8 +317,8 @@ def save_profits():
                 sellurl = 'https://kyberswap.com/swap/eth-' + result[0][3]
             if result[0][4] == 'UNISWAP':
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
-            if result[0][4] == 'UNISWAP_ONE':
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
+            # if result[0][4] == 'UNISWAP_ONE':
+            #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
 
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})

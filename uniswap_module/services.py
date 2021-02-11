@@ -67,41 +67,15 @@ def uniswap_v2_init():
     print('start uniswap_v2: ' + str(datetime.datetime.now()))
     token_uni2 = Uniswap.objects.all().values()
     url_v2 = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
-    Uniswap.objects.all().update(volume=0)
     for token in token_uni2:
         tokenid = token['tokenid'].lower()
         token = token['exch_direction']
         req = {'query': '{token(id: "' + tokenid + '"){ symbol totalLiquidity derivedETH } }'}
         response = requests.post(url=url_v2, data=json.dumps(req))
         jData = json.loads(response.content)['data']['token']
-        if jData is not None and jData['totalLiquidity'] is not None:
-            if float(jData['derivedETH']) > 0 and float(jData['totalLiquidity']) > 1:
-                highest_bid = float(jData['derivedETH']) * koef
-                lowest_ask = float(jData['derivedETH'])
-                volume = float(jData['totalLiquidity'])
-                currencies_update_v2(token, lowest_ask, highest_bid, tokenid, volume)
+        if jData is not None and jData['totalLiquidity'] is not None and jData['derivedETH'] is not None:
+            highest_bid = float(jData['derivedETH']) * koef
+            lowest_ask = float(jData['derivedETH'])
+            volume = float(jData['totalLiquidity'])
+            currencies_update_v2(token, lowest_ask, highest_bid, tokenid, volume)
     print('end uniswap_v2: ' + str(datetime.datetime.now()))
-
-
-# def set_currencies_v2(date, trusted_tokens):
-#     url_v2 = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
-#     response = requests.post(url=url_v2, data=date)
-#     try:
-#         jData = json.loads(response.content)['data']
-#         Uniswap.objects.filter.uptade(volume=0)
-#         for data in jData['tokens']:
-#             if data['totalLiquidity'] is not None:
-#                 if float(data['derivedETH']) > 0 and float(data['totalLiquidity']) > 1:
-#                     direction = data['symbol']
-#                     highest_bid = float(data['derivedETH']) * koef
-#                     lowest_ask = float(data['derivedETH'])
-#                     tokenid = data['id']
-#                     volume = float(data['totalLiquidity'])
-#                     if volume > 0:
-#                         for row in trusted_tokens:
-#                             if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
-#                                 currencies_update_v2(direction, lowest_ask, highest_bid, tokenid, volume)
-#     except:
-#         pass
-
-
