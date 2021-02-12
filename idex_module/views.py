@@ -10,12 +10,12 @@ from .functions import idex_profits
 class idex(APIView):
 
     def get(self, request):
-        hotbit_result = hotbit_profits()
+        # hotbit_result = hotbit_profits()
         idex_result = idex_profits()
         results = []
-        exchanges_init()
-        for result in hotbit_result:
-            results.append(result)
+        # exchanges_init()
+        # for result in hotbit_result:
+        #     results.append(result)
         for result in idex_result:
             results.append(result)
         return Response(results)

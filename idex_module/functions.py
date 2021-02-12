@@ -14,11 +14,11 @@ async def compare_symbol(symbol, idex, percent):
     tokenid = symbol[4]
     result = []
     # From idex to exch
-    if symbol[2] > idex[2] + idex[2]*percent/100 > 0:
+    if symbol[2] > idex[2] > 0:
         sellurl = ''
         buy_name = 'IDEX'
         buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-        sell_name = symbol[3].upper()
+        sell_name = symbol[1].upper()
         if sell_name == 'uniswap':
             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid)
         elif sell_name == 'kyber':
@@ -34,7 +34,7 @@ async def compare_symbol(symbol, idex, percent):
                                    'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
         # print(result)
     # From exch to idex
-    if idex[3] > symbol[3] + symbol[3]/percent/100 > 0:
+    if idex[3] > symbol[3] > 0:
         buyurl = ''
         buy_name = symbol[1].upper()
         if buy_name == 'uniswap':
@@ -70,32 +70,32 @@ async def init_compare(all_symbols, all_idex, percent):
 def idex_profits():
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
-    all_idex = _query("SELECT * FROM module_idex WHERE volume >= 0")
+    all_idex = _query("SELECT * FROM module_idex WHERE is_active is TRUE ORDER BY exch_direction;")
     all_symbols = _query(f'''WITH bankor as (
             SELECT mb.exch_direction, 'bankor' as site, mb.highest_bid, mb.lowest_ask, mb.link_id token_id, mb.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
             LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id
-            WHERE idex_direction_id is not null and bancor_direction_id is not null and mb.volume >= 1 ORDER BY hotbit_id
+            WHERE idex_direction_id is not null and bancor_direction_id is not null ORDER BY hotbit_id
             ), kyber as (
             SELECT mk.exch_direction, 'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
             LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id
-            WHERE idex_direction_id is not null and kyber_direction_id is not null and mk.volume >= 1 ORDER BY hotbit_id
+            WHERE idex_direction_id is not null and kyber_direction_id is not null ORDER BY exch_direction
             ), uniswap as (
             SELECT mu.exch_direction, 'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
             LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id
-            WHERE idex_direction_id is not null and uniswap_direction_id is not null and mu.volume >= 1 ORDER BY hotbit_id
+            WHERE idex_direction_id is not null and uniswap_direction_id is not null ORDER BY exch_direction
             ), uniswap_one as (
             SELECT muo.exch_direction, 'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, muo.volume 
             FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
             LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id
-            WHERE idex_direction_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL AND muo.volume >=1 ORDER BY hotbit_id
+            WHERE idex_direction_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL AND muo.volume >= 0 ORDER BY exch_direction
             ) SELECT * FROM uniswap 
             UNION ALL SELECT * FROM bankor 
             UNION ALL SELECT * FROM kyber
-            UNION ALL SELECT * FROM uniswap_one''')
+            UNION ALL SELECT * FROM uniswap_one;''')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
@@ -104,7 +104,7 @@ def idex_profits():
     compare_result = []
     for result in init_result:
         if len(result) > 0:
-            # print(result)
+            print(result)
             for r in result:
                 compare_result.append({'pair': r['pair'], 'buy_name': r['buy_name'], 'buy': r['buy'],
                                        'sell_name': r['sell_name'], 'sell': r['sell'], 'percent': r['percent'],
