@@ -4,13 +4,11 @@ import time
 
 import requests
 
-
 from .models import *
 
 
 def currencies_update(token_pair, ask, bid, volume):
     # print(token_pair, ask, bid, volume)
-    time.sleep(2)
     pair_id = Idex.objects.filter(exch_direction=token_pair).values('id')
     if len(pair_id) > 0:
         Idex.objects.filter(id=pair_id[0]['id']).update(lowest_ask=ask, highest_bid=bid, volume=volume)
@@ -43,3 +41,6 @@ def idex_init():
     print('start idex: ' + str(datetime.datetime.now()))
     set_currencies()
     print('end idex: ' + str(datetime.datetime.now()))
+
+
+# idex_init()

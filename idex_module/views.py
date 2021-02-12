@@ -7,12 +7,16 @@ from .functions import idex_profits
 
 
 # Create your views here.
+from .services import idex_init
+
+
 class idex(APIView):
 
     def get(self, request):
         # hotbit_result = hotbit_profits()
         idex_result = idex_profits()
         results = []
+        # idex_init()
         # exchanges_init()
         # for result in hotbit_result:
         #     results.append(result)
