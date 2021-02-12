@@ -15,6 +15,7 @@ kyber = True
 idex = True
 hotbit = True
 bankor = True
+exchanges = True
 
 
 @periodic_task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True,
