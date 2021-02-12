@@ -5,7 +5,6 @@ from celery.signals import celeryd_after_setup, celeryd_init
 
 from bancor_module.services import bankor_init
 from exchange_pairs.functions import exchanges_init
-from hotbit_module.functions import hotbit_init
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
 from uniswap_module.services import uniswap_v1_init, uniswap_v2_init
@@ -18,7 +17,8 @@ hotbit = True
 bankor = True
 
 
-@periodic_task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True, run_every=(timedelta(seconds=11)))
+@periodic_task(queue='uniswap_one', options={'queue': 'uniswap_one'}, ignore_result=True,
+               run_every=(timedelta(seconds=11)))
 def uniswap_one_currencies_update():
     global uniswap_v1
     print(uniswap_v1)
