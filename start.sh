@@ -1,8 +1,8 @@
 #!/bin/bash
 ps auxww | grep 'celery' | awk '{print $2}' | xargs kill -9
-wait 2-3 sek
+sleap 3
 celery -A exchange_comparison purge --force
-wait 2-3 sek
+sleap 3
 celery -A exchange_comparison worker -Q exchanges -B -l WARNING -n exchanges@vp4.ru &
 celery -A exchange_comparison worker -Q idex -B -l WARNING -n idex@vp4.ru &
 celery -A exchange_comparison worker -Q uniswap -B -l WARNING -n uniswap@vp4.ru &

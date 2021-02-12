@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from hotbit_module.functions import hotbit_profits
 from .functions import idex_profits
 
 
@@ -8,5 +9,11 @@ from .functions import idex_profits
 class idex(APIView):
 
     def get(self, request):
+        hotbit_result = hotbit_profits()
         idex_result = idex_profits()
-        return Response(idex_result)
+        results = []
+        for result in hotbit_result:
+            results.append(result)
+        for result in idex_result:
+            results.append(result)
+        return Response(results)

@@ -7,9 +7,9 @@ from idex_module.models import Idex
 
 
 async def compare_symbol(symbol, idex, percent):
-    print('/*************')
-    print(symbol)
-    print(idex)
+    # print('/*************')
+    # print(symbol)
+    # print(idex)
     pair = symbol[0]
     tokenid = symbol[6]
     result = []
@@ -29,9 +29,10 @@ async def compare_symbol(symbol, idex, percent):
             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid) + '&use=v1'
         buy = idex[2]
         sell = symbol[4]
-        profit_percent = (buy - sell) / buy * 100
-        result.append({pair, buy_name, buy, sell_name, sell, profit_percent, tokenid, buyurl, sellurl})
-        print(result)
+        profit_percent = (sell - buy) / buy * 100
+        result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                                   'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+        # print(result)
     # From exch to idex
     if idex[3] > symbol[5] + symbol[5]/percent/100 > 0:
         buyurl = ''
@@ -48,10 +49,11 @@ async def compare_symbol(symbol, idex, percent):
         sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
         buy = symbol[5]
         sell = idex[3]
-        profit_percent = (buy - sell) / buy * 100
-        result.append({pair, buy_name, buy, sell_name, sell, profit_percent, tokenid, buyurl, sellurl})
-        print(result)
-    print('*************/')
+        profit_percent = (sell - buy) / buy * 100
+        result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                                   'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+        # print(result)
+    # print('*************/')
     return result
 
 
@@ -101,8 +103,10 @@ def idex_profits():
     compare_result = []
     for result in init_result:
         if len(result) > 0:
-            print(result)
+            # print(result)
             for r in result:
-                compare_result.append(r)
+                compare_result.append({'pair': r['pair'], 'buy_name': r['buy_name'], 'buy': r['buy'],
+                                       'sell_name': r['sell_name'], 'sell': r['sell'], 'percent': r['percent'],
+                                       'tokenid': r['tokenid'], 'buyurl': r['buyurl'], 'sellurl': r['sellurl']})
     loop.close()
     return compare_result
