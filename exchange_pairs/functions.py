@@ -6,12 +6,10 @@ from idex_module.functions import idex_profits
 
 
 def exchanges_profits():
-    ProfitExchanges.objects.all().delete()
     hotbit_result = hotbit_profits()
     idex_result = idex_profits()
-    print(hotbit_result)
-    print(idex_result)
     id = 0
+    ProfitExchanges.objects.all().delete()
     for result in hotbit_result:
         id += 1
         pair = ProfitExchanges(id=id, pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
