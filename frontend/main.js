@@ -198,6 +198,9 @@ class MainTableComponent {
                     }
                 });
             });
+            this.api.getApi('exchpair/').subscribe((result) => {
+                this.tokenPrices = result;
+            });
             this.getHotbitProfits();
             // this.getPair();
             // this.ngZone.runOutsideAngular(() => {
@@ -666,6 +669,7 @@ class SocketComponent {
             this.connect(tokens);
             tokenPrice = this.tokenPrices;
         });
+        this.showLog();
     }
     // tslint:disable-next-line:typedef
     ngOnChanges(changes) {
@@ -736,6 +740,7 @@ class SocketComponent {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["of"])(this.comparToken(trade));
     }
     comparToken(trade) {
+        console.log(trade);
         const data = [];
         this.lastEvent = trade;
         tokenPrice.forEach(token => {
@@ -802,6 +807,7 @@ class SocketComponent {
     }
     showLog() {
         this.api.getApi('websocket_log/').subscribe((res) => {
+            console.log('websocket_log', res);
             res.forEach(elem => {
                 if (JSON.parse(elem.log).data) {
                     this.getComparToket(JSON.parse(elem.log).data).subscribe(result => {
