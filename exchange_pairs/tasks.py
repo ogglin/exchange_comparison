@@ -94,11 +94,11 @@ def idex_currencies_update():
 
 
 @periodic_task(queue='exchanges', options={'queue': 'exchanges'}, ignore_result=True, run_every=(timedelta(seconds=11)))
-def hotbit_currencies_update():
+def exchanges_currencies_update():
     global exchanges
     print(exchanges)
     if exchanges:
-        hotbit = False
+        exchanges = False
         while True:
             exchanges_init()
     # try:
