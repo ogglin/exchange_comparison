@@ -198,7 +198,8 @@ class MainTableComponent {
                     }
                 });
             });
-            this.getPair();
+            this.getHotbitProfits();
+            // this.getPair();
             // this.ngZone.runOutsideAngular(() => {
             // setInterval(() => {
             //   this.getPair();
@@ -240,8 +241,26 @@ class MainTableComponent {
                             sellurl: item.sellurl
                         };
                         this.TableData.push(elem);
+                        this.TableData.sort((a, b) => {
+                            if (a.percent < b.percent) {
+                                return 1;
+                            }
+                            if (a.percent > b.percent) {
+                                return -1;
+                            }
+                            // a должно быть равным b
+                            return 0;
+                        });
+                        this.dataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_1__["MatTableDataSource"](this.TableData);
+                        this.pushNotice(this.checkChange(this.TableData));
                     }
                 });
+                setTimeout(() => {
+                    this.getHotbitProfits();
+                }, this.timer);
+            }, error => {
+                console.log(error);
+                this.getHotbitProfits();
             });
         };
         this.calculatePair = (exchangeData) => {
