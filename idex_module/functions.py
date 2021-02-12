@@ -11,10 +11,10 @@ async def compare_symbol(symbol, idex, percent):
     # print(symbol)
     # print(idex)
     pair = symbol[0]
-    tokenid = symbol[6]
+    tokenid = symbol[4]
     result = []
     # From idex to exch
-    if symbol[4] > idex[2] + idex[2]*percent/100 > 0:
+    if symbol[2] > idex[2] + idex[2]*percent/100 > 0:
         sellurl = ''
         buy_name = 'IDEX'
         buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
@@ -28,15 +28,15 @@ async def compare_symbol(symbol, idex, percent):
         elif sell_name == 'uniswap_one':
             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid) + '&use=v1'
         buy = idex[2]
-        sell = symbol[4]
+        sell = symbol[2]
         profit_percent = (sell - buy) / buy * 100
         result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
         # print(result)
     # From exch to idex
-    if idex[3] > symbol[5] + symbol[5]/percent/100 > 0:
+    if idex[3] > symbol[3] + symbol[3]/percent/100 > 0:
         buyurl = ''
-        buy_name = symbol[3].upper()
+        buy_name = symbol[1].upper()
         if buy_name == 'uniswap':
             buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid)
         elif buy_name == 'kyber':
@@ -47,7 +47,7 @@ async def compare_symbol(symbol, idex, percent):
             'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid) + '&use=v1'
         sell_name = 'IDEX'
         sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-        buy = symbol[5]
+        buy = symbol[3]
         sell = idex[3]
         profit_percent = (sell - buy) / buy * 100
         result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
@@ -71,30 +71,31 @@ def idex_profits():
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     all_idex = _query("SELECT * FROM module_idex WHERE volume >= 0")
-    all_symbols = _query(f"WITH bankor as (SELECT mb.exch_direction, mh.symbol, mh.decimals, "
-                         f"'bankor' as site, mb.highest_bid, mb.lowest_ask, mb.link_id token_id, mb.volume "
-                         f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id "
-                         f"WHERE hotbit_id is not null and bancor_direction_id is not null and mb.volume >= 1 "
-                         f"ORDER BY hotbit_id), kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, "
-                         f"'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs "
-                         f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id "
-                         f"WHERE hotbit_id is not null and kyber_direction_id is not null and mk.volume >= 1 "
-                         f"ORDER BY hotbit_id), uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, "
-                         f"'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume "
-                         f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id "
-                         f"WHERE hotbit_id is not null and uniswap_direction_id is not null and mu.volume >= 1 "
-                         f"ORDER BY hotbit_id), uniswap_one as (SELECT muo.exch_direction, mh.symbol, mh.decimals, "
-                         f"'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, "
-                         f"muo.volume FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id "
-                         f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
-                         f"ORDER BY hotbit_id) SELECT * FROM uniswap "
-                         f"UNION ALL SELECT * FROM bankor "
-                         f"UNION ALL SELECT * FROM kyber "
-                         f"UNION ALL SELECT * FROM uniswap_one;")
+    all_symbols = _query(f'''WITH bankor as (
+            SELECT mb.exch_direction, 'bankor' as site, mb.highest_bid, mb.lowest_ask, mb.link_id token_id, mb.volume FROM exchange_pairs 
+            LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
+            LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id
+            WHERE idex_direction_id is not null and bancor_direction_id is not null and mb.volume >= 1 ORDER BY hotbit_id
+            ), kyber as (
+            SELECT mk.exch_direction, 'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs 
+            LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
+            LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id
+            WHERE idex_direction_id is not null and kyber_direction_id is not null and mk.volume >= 1 ORDER BY hotbit_id
+            ), uniswap as (
+            SELECT mu.exch_direction, 'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume FROM exchange_pairs 
+            LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
+            LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id
+            WHERE idex_direction_id is not null and uniswap_direction_id is not null and mu.volume >= 1 ORDER BY hotbit_id
+            ), uniswap_one as (
+            SELECT muo.exch_direction, 'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, muo.volume 
+            FROM exchange_pairs 
+            LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
+            LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id
+            WHERE idex_direction_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL AND muo.volume >=1 ORDER BY hotbit_id
+            ) SELECT * FROM uniswap 
+            UNION ALL SELECT * FROM bankor 
+            UNION ALL SELECT * FROM kyber
+            UNION ALL SELECT * FROM uniswap_one''')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
