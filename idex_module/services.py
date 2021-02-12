@@ -24,7 +24,7 @@ def set_currencies():
     url = 'https://api.idex.io/v1/tickers'
     response = requests.get(url=url)
     jData = json.loads(response.content)
-    Idex.objects.all().update(volume=0, lowest_ask=0, highest_bid=0)
+    # Idex.objects.all().update(volume=0, lowest_ask=0, highest_bid=0)
     for data in jData:
         ask = 0
         bid = 0
