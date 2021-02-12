@@ -61,7 +61,7 @@ async def init_compare(all_symbols, all_idex, percent):
     async_tasks = []
     for idex in all_idex:
         for symbol in all_symbols:
-            if symbol[0] == idex[1]:
+            if symbol[0] == idex[1] and 'usd' not in idex[1].lower():
                 async_tasks.append(compare_symbol(symbol, idex, percent))
     results = await asyncio.gather(*async_tasks)
     return results
