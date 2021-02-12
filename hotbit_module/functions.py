@@ -210,7 +210,6 @@ def hotbit_profits():
                          f"LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id "
                          f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
                          f"ORDER BY hotbit_id) SELECT * FROM idex "
-                         f"UNION ALL SELECT * FROM bankor "
                          f"UNION ALL SELECT * FROM kyber "
                          f"UNION ALL SELECT * FROM uniswap "
                          f"UNION ALL SELECT * FROM uniswap_one;")
