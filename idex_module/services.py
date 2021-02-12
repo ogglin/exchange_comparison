@@ -34,8 +34,8 @@ def set_currencies():
         if data['bid']:
             bid = data['bid']
         volume = float(data['quoteVolume'])
-        if volume > 0:
-            currencies_update(token_pair, ask, bid, volume)
+        # if volume > 0:
+        currencies_update(token_pair, ask, bid, volume)
     # print('end idex: ' + str(datetime.datetime.now()))
 
 

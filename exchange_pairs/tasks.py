@@ -4,6 +4,7 @@ from celery.task import task, periodic_task
 from celery.signals import celeryd_after_setup, celeryd_init
 
 from bancor_module.services import bankor_init
+from exchange_pairs.functions import exchanges_init
 from hotbit_module.functions import hotbit_init
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
@@ -92,14 +93,14 @@ def idex_currencies_update():
     #     raise
 
 
-@periodic_task(queue='hotbit', options={'queue': 'hotbit'}, ignore_result=True, run_every=(timedelta(seconds=11)))
+@periodic_task(queue='exchanges', options={'queue': 'exchanges'}, ignore_result=True, run_every=(timedelta(seconds=11)))
 def hotbit_currencies_update():
-    global hotbit
-    print(hotbit)
-    if hotbit:
+    global exchanges
+    print(exchanges)
+    if exchanges:
         hotbit = False
         while True:
-            hotbit_init()
+            exchanges_init()
     # try:
     #     pass
     # except:

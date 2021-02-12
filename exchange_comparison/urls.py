@@ -43,7 +43,7 @@ router.register(r'settings_modules', SettingsModulesViewSet, basename='settings_
 urlpatterns = [
                   path('', include(router.urls)),
                   path('contact/', include('send_mail.urls')),
-                  path('idex/', include('idex_module.urls')),
+                  path('idexv/', include('idex_module.urls')),
                   path('hotbitv/', include('hotbit_module.urls')),
                   path('uni/', include('uniswap_module.urls')),
                   path('admin/', admin.site.urls),

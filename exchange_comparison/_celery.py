@@ -24,6 +24,7 @@ app.conf.task_queues = {
     Queue('bancor', Exchange('bancor'), routing_key='bancor'),
     Queue('kyber', Exchange('kyber'), routing_key='kyber'),
     Queue('hotbit', Exchange('hotbit'), routing_key='hotbit'),
+    Queue('exchanges', Exchange('exchanges'), routing_key='exchanges'),
 }
 app.conf.task_default_exchange = 'tasks'
 app.conf.task_default_exchange_type = 'topic'

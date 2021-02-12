@@ -51,68 +51,17 @@ async def get_idex_tiker_all():
             return json.loads(html)
 
 
-async def get_idex_market(token, proxy):
+async def get_idex_market(token):
     for tiker in idex_tiker_all:
         if tiker['market'].replace('-ETH', '') == token:
             return tiker
     return None
-    # url = f'https://api.idex.io/v1/tickers?market={token}-ETH'
-    # print(url + str(datetime.datetime.now()), proxy)
-    # socks_url = 'http://' + prx[2] + ':' + prx[3] + '@' + prx[1] + ':' + prx[0]
-    # print(url + str(datetime.datetime.now()), socks_url)
-    # reader, writer = await open_connection(
-    #     # socks_url='http://user:password@127.0.0.1:1080',
-    #     socks_url=socks_url,
-    #     host=url,
-    #     port=80
-    # )
-    # request = (b"GET /ip HTTP/1.1\r\n"
-    #            b"Host: api.idex.io\r\n"
-    #            b"Connection: close\r\n\r\n")
-    #
-    # writer.write(request)
-    # print(reader.read(-1))
-    # return await json.loads(reader.read(-1))
-    # connector = ProxyConnector(
-    #     proxy_type=ProxyType.SOCKS5,
-    #     host=proxy[0],
-    #     port=16714,
-    #     username='user53105',
-    #     password='3x7cyr',
-    #     rdns=True
-    # )
-    #
-    # async with aiohttp.ClientSession(connector=connector) as session:
-    #     async with session.get(url) as response:
-    #         html = await response.text()
-    #         return json.loads(html)
 
 
 async def get_hotbit_depth(symbol, proxy):
     url = f"https://api.hotbit.io/api/v1/order.depth?interval=1e-8&&limit=20&market={symbol}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
-    # reader, writer = await open_connection(
-    #     # socks_url='socks5://user:password@127.0.0.1:1080',
-    #     proxy_url=socks_url,
-    #     host=url,
-    #     port=80
-    # )
-    # request = (b"GET /ip HTTP/1.1\r\n"
-    #            b"Host: api.hotbit.io\r\n"
-    #            b"Connection: close\r\n\r\n")
-    #
-    # writer.write(request)
-    # print('socks', reader.read(-1))
-    # return await reader.read(-1)
     connector = SocksConnector.from_url(socks_url)
-    # connector = SocksConnector(
-    #     proxy_type=SocksVer.SOCKS5,
-    #     host=proxy[0],
-    #     port=16881,
-    #     username='user53105',
-    #     password='3x7cyr',
-    #     rdns=True
-    # )
     async with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url) as response:
             html = await response.text()
@@ -188,7 +137,7 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
         hotbit_asks = hotbit_depth['result']['asks']
         hotbit_bids = hotbit_depth['result']['bids']
         if 'idex' in symbol[3]:
-            idex_ticker = await get_idex_market(symbol[0], proxy)
+            idex_ticker = await get_idex_market(symbol[0])
             # print(idex_ticker)
             if idex_ticker is not None and float(idex_ticker['quoteVolume']) > 1:
                 if idex_ticker['ask'] is not None:
@@ -237,7 +186,7 @@ async def init(symbols, percent, currency):
     return results
 
 
-def save_profits():
+def hotbit_profits():
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     all_symbols = _query(f"WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, "
@@ -278,13 +227,10 @@ def save_profits():
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     init_result = loop.run_until_complete(init(all_symbols, percent, currency))
     compare_result = []
-    ProfitExchanges.objects.all().delete()
     buyurl = ''
     sellurl = ''
-    id = 0
     for result in init_result:
         if len(result) > 0:
-            id += 1
             pair = result[0][0]
             buy_name = result[0][1]
             buy = result[0][2]
@@ -319,13 +265,8 @@ def save_profits():
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
             # if result[0][4] == 'UNISWAP_ONE':
             #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
-
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
-            pair = ProfitExchanges(id=id, pair=pair, buy_name=buy_name, buy=buy, sell_name=sell_name, sell=sell,
-                                   percent=percent, tokenid=tokenid, buyurl=buyurl, sellurl=sellurl)
-
-            pair.save()
     loop.close()
     return compare_result
     # except:
@@ -344,18 +285,6 @@ def get_eth_btc():
         Settings.objects.filter(id=1).update(currency=float(json.loads(response.content)['result']['last']))
     except:
         pass
-    # return currency['currency']
-    # bids = json.loads(response.content)['result']['bids']
-    # all_ask = 0
-    # for ask in asks:
-    #     # print(ask[0], ask[1])
-    #     all_ask += float(ask[0])
-    #
-    # all_bid = 0
-    # for bid in bids:
-    #     # print(bid[0], bid[1])
-    #     all_bid += float(bid[0])
-    # return 1 / (all_ask / len(asks)), 1 / (all_bid / len(bids))
 
 
 def get_ticker():
@@ -410,9 +339,4 @@ def set_currencies():
         decimals = None
 
 
-# set_currencies()
 
-def hotbit_init():
-    print('start hotbit: ' + str(datetime.datetime.now()))
-    save_profits()
-    print('end hotbit: ' + str(datetime.datetime.now()))

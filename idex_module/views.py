@@ -1,8 +1,12 @@
-from django.shortcuts import render
-from .socket_services import *
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .functions import idex_profits
 
 
 # Create your views here.
-def idex(request):
-    data = get_wss()
-    return render(request, 'idex/idex.html', {'data': data})
+class idex(APIView):
+
+    def get(self, request):
+        idex_result = idex_profits()
+        return Response(idex_result)

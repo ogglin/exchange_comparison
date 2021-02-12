@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from exchange_pairs.models import ProfitExchanges
-from hotbit_module.functions import save_profits
+from hotbit_module.functions import hotbit_profits
 
 
 def get_profits():
@@ -28,5 +28,5 @@ class hotbit(APIView):
         return Response(json.loads(response.text))
 
     def post(self, request):
-        compare_result = save_profits()
-        return Response(compare_result)
+        hotbit_result = hotbit_profits()
+        return Response(hotbit_result)
