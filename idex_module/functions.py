@@ -104,7 +104,6 @@ def idex_profits():
     compare_result = []
     for result in init_result:
         if len(result) > 0:
-            print(result)
             for r in result:
                 compare_result.append({'pair': r['pair'], 'buy_name': r['buy_name'], 'buy': r['buy'],
                                        'sell_name': r['sell_name'], 'sell': r['sell'], 'percent': r['percent'],
