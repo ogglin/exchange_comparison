@@ -42,6 +42,4 @@ def set_currencies():
 
 
 def bankor_init():
-    print('start bancor: ' + str(datetime.datetime.now()))
     set_currencies()
-    print('end bancor: ' + str(datetime.datetime.now()))

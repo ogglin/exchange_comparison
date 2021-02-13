@@ -38,9 +38,7 @@ def set_currencies():
 
 
 def idex_init():
-    print('start idex: ' + str(datetime.datetime.now()))
     set_currencies()
-    print('end idex: ' + str(datetime.datetime.now()))
 
 
 # idex_init()
