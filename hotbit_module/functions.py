@@ -2,6 +2,7 @@ import asyncio
 import concurrent.futures
 import datetime
 import json
+import time
 import random
 from random import randrange
 
@@ -127,7 +128,14 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
 
 async def compare_markets(symbol, percent, currency, proxy, cnt):
     compares = []
-    hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
+    isTD = True
+    while isTD:
+        try:
+            hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
+            isTD = False
+        except:
+            time.sleep(1)
+            isTD = True
     exchange_name = 'HOTBIT'
     if 'BTC' in symbol[1]:
         exchange_name = 'HOTBIT / BTC'
@@ -286,7 +294,13 @@ def get_ticker():
     ask_btc = currency
     bit_btc = currency
     token = ''
-    response = requests.get(url=API_URL)
+    resp_get = True
+    while resp_get:
+        try:
+            response = requests.get(url=API_URL)
+            resp_get = False
+        except:
+            resp_get = True
     jData = sorted(json.loads(response.content)['ticker'], key=lambda x: x['symbol'], reverse=False)
     for data in jData:
         if 'USDT' not in data['symbol']:
