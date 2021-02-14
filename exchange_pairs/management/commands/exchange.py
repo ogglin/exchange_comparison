@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['exch']:
             print('Start compare exchange')
-            exchp = subprocess.Popen('python /var/www/exchange_comparison/exchange_pairs/start.py &').pid
+            exchp = subprocess.Popen('/var/www/exchange_comparison/exchange_pairs/start.py &').pid
             print("done. (PID: %s)" % exchp)
         if options['idex']:
             print('Start collect idex tickers')
