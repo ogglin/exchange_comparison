@@ -42,4 +42,5 @@ def set_currencies():
 
 
 def bankor_init():
-    set_currencies()
+    while True:
+        set_currencies()

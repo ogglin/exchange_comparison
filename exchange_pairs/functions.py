@@ -25,6 +25,7 @@ def exchanges_profits():
 
 
 def exchanges_init():
-    print('start exchanges: ' + str(datetime.datetime.now()))
-    exchanges_profits()
-    print('end exchanges: ' + str(datetime.datetime.now()))
+    while True:
+        print('start exchanges: ' + str(datetime.datetime.now()))
+        exchanges_profits()
+        print('end exchanges: ' + str(datetime.datetime.now()))

@@ -38,7 +38,8 @@ def set_currencies():
 
 
 def idex_init():
-    set_currencies()
+    while True:
+        set_currencies()
 
 
 # idex_init()
