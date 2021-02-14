@@ -244,20 +244,20 @@ class MainTableComponent {
                             sellurl: item.sellurl
                         };
                         this.TableData.push(elem);
-                        this.TableData.sort((a, b) => {
-                            if (a.percent < b.percent) {
-                                return 1;
-                            }
-                            if (a.percent > b.percent) {
-                                return -1;
-                            }
-                            // a должно быть равным b
-                            return 0;
-                        });
-                        this.dataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_1__["MatTableDataSource"](this.TableData);
-                        this.pushNotice(this.checkChange(this.TableData));
                     }
                 });
+                this.TableData.sort((a, b) => {
+                    if (a.percent < b.percent) {
+                        return 1;
+                    }
+                    if (a.percent > b.percent) {
+                        return -1;
+                    }
+                    // a должно быть равным b
+                    return 0;
+                });
+                this.dataSource = new _angular_material_table__WEBPACK_IMPORTED_MODULE_1__["MatTableDataSource"](this.TableData);
+                this.pushNotice(this.checkChange(this.TableData));
                 setTimeout(() => {
                     this.getHotbitProfits();
                 }, this.timer);
@@ -740,7 +740,6 @@ class SocketComponent {
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["of"])(this.comparToken(trade));
     }
     comparToken(trade) {
-        console.log(trade);
         const data = [];
         this.lastEvent = trade;
         tokenPrice.forEach(token => {
@@ -807,7 +806,6 @@ class SocketComponent {
     }
     showLog() {
         this.api.getApi('websocket_log/').subscribe((res) => {
-            console.log('websocket_log', res);
             res.forEach(elem => {
                 if (JSON.parse(elem.log).data) {
                     this.getComparToket(JSON.parse(elem.log).data).subscribe(result => {

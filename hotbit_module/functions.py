@@ -197,6 +197,13 @@ async def init(symbols, percent, currency):
 def hotbit_profits():
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
+    ''', uniswap_one as (SELECT muo.exch_direction, mh.symbol, mh.decimals, "
+                         f"'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, "
+                         f"muo.volume FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
+                         f"LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id "
+                         f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
+                         f"ORDER BY hotbit_id) 
+                         UNION ALL SELECT * FROM uniswap_one'''
     all_symbols = _query(f"WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, "
                          f"mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume FROM exchange_pairs "
                          f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
@@ -212,15 +219,9 @@ def hotbit_profits():
                          f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
                          f"LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id "
                          f"WHERE hotbit_id is not null and uniswap_direction_id is not null and mu.volume >= 1 "
-                         f"ORDER BY hotbit_id), uniswap_one as (SELECT muo.exch_direction, mh.symbol, mh.decimals, "
-                         f"'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, "
-                         f"muo.volume FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id "
-                         f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
                          f"ORDER BY hotbit_id) SELECT * FROM idex "
                          f"UNION ALL SELECT * FROM kyber "
-                         f"UNION ALL SELECT * FROM uniswap "
-                         f"UNION ALL SELECT * FROM uniswap_one;")
+                         f"UNION ALL SELECT * FROM uniswap;")
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
     loop = asyncio.new_event_loop()
