@@ -42,4 +42,4 @@ async def kyber_init():
     while True:
         print('start kyber: ' + str(datetime.datetime.now()))
         await set_currencies()
-        print('start kyber: ' + str(datetime.datetime.now()))
+        print('end kyber: ' + str(datetime.datetime.now()))

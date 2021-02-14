@@ -47,4 +47,4 @@ async def bankor_init():
     while True:
         print('start bankor: ' + str(datetime.datetime.now()))
         await set_currencies()
-        print('start bankor: ' + str(datetime.datetime.now()))
+        print('end bankor: ' + str(datetime.datetime.now()))
