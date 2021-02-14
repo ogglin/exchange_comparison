@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from bancor_module.services import bankor_init
 from exchange_pairs.functions import exchanges_init
-from exchange_pairs.start import init_start
+from exchange_pairs.main import init_start
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
 from uniswap_module.services import uniswap_v2_init, uniswap_v1_init

@@ -1,7 +1,7 @@
 import asyncio
 import concurrent.futures
 import threading
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 
 from bancor_module.services import bankor_init
 from exchange_pairs.functions import exchanges_init
@@ -11,23 +11,26 @@ from uniswap_module.services import uniswap_v2_init, uniswap_v1_init
 
 
 def init_start():
-    # loop = asyncio.get_running_loop()
-    # async_tasks = [
-    #     exchanges_init(),
-    #     idex_init(),
-    #     bankor_init(),
-    #     kyber_init(),
-    #     uniswap_v2_init(),
-    #     uniswap_v1_init(),
-    # ]
-    # results = await asyncio.gather(*async_tasks)
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop = asyncio.get_event_loop()
+    loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
+    async_tasks = [
+        exchanges_init(),
+        idex_init(),
+        bankor_init(),
+        kyber_init(),
+        uniswap_v2_init(),
+        uniswap_v1_init(),
+    ]
+    loop.run_until_complete(asyncio.gather(*async_tasks))
 
-    Process(target=exchanges_init()).start()
-    Process(target=idex_init()).start()
-    Process(target=bankor_init()).start()
-    Process(target=kyber_init()).start()
-    Process(target=uniswap_v2_init()).start()
-    Process(target=uniswap_v1_init()).start()
+    # Process(target=exchanges_init()).start()
+    # Process(target=idex_init()).start()
+    # Process(target=bankor_init()).start()
+    # Process(target=kyber_init()).start()
+    # Process(target=uniswap_v2_init()).start()
+    # Process(target=uniswap_v1_init()).start()
 
     # exthread = threading.Thread(target=exchanges_init())
     # ithread = threading.Thread(target=idex_init())
@@ -41,3 +44,7 @@ def init_start():
     # kthread.start()
     # uhread.start()
     # uothread.start()
+
+
+if __name__ == '__main__':
+    init_start()

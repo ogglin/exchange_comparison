@@ -2,6 +2,7 @@ import datetime
 import json
 
 import requests
+from asgiref.sync import sync_to_async
 
 from .models import Bancor
 
@@ -19,6 +20,7 @@ def currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
         pair.save()
 
 
+@sync_to_async
 def set_currencies():
     proxies = {
         'http': '87.76.35.86:35782',
@@ -41,8 +43,8 @@ def set_currencies():
                 currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
 
 
-def bankor_init():
+async def bankor_init():
     while True:
         print('start bankor: ' + str(datetime.datetime.now()))
-        set_currencies()
+        await set_currencies()
         print('start bankor: ' + str(datetime.datetime.now()))

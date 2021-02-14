@@ -3,6 +3,8 @@ import datetime
 import requests
 import json
 
+from asgiref.sync import sync_to_async
+
 from .models import Kyber
 
 koef = 0.99
@@ -19,6 +21,7 @@ def currencies_update(direction, lowest_ask, highest_bid, token_id, volume):
         pair.save()
 
 
+@sync_to_async
 def set_currencies():
     url = 'https://api.kyber.network/market'
     # response = requests.get(url=url, proxies=proxies)
@@ -35,8 +38,8 @@ def set_currencies():
             currencies_update(direction, lowest_ask, highest_bid, token_id, volume)
 
 
-def kyber_init():
+async def kyber_init():
     while True:
         print('start kyber: ' + str(datetime.datetime.now()))
-        set_currencies()
+        await set_currencies()
         print('start kyber: ' + str(datetime.datetime.now()))

@@ -3,6 +3,7 @@ import json
 import time
 
 import requests
+from asgiref.sync import sync_to_async
 
 from .models import *
 
@@ -17,6 +18,7 @@ def currencies_update(token_pair, ask, bid, volume):
         pair.save()
 
 
+@sync_to_async
 def set_currencies():
     # print('start idex: ' + str(datetime.datetime.now()))
     url = 'https://api.idex.io/v1/tickers'
@@ -37,10 +39,10 @@ def set_currencies():
     # print('end idex: ' + str(datetime.datetime.now()))
 
 
-def idex_init():
+async def idex_init():
     while True:
         print('start idex: ' + str(datetime.datetime.now()))
-        set_currencies()
+        await set_currencies()
         print('end idex: ' + str(datetime.datetime.now()))
 
 
