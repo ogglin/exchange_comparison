@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 
 from bancor_module.services import bankor_init
 from exchange_pairs.functions import exchanges_init
+from exchange_pairs.start import init_start
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
 from uniswap_module.services import uniswap_v2_init, uniswap_v1_init
@@ -13,9 +14,13 @@ class Command(BaseCommand):
     help = 'Compare exchange markets'
 
     def handle(self, *args, **options):
+        if options['start_all']:
+            print('Start all exchange')
+            startp = subprocess.Popen(init_start()).pid
+            print("done. (PID: %s)" % startp)
         if options['exch']:
             print('Start compare exchange')
-            exchp = subprocess.Popen('/var/www/exchange_comparison/exchange_pairs/start.py &').pid
+            exchp = subprocess.Popen(exchanges_init()).pid
             print("done. (PID: %s)" % exchp)
         if options['idex']:
             print('Start collect idex tickers')
@@ -39,6 +44,13 @@ class Command(BaseCommand):
             print("done. (PID: %s)" % uniop)
 
     def add_arguments(self, parser):
+        parser.add_argument(
+            '-all',
+            '--start_all',
+            action='store_true',
+            default=False,
+            help='Start all exhcanges'
+        )
         parser.add_argument(
             '-b',
             '--bankor',
