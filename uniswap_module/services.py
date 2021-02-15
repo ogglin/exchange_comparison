@@ -69,12 +69,13 @@ def get_uni_2():
         token = token['exch_direction']
         req = {'query': '{token(id: "' + tokenid + '"){ symbol totalLiquidity derivedETH } }'}
         response = requests.post(url=url_v2, data=json.dumps(req))
-        jData = json.loads(response.content)['data']['token']
-        if jData is not None and jData['totalLiquidity'] is not None and jData['derivedETH'] is not None:
-            highest_bid = float(jData['derivedETH']) * koef
-            lowest_ask = float(jData['derivedETH'])
-            volume = float(jData['totalLiquidity'])
-            currencies_update_v2(token, lowest_ask, highest_bid, tokenid, volume)
+        if response and response.content is not None:
+            jData = json.loads(response.content)['data']['token']
+            if jData is not None and jData['totalLiquidity'] is not None and jData['derivedETH'] is not None:
+                highest_bid = float(jData['derivedETH']) * koef
+                lowest_ask = float(jData['derivedETH'])
+                volume = float(jData['totalLiquidity'])
+                currencies_update_v2(token, lowest_ask, highest_bid, tokenid, volume)
 
 
 async def uniswap_v1_init():
