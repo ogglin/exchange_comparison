@@ -43,21 +43,23 @@ def get_uni_1():
                     {{"query":"{{exchanges(first: 1000, skip: {i * 1000}) {{ ethBalance ethLiquidity tokenAddress price tokenName tokenSymbol}}}}","variables":{{}}}}
                 '''
         response = requests.post(url=url_v1, data=req_v1)
-        # try:
-        jData = json.loads(response.content)['data']
-        for data in jData['exchanges']:
-            if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
-                direction = data['tokenSymbol']
-                lowest_ask = 1.003 / float(data['price'])
-                highest_bid = lowest_ask * koef
-                tokenid = data['tokenAddress']
-                volume = float(data['ethBalance'])
-                if volume > 0:
-                    for row in trusted_tokens:
-                        if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
-                            # print(direction, lowest_ask, highest_bid, tokenid, volume)
-                            # uni_one_res.append({direction, lowest_ask, highest_bid, tokenid, volume})
-                            currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume)
+        try:
+            jData = json.loads(response.content)['data']
+            for data in jData['exchanges']:
+                if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
+                    direction = data['tokenSymbol']
+                    lowest_ask = 1.003 / float(data['price'])
+                    highest_bid = lowest_ask * koef
+                    tokenid = data['tokenAddress']
+                    volume = float(data['ethBalance'])
+                    if volume > 0:
+                        for row in trusted_tokens:
+                            if row['token'].lower() == direction.lower() and row['contract'].lower() == tokenid.lower():
+                                # print(direction, lowest_ask, highest_bid, tokenid, volume)
+                                # uni_one_res.append({direction, lowest_ask, highest_bid, tokenid, volume})
+                                currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume)
+        except:
+            pass
 
 
 @sync_to_async
