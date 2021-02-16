@@ -11,7 +11,7 @@ koef = 0.99
 
 
 def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume):
-    pair_id = UniswapOne.objects.filter(exch_direction=direction).values('id')
+    pair_id = UniswapOne.objects.filter(tokenid=tokenid).values('id')
     if len(pair_id) > 0:
         UniswapOne.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
                                                               volume=volume, highest_bid=highest_bid, tokenid=tokenid)
@@ -22,7 +22,7 @@ def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume):
 
 
 def currencies_update_v2(direction, lowest_ask, highest_bid, tokenid, volume):
-    pair_id = Uniswap.objects.filter(exch_direction=direction).values('id')
+    pair_id = Uniswap.objects.filter(tokenid=tokenid).values('id')
     if len(pair_id) > 0:
         Uniswap.objects.filter(id=pair_id[0]['id']).update(exch_direction=direction, lowest_ask=lowest_ask,
                                                            volume=volume, highest_bid=highest_bid, tokenid=tokenid)
