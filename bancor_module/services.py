@@ -29,18 +29,21 @@ def set_currencies():
     url = 'https://api.bancor.network/0.1/currencies/tokens?limit=9999&skip=0&fromCurrencyCode=ETH&includeTotal=true&orderBy=code&sortOrder=asc&skip=0'
     # response = requests.get(url=url, proxies=proxies)
     response = requests.get(url=url)
-    jData = json.loads(response.content)['data']['page']
-    Bancor.objects.all().update(volume=0)
-    for data in jData:
-        if data['price'] is not None:
-            direction = data['code']
-            highest_bid = data['price'] * koef
-            lowest_ask = data['price']
-            name = data['name']
-            link_id = data['id']
-            volume = float(data['liquidityDepth'])
-            if volume > 0:
-                currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
+    try:
+        jData = json.loads(response.content)['data']['page']
+        Bancor.objects.all().update(volume=0)
+        for data in jData:
+            if data['price'] is not None:
+                direction = data['code']
+                highest_bid = data['price'] * koef
+                lowest_ask = data['price']
+                name = data['name']
+                link_id = data['id']
+                volume = float(data['liquidityDepth'])
+                if volume > 0:
+                    currencies_update(direction, lowest_ask, highest_bid, name, link_id, volume)
+    except:
+        pass
 
 
 async def bankor_init():
