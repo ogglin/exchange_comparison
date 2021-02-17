@@ -43,7 +43,7 @@ def get_uni_1():
                     {{"query":"{{exchanges(first: 1000, skip: {i * 1000}) {{ ethBalance ethLiquidity tokenAddress price tokenName tokenSymbol}}}}","variables":{{}}}}
                 '''
         response = requests.post(url=url_v1, data=req_v1)
-        if response and response.content is not None:
+        try:
             jData = json.loads(response.content)['data']
             for data in jData['exchanges']:
                 if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
@@ -58,6 +58,8 @@ def get_uni_1():
                                 # print(direction, lowest_ask, highest_bid, tokenid, volume)
                                 # uni_one_res.append({direction, lowest_ask, highest_bid, tokenid, volume})
                                 currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume)
+        except:
+            pass
 
 
 @sync_to_async
@@ -69,13 +71,15 @@ def get_uni_2():
         token = token['exch_direction']
         req = {'query': '{token(id: "' + tokenid + '"){ symbol totalLiquidity derivedETH } }'}
         response = requests.post(url=url_v2, data=json.dumps(req))
-        if response and response.content is not None:
+        try:
             jData = json.loads(response.content)['data']['token']
             if jData is not None and jData['totalLiquidity'] is not None and jData['derivedETH'] is not None:
                 highest_bid = float(jData['derivedETH']) * koef
                 lowest_ask = float(jData['derivedETH'])
                 volume = float(jData['totalLiquidity'])
                 currencies_update_v2(token, lowest_ask, highest_bid, tokenid, volume)
+        except:
+            pass
 
 
 async def uniswap_v1_init():
