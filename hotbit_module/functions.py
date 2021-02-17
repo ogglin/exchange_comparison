@@ -96,7 +96,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
                 count += 1
                 # full_price += float(bid[0]) / currency
                 full_volume += float(bid[1]) * float(bid[0]) / currency
-                bid_price = full_price / currency
+                bid_price = float(bid[0]) / currency
         if count == 0:
             count = 1
 
@@ -105,7 +105,7 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
             if (float(ask[0]) / currency * percent / 100) + (float(ask[0]) / currency) < bids and full_volume <= 1:
                 count += 1
                 # full_price += float(ask[0]) / currency
-                ask_price = full_price / currency
+                ask_price = float(ask[0]) / currency
                 full_volume += float(ask[1]) * float(ask[0]) / currency
         if count == 0:
             count = 1
