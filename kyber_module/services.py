@@ -26,16 +26,19 @@ def set_currencies():
     url = 'https://api.kyber.network/market'
     # response = requests.get(url=url, proxies=proxies)
     response = requests.get(url=url)
-    jData = json.loads(response.content)['data']
-    Kyber.objects.all().update(volume=0)
-    for data in jData:
-        direction = data['pair'].replace('ETH_', '')
-        highest_bid = data['current_bid']
-        lowest_ask = data['current_ask']
-        token_id = data['base_address']
-        volume = float(data['eth_24h_volume'])
-        if volume > 0:
-            currencies_update(direction, lowest_ask, highest_bid, token_id, volume)
+    try:
+        jData = json.loads(response.content)['data']
+        Kyber.objects.all().update(volume=0)
+        for data in jData:
+            direction = data['pair'].replace('ETH_', '')
+            highest_bid = data['current_bid']
+            lowest_ask = data['current_ask']
+            token_id = data['base_address']
+            volume = float(data['eth_24h_volume'])
+            if volume > 0:
+                currencies_update(direction, lowest_ask, highest_bid, token_id, volume)
+    except:
+        pass
 
 
 async def kyber_init():
