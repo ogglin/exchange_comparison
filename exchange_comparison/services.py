@@ -3,6 +3,8 @@ import datetime
 import requests
 import json
 
+from asgiref.sync import sync_to_async
+
 from exchange_pairs.models import ComparePairs, TrustedPairs, CustomSql, ExchangePairs
 from hotbit_module.models import Hotbit
 from idex_module.models import Idex
@@ -13,8 +15,8 @@ from kyber_module.models import *
 
 # from .models import *
 
-
-async def token_exchange_set():
+@sync_to_async
+def token_exchange_set():
     trusted_pair = list(TrustedPairs.objects.filter(is_active=True).values_list())
     for pair in trusted_pair:
         token = pair[1]
