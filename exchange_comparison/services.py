@@ -20,7 +20,6 @@ def token_exchange_set():
     trusted_pair = list(TrustedPairs.objects.filter(is_active=True).values_list())
     for pair in trusted_pair:
         token = pair[1]
-        print(token)
         exch_pair_id = ExchangePairs.objects.filter(exch_direction=token).values('id')
         if len(exch_pair_id) > 0:
             pass
