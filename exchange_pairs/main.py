@@ -4,6 +4,7 @@ import threading
 from multiprocessing import Process, Pool
 
 from bancor_module.services import bankor_init
+from exchange_comparison.services import exchange_set_init
 from exchange_pairs.functions import exchanges_init
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
@@ -22,6 +23,7 @@ def init_start():
         kyber_init(),
         uniswap_v2_init(),
         uniswap_v1_init(),
+        exchange_set_init()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))
 

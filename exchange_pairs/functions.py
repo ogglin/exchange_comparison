@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from asgiref.sync import sync_to_async
 
@@ -31,4 +32,5 @@ async def exchanges_init():
     while True:
         print('start exchanges: ' + str(datetime.datetime.now()))
         await exchanges_profits()
+        time.sleep(10)
         print('end exchanges: ' + str(datetime.datetime.now()))

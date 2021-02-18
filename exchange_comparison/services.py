@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 import json
 
@@ -12,7 +14,7 @@ from kyber_module.models import *
 # from .models import *
 
 
-def token_exchange_set():
+async def token_exchange_set():
     trusted_pair = list(TrustedPairs.objects.filter(is_active=True).values_list())
     for pair in trusted_pair:
         token = pair[1]
@@ -102,3 +104,10 @@ def token_set():
         contract = data['contractAddress']
         decimals = data['assetDecimals']
         token_update(token, contract, decimals)
+
+
+async def exchange_set_init():
+    while True:
+        print('start exchanges: ' + str(datetime.datetime.now()))
+        await token_exchange_set()
+        print('end exchanges: ' + str(datetime.datetime.now()))
