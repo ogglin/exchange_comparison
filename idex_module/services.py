@@ -22,21 +22,24 @@ def currencies_update(token_pair, ask, bid, volume):
 def set_currencies():
     # print('start idex: ' + str(datetime.datetime.now()))
     url = 'https://api.idex.io/v1/tickers'
-    response = requests.get(url=url)
-    jData = json.loads(response.content)
-    # Idex.objects.all().update(volume=0, lowest_ask=0, highest_bid=0)
-    for data in jData:
-        ask = 0
-        bid = 0
-        token_pair = data['market'].replace('ETH', '').replace('-', '')
-        if data['ask']:
-            ask = data['ask']
-        if data['bid']:
-            bid = data['bid']
-        volume = float(data['quoteVolume'])
-        # if volume > 0:
-        currencies_update(token_pair, ask, bid, volume)
-    # print('end idex: ' + str(datetime.datetime.now()))
+    try:
+        response = requests.get(url=url)
+        jData = json.loads(response.content)
+        # Idex.objects.all().update(volume=0, lowest_ask=0, highest_bid=0)
+        for data in jData:
+            ask = 0
+            bid = 0
+            token_pair = data['market'].replace('ETH', '').replace('-', '')
+            if data['ask']:
+                ask = data['ask']
+            if data['bid']:
+                bid = data['bid']
+            volume = float(data['quoteVolume'])
+            # if volume > 0:
+            currencies_update(token_pair, ask, bid, volume)
+        # print('end idex: ' + str(datetime.datetime.now()))
+    except:
+        pass
 
 
 async def idex_init():

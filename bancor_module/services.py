@@ -28,8 +28,8 @@ def set_currencies():
     }
     url = 'https://api.bancor.network/0.1/currencies/tokens?limit=9999&skip=0&fromCurrencyCode=ETH&includeTotal=true&orderBy=code&sortOrder=asc&skip=0'
     # response = requests.get(url=url, proxies=proxies)
-    response = requests.get(url=url)
     try:
+        response = requests.get(url=url)
         jData = json.loads(response.content)['data']['page']
         Bancor.objects.all().update(volume=0)
         for data in jData:

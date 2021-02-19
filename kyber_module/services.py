@@ -25,8 +25,8 @@ def currencies_update(direction, lowest_ask, highest_bid, token_id, volume):
 def set_currencies():
     url = 'https://api.kyber.network/market'
     # response = requests.get(url=url, proxies=proxies)
-    response = requests.get(url=url)
     try:
+        response = requests.get(url=url)
         jData = json.loads(response.content)['data']
         Kyber.objects.all().update(volume=0)
         for data in jData:

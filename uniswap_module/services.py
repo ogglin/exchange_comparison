@@ -42,8 +42,8 @@ def get_uni_1():
         req_v1 = f'''
                     {{"query":"{{exchanges(first: 1000, skip: {i * 1000}) {{ ethBalance ethLiquidity tokenAddress price tokenName tokenSymbol}}}}","variables":{{}}}}
                 '''
-        response = requests.post(url=url_v1, data=req_v1)
         try:
+            response = requests.post(url=url_v1, data=req_v1)
             jData = json.loads(response.content)['data']
             for data in jData['exchanges']:
                 if float(data['ethLiquidity']) > 0 and float(data['ethBalance']) > 1:
@@ -70,8 +70,8 @@ def get_uni_2():
         tokenid = token['tokenid'].lower()
         token = token['exch_direction']
         req = {'query': '{token(id: "' + tokenid + '"){ symbol totalLiquidity derivedETH } }'}
-        response = requests.post(url=url_v2, data=json.dumps(req))
         try:
+            response = requests.post(url=url_v2, data=json.dumps(req))
             jData = json.loads(response.content)['data']['token']
             if jData is not None and jData['totalLiquidity'] is not None and jData['derivedETH'] is not None:
                 highest_bid = float(jData['derivedETH']) * koef
