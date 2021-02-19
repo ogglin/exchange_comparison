@@ -198,9 +198,6 @@ class MainTableComponent {
                     }
                 });
             });
-            this.api.getApi('exchpair/').subscribe((result) => {
-                this.tokenPrices = result;
-            });
             this.getHotbitProfits();
             // this.getPair();
             // this.ngZone.runOutsideAngular(() => {
@@ -222,6 +219,9 @@ class MainTableComponent {
             });
         };
         this.getHotbitProfits = () => {
+            this.api.getApi('exchpair/').subscribe((result) => {
+                this.tokenPrices = result;
+            });
             this.api.getApi('profit_exchanges/').subscribe(res => {
                 this.TableData = [];
                 res.forEach(item => {
