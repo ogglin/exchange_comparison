@@ -9,6 +9,7 @@ from uniswap_module.models import Uniswap, UniswapOne
 
 class TrustedPairs(models.Model):
     token = models.CharField(max_length=20, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     contract = models.CharField(max_length=100, blank=False, null=False)
     decimals = models.IntegerField(null=True)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
@@ -24,6 +25,7 @@ class TrustedPairs(models.Model):
 
 class ComparePairs(models.Model):
     token = models.CharField(max_length=20, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     contract = models.CharField(max_length=100, blank=False, null=False)
     decimals = models.IntegerField(null=True)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)

@@ -5,7 +5,7 @@ from multiprocessing import Process, Pool
 
 from bancor_module.services import bankor_init
 from exchange_comparison.services import exchange_set_init
-from exchange_pairs.functions import exchanges_init
+from exchange_pairs.functions import exchanges_idex, exchanges_hotbit
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
 from uniswap_module.services import uniswap_v2_init, uniswap_v1_init
@@ -17,7 +17,8 @@ def init_start():
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     async_tasks = [
-        exchanges_init(),
+        exchanges_idex(),
+        exchanges_hotbit(),
         idex_init(),
         bankor_init(),
         kyber_init(),

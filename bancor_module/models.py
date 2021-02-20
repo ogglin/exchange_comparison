@@ -8,6 +8,7 @@ class Bancor(models.Model):
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     name = models.CharField(max_length=100, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     link_id = models.CharField(max_length=100, blank=False, null=False)
     volume = models.FloatField(default=0)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)

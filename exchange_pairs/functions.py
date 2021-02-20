@@ -2,6 +2,7 @@ import datetime
 import time
 
 from asgiref.sync import sync_to_async
+from django.db.models import Q
 
 from exchange_pairs.models import ProfitExchanges
 from hotbit_module.functions import hotbit_profits
@@ -9,28 +10,36 @@ from idex_module.functions import idex_profits
 
 
 @sync_to_async
-def exchanges_profits():
-    hotbit_result = hotbit_profits()
+def idex_result():
     idex_result = idex_profits()
-    id = 0
-    ProfitExchanges.objects.all().delete()
-    for result in hotbit_result:
-        id += 1
-        pair = ProfitExchanges(id=id, pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
-                               sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
-                               tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
-        pair.save()
+    ProfitExchanges.objects.filter(Q(buy_name__contains='IDEX') | Q(sell_name__contains='IDEX')).delete()
     for result in idex_result:
-        id += 1
+        pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+                               sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
+                               tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
+        pair.save()
+
+
+@sync_to_async
+def hotbit_result():
+    hotbit_result = hotbit_profits()
+    ProfitExchanges.objects.filter(Q(buy_name__contains='HOTBIT') | Q(sell_name__contains='HOTBIT')).delete()
+    for result in hotbit_result:
         pair = ProfitExchanges(id=id, pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
                                sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
         pair.save()
 
 
-async def exchanges_init():
-    print('start exchanges: ' + str(datetime.datetime.now()))
+async def exchanges_idex():
+    print('start idex exchanges: ' + str(datetime.datetime.now()))
     while True:
-        await exchanges_profits()
-        time.sleep(10)
+        await idex_result()
+        # print('end exchanges: ' + str(datetime.datetime.now()))
+
+
+async def exchanges_hotbit():
+    print('start hotbit exchanges: ' + str(datetime.datetime.now()))
+    while True:
+        await hotbit_result()
         # print('end exchanges: ' + str(datetime.datetime.now()))

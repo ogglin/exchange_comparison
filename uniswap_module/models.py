@@ -5,6 +5,7 @@ from django.db import models
 
 class Uniswap(models.Model):
     exch_direction = models.CharField(max_length=256, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     tokenid = models.CharField(max_length=500, default='')
@@ -20,6 +21,7 @@ class Uniswap(models.Model):
 
 class UniswapOne(models.Model):
     exch_direction = models.CharField(max_length=256, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     tokenid = models.CharField(max_length=500, default='')

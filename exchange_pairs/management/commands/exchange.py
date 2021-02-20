@@ -3,7 +3,7 @@ import subprocess
 from django.core.management.base import BaseCommand
 
 from bancor_module.services import bankor_init
-from exchange_pairs.functions import exchanges_init
+from exchange_pairs.functions import exchanges_idex, exchanges_hotbit
 from exchange_pairs.main import init_start
 from idex_module.services import idex_init
 from kyber_module.services import kyber_init
@@ -20,7 +20,8 @@ class Command(BaseCommand):
             print("done. (PID: %s)" % startp)
         if options['exch']:
             print('Start compare exchange')
-            exchp = subprocess.Popen(exchanges_init()).pid
+            exchp = subprocess.Popen(exchanges_idex()).pid
+            exchh = subprocess.Popen(exchanges_hotbit()).pid
             print("done. (PID: %s)" % exchp)
         if options['idex']:
             print('Start collect idex tickers')

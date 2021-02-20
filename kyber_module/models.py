@@ -5,6 +5,7 @@ from django.db import models
 
 class Kyber(models.Model):
     exch_direction = models.CharField(max_length=20, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     highest_bid = models.FloatField()
     lowest_ask = models.FloatField()
     token_id = models.CharField(max_length=50, blank=True, null=True)

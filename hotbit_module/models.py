@@ -8,6 +8,7 @@ class Hotbit(models.Model):
     buy = models.FloatField()
     sell = models.FloatField()
     symbol = models.CharField(max_length=30, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     volume = models.FloatField(max_length=30, blank=False, null=False)
     contract = models.CharField(max_length=100, blank=True, null=True)
     decimals = models.IntegerField(blank=True, null=True)

@@ -6,6 +6,7 @@ from django.db import models
 
 class Idex(models.Model):
     exch_direction = models.CharField(max_length=20, blank=False, null=False)
+    tsymbol = models.CharField(max_length=100, blank=True, null=True)
     lowest_ask = models.FloatField()
     highest_bid = models.FloatField()
     token_id = models.CharField(max_length=50, blank=True, null=True)
