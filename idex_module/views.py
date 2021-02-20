@@ -1,13 +1,10 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from exchange_pairs.functions import exchanges_init
-from hotbit_module.functions import hotbit_profits
 from .functions import idex_profits
 
 
 # Create your views here.
-from .services import idex_init
 
 
 class idex(APIView):

@@ -25,7 +25,7 @@ def hotbit_result():
     hotbit_result = hotbit_profits()
     ProfitExchanges.objects.filter(Q(buy_name__contains='HOTBIT') | Q(sell_name__contains='HOTBIT')).delete()
     for result in hotbit_result:
-        pair = ProfitExchanges(id=id, pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+        pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
                                sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
         pair.save()
