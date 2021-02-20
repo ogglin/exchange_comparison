@@ -108,7 +108,7 @@ def token_set():
 
 
 async def exchange_set_init():
+    print('start exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start exchanges: ' + str(datetime.datetime.now()))
         await token_exchange_set()
-        print('end exchanges: ' + str(datetime.datetime.now()))
+        # print('end exchanges: ' + str(datetime.datetime.now()))

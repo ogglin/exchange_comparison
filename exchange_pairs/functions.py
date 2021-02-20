@@ -29,8 +29,8 @@ def exchanges_profits():
 
 
 async def exchanges_init():
+    print('start exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start exchanges: ' + str(datetime.datetime.now()))
         await exchanges_profits()
         time.sleep(10)
-        print('end exchanges: ' + str(datetime.datetime.now()))
+        # print('end exchanges: ' + str(datetime.datetime.now()))

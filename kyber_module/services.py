@@ -42,7 +42,7 @@ def set_currencies():
 
 
 async def kyber_init():
+    print('start kyber: ' + str(datetime.datetime.now()))
     while True:
-        print('start kyber: ' + str(datetime.datetime.now()))
         await set_currencies()
-        print('end kyber: ' + str(datetime.datetime.now()))
+        # print('end kyber: ' + str(datetime.datetime.now()))
