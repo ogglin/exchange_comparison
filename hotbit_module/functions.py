@@ -211,24 +211,20 @@ def hotbit_profits():
                          f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
                          f"ORDER BY hotbit_id) 
                          UNION ALL SELECT * FROM uniswap_one'''
-    all_symbols = _query(f"WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, "
-                         f"mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume FROM exchange_pairs "
-                         f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_idex mi ON mi.id = idex_direction_id "
-                         f"WHERE hotbit_id is not null and idex_direction_id is not null and mi.volume >= 1 "
-                         f"ORDER BY hotbit_id), kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, "
-                         f"'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs "
-                         f"LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id "
-                         f"WHERE hotbit_id is not null and kyber_direction_id is not null and mk.volume >= 1 "
-                         f"ORDER BY hotbit_id), uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, "
-                         f"'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume "
-                         f"FROM exchange_pairs LEFT JOIN module_hotbit mh ON mh.id = hotbit_id "
-                         f"LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id "
-                         f"WHERE hotbit_id is not null and uniswap_direction_id is not null and mu.volume >= 1 "
-                         f"ORDER BY hotbit_id) SELECT * FROM idex "
-                         f"UNION ALL SELECT * FROM kyber "
-                         f"UNION ALL SELECT * FROM uniswap;")
+    all_symbols = _query(f'''WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, 
+                        mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume FROM exchange_pairs  
+                        LEFT JOIN module_hotbit mh ON mh.id = hotbit_id  
+                        LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
+                        WHERE hotbit_id is not null and idex_direction_id is not null and mi.volume >= 1 
+                        ORDER BY hotbit_id), kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals,  
+                        'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs 
+                        LEFT JOIN module_hotbit mh ON mh.id = hotbit_id 
+                        LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id  
+                        WHERE hotbit_id is not null and kyber_direction_id is not null and mk.volume >= 1 
+                        ORDER BY hotbit_id), uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, 
+                        'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume 
+                        FROM module_hotbit mh, module_uniswap mu WHERE mu.tsymbol = mh.tsymbol) SELECT * FROM idex 
+                        UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM uniswap;''')
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
     loop = asyncio.new_event_loop()
