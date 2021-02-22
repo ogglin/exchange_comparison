@@ -179,7 +179,8 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
                 if b is not None:
                     compares.append(b)
     else:
-        print(hotbit_depth)
+        pass
+        # print(hotbit_depth)
     return compares
 
 
