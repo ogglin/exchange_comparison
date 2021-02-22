@@ -47,9 +47,12 @@ proxys = [
 async def get_idex_tiker_all():
     url = f'https://api.idex.io/v1/tickers'
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            html = await response.text()
-            return json.loads(html)
+        try:
+            async with session.get(url) as response:
+                html = await response.text()
+                return json.loads(html)
+        except asyncio.TimeoutError:
+            return None
 
 
 async def get_idex_market(token):
@@ -182,7 +185,8 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
 
 async def init(symbols, percent, currency):
     global idex_tiker_all
-    idex_tiker_all = await get_idex_tiker_all()
+    while idex_tiker_all is None:
+        idex_tiker_all = await get_idex_tiker_all()
     async_tasks = []
     # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
     cnt = 0
