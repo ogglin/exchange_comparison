@@ -1,10 +1,10 @@
 import datetime
 import json
-import csv
+
 import requests
 from asgiref.sync import sync_to_async
 
-from exchange_pairs.models import TrustedPairs, CustomSql
+from exchange_pairs.models import TrustedPairs
 from .models import Uniswap, UniswapOne
 
 koef = 0.99
@@ -64,11 +64,12 @@ def get_uni_1():
 
 @sync_to_async
 def get_uni_2():
-    token_uni2 = Uniswap.objects.all().values()
+    # token_uni2 = Uniswap.objects.all().values()
+    trusted_tokens = TrustedPairs.objects.filter(contract__isnull=False, is_active=True).values()
     url_v2 = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
-    for token in token_uni2:
-        tokenid = token['tokenid'].lower()
-        token = token['exch_direction']
+    for token in trusted_tokens:
+        tokenid = token['contract'].lower()
+        token = token['token']
         req = {'query': '{token(id: "' + tokenid + '"){ symbol totalLiquidity derivedETH } }'}
         try:
             response = requests.post(url=url_v2, data=json.dumps(req))
