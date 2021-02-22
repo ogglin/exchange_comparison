@@ -5,5 +5,5 @@ from .models import *
 # Register your models here.
 @admin.register(Kyber)
 class KyberAdmin(admin.ModelAdmin):
-    list_display = ('exch_direction', 'is_active')
-    search_fields = ('exch_direction',)
+    list_display = ('exch_direction', 'tsymbol', 'is_active')
+    search_fields = ('exch_direction', 'tsymbol',)

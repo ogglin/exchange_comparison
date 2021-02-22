@@ -21,9 +21,9 @@ class SettingsModulesAdmin(admin.ModelAdmin):
 
 @admin.register(TrustedPairs)
 class TrustedPairsAdmin(admin.ModelAdmin):
-    list_display = ('token', 'contract', 'decimals', 'is_active')
+    list_display = ('token', 'contract', 'tsymbol', 'decimals', 'is_active')
     list_filter = ('is_active',)
-    search_fields = ('token',)
+    search_fields = ('token', 'tsymbol',)
 
 
 @admin.register(WebsocketLog)
