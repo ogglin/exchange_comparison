@@ -86,16 +86,9 @@ def idex_profits():
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
             LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id
             WHERE idex_direction_id is not null and uniswap_direction_id is not null ORDER BY exch_direction
-            ), uniswap_one as (
-            SELECT muo.exch_direction, 'uniswap_one' as site, muo.highest_bid, muo.lowest_ask, lower(muo.tokenid) token_id, muo.volume 
-            FROM exchange_pairs 
-            LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
-            LEFT JOIN module_uniswap_one muo ON muo.id = exchange_pairs.uniswap_one_direction_id
-            WHERE idex_direction_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL AND muo.volume >= 0 ORDER BY exch_direction
             ) SELECT * FROM uniswap 
             UNION ALL SELECT * FROM bankor 
-            UNION ALL SELECT * FROM kyber
-            UNION ALL SELECT * FROM uniswap_one;''')
+            UNION ALL SELECT * FROM kyber;''')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
