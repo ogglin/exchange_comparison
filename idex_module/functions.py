@@ -18,7 +18,7 @@ async def compare_symbol(symbol, idex, percent):
         sellurl = ''
         buy_name = 'IDEX'
         buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-        sell_name = symbol[1].upper()
+        sell_name = symbol[1].lower()
         if sell_name == 'uniswap':
             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid)
         elif sell_name == 'kyber':
@@ -36,7 +36,7 @@ async def compare_symbol(symbol, idex, percent):
     # From exch to idex
     if idex[3] > symbol[3] > 0:
         buyurl = ''
-        buy_name = symbol[1].upper()
+        buy_name = symbol[1].lower()
         if buy_name == 'uniswap':
             buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid)
         elif buy_name == 'kyber':
