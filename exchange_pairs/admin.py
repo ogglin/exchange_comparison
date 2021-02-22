@@ -23,7 +23,7 @@ class SettingsModulesAdmin(admin.ModelAdmin):
 class TrustedPairsAdmin(admin.ModelAdmin):
     list_display = ('token', 'contract', 'tsymbol', 'decimals', 'is_active')
     list_filter = ('is_active',)
-    search_fields = ('token', 'tsymbol',)
+    search_fields = ('token', 'tsymbol', 'contract',)
 
 
 @admin.register(WebsocketLog)
