@@ -146,7 +146,7 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
         exchange_name = 'HOTBIT / BTC'
     else:
         currency = 1
-    if 'error' in hotbit_depth:
+    if 'error' in hotbit_depth and hotbit_depth is not None:
         hotbit_asks = hotbit_depth['result']['asks']
         hotbit_bids = hotbit_depth['result']['bids']
         if 'idex' in symbol[3]:
