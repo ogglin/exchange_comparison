@@ -146,8 +146,7 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
         except:
             time.sleep(1)
             isTD = True
-    print(hotbit_depth)
-    if 'error' in hotbit_depth and hotbit_depth is not None:
+    if 'error' in hotbit_depth and hotbit_depth['result'] is not None:
         hotbit_asks = hotbit_depth['result']['asks']
         hotbit_bids = hotbit_depth['result']['bids']
         if 'idex' in symbol[3]:
