@@ -1,9 +1,27 @@
 import asyncio
 import concurrent.futures
+import json
+
+import aiohttp
+from aiohttp_socks import SocksConnector
 
 from exchange_comparison.utils import _query
 from exchange_pairs.models import Settings
 from idex_module.models import Idex
+
+
+async def get_idex_depth(symbol, proxy):
+    url = f"https://api.idex.io/v1/orderbook?market={symbol}-ETH&level=2&limit=20"
+    socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
+    connector = SocksConnector.from_url(socks_url)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        async with session.get(url) as response:
+            html = await response.text()
+            jhtml = json.loads(html)
+            if jhtml['code'] is None:
+                return jhtml
+            else:
+                return None
 
 
 async def compare_symbol(symbol, idex, percent):
@@ -24,14 +42,15 @@ async def compare_symbol(symbol, idex, percent):
         elif sell_name == 'kyber':
             sellurl = 'https://kyberswap.com/swap/eth-' + pair
         elif sell_name == 'bankor':
-            sellurl = 'https://app.bancor.network/eth/swap?from=' + str(tokenid) + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+            sellurl = 'https://app.bancor.network/eth/swap?from=' + str(
+                tokenid) + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
         elif sell_name == 'uniswap_one':
             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid) + '&use=v1'
         buy = idex[2]
         sell = symbol[2]
         profit_percent = (sell - buy) / buy * 100
         result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-                                   'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+                       'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
         # print(result)
     # From exch to idex
     if idex[3] > symbol[3] > 0:
@@ -42,7 +61,8 @@ async def compare_symbol(symbol, idex, percent):
         elif buy_name == 'kyber':
             buyurl = 'https://kyberswap.com/swap/eth-' + pair
         elif buy_name == 'bankor':
-            buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + str(tokenid)
+            buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + str(
+                tokenid)
         elif buy_name == 'uniswap_one':
             'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid) + '&use=v1'
         sell_name = 'IDEX'
@@ -51,7 +71,7 @@ async def compare_symbol(symbol, idex, percent):
         sell = idex[3]
         profit_percent = (sell - buy) / buy * 100
         result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-                                   'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+                       'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
         # print(result)
     # print('*************/')
     return result

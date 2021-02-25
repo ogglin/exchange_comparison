@@ -1,14 +1,13 @@
+import datetime
 import subprocess
 
 from django.core.management.base import BaseCommand
 
-from bancor_module.services import bankor_init
-from exchange_pairs.functions import exchanges_idex, exchanges_hotbit
 from exchange_pairs.main import init_start
+
+
 # from exchange_pairs.tests import set_new_token
-from idex_module.services import idex_init
-from kyber_module.services import kyber_init
-from uniswap_module.services import uniswap_v2_init, uniswap_v1_init
+from exchange_pairs.test_utils import init_test
 
 
 class Command(BaseCommand):
@@ -19,8 +18,11 @@ class Command(BaseCommand):
         #     set_new_token()
         if options['start_all']:
             print('Start all exchange')
-            startp = subprocess.Popen(init_start()).pid
-            print("done. (PID: %s)" % startp)
+            subprocess.Popen(init_start())
+        if options['test']:
+            print('Start test', datetime.datetime.now())
+            init_test()
+            print('End test', datetime.datetime.now())
 
     def add_arguments(self, parser):
         # parser.add_argument(
@@ -37,4 +39,10 @@ class Command(BaseCommand):
             default=False,
             help='Start all exhcanges'
         )
-
+        parser.add_argument(
+            '-test',
+            '--test',
+            action='store_true',
+            default=False,
+            help='Start test'
+        )

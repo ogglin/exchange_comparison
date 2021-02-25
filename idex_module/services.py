@@ -33,6 +33,7 @@ def set_currencies():
             requests.exceptions.Timeout,
             requests.exceptions.ConnectTimeout,
         ) as e:
+            time.sleep(1)
             statuscode = 0
             print(e)
         if response:

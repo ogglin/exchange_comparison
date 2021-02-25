@@ -1,17 +1,14 @@
 import asyncio
 import concurrent.futures
-import datetime
 import json
 import time
-import random
-from random import randrange
 
 import aiohttp
 import requests
-from aiohttp_socks import SocksConnector, SocksVer
+from aiohttp_socks import SocksConnector
 
 from exchange_comparison.utils import _query
-from exchange_pairs.models import Settings, ProfitExchanges, TrustedPairs
+from exchange_pairs.models import Settings, TrustedPairs
 from .models import Hotbit
 
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
@@ -69,7 +66,11 @@ async def get_hotbit_depth(symbol, proxy):
     async with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url) as response:
             html = await response.text()
-            return json.loads(html)
+            jhtml = json.loads(html)
+            if jhtml['error'] is None:
+                return jhtml['result']
+            else:
+                return None
 
 
 async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
@@ -145,42 +146,42 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
             isTD = False
         except:
             time.sleep(1)
-            isTD = True
-    if 'error' in hotbit_depth and hotbit_depth['result'] is not None:
-        hotbit_asks = hotbit_depth['result']['asks']
-        hotbit_bids = hotbit_depth['result']['bids']
-        if 'idex' in symbol[3]:
-            idex_ticker = await get_idex_market(symbol[0])
-            # print(idex_ticker)
-            if idex_ticker is not None and float(idex_ticker['quoteVolume']) > 1:
-                if idex_ticker['ask'] is not None:
-                    idex_ask = float(idex_ticker['ask'])
-                    # print('ask', idex_ask)
-                    a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to=exchange_name, symbols=symbol,
-                                      percent=percent, currency=currency, cnt=cnt)
+    if hotbit_depth:
+        if 'error' in hotbit_depth and hotbit_depth['result'] is not None:
+            hotbit_asks = hotbit_depth['result']['asks']
+            hotbit_bids = hotbit_depth['result']['bids']
+            if 'idex' in symbol[3]:
+                idex_ticker = await get_idex_market(symbol[0])
+                # print(idex_ticker)
+                if idex_ticker is not None and float(idex_ticker['quoteVolume']) > 1:
+                    if idex_ticker['ask'] is not None:
+                        idex_ask = float(idex_ticker['ask'])
+                        # print('ask', idex_ask)
+                        a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to=exchange_name, symbols=symbol,
+                                          percent=percent, currency=currency, cnt=cnt)
+                        if a is not None:
+                            compares.append(a)
+                    if idex_ticker['bid'] is not None:
+                        idex_bid = float(idex_ticker['bid'])
+                        # print('bid', idex_bid)
+                        b = await compare(asks=hotbit_asks, bids=idex_bid, where=exchange_name, to='IDEX', symbols=symbol,
+                                          percent=percent, currency=currency, cnt=cnt)
+                        if b is not None:
+                            compares.append(b)
+            else:
+                if symbol[5] > 0:
+                    a = await compare(symbol[5], hotbit_bids, symbol[3].upper(), exchange_name, symbol, percent, currency,
+                                      cnt)
                     if a is not None:
                         compares.append(a)
-                if idex_ticker['bid'] is not None:
-                    idex_bid = float(idex_ticker['bid'])
-                    # print('bid', idex_bid)
-                    b = await compare(asks=hotbit_asks, bids=idex_bid, where=exchange_name, to='IDEX', symbols=symbol,
-                                      percent=percent, currency=currency, cnt=cnt)
+                if symbol[4] > 0:
+                    b = await compare(hotbit_asks, symbol[4], exchange_name, symbol[3].upper(), symbol, percent, currency,
+                                      cnt)
                     if b is not None:
                         compares.append(b)
         else:
-            if symbol[5] > 0:
-                a = await compare(symbol[5], hotbit_bids, symbol[3].upper(), exchange_name, symbol, percent, currency,
-                                  cnt)
-                if a is not None:
-                    compares.append(a)
-            if symbol[4] > 0:
-                b = await compare(hotbit_asks, symbol[4], exchange_name, symbol[3].upper(), symbol, percent, currency,
-                                  cnt)
-                if b is not None:
-                    compares.append(b)
-    else:
-        pass
-        # print(hotbit_depth)
+            pass
+            # print(hotbit_depth)
     return compares
 
 
