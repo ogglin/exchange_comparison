@@ -32,16 +32,33 @@ def tikers_set_idex():
         if response:
             statuscode = response.status_code
     jData = json.loads(response.content)
-    for data in jData:
-        ask = 0
-        bid = 0
-        token = data['market'].replace('ETH', '').replace('-', '')
-        if data['ask']:
-            ask = float(data['ask'])
-        if data['bid']:
-            bid = float(data['bid'])
-        volume = float(data['quoteVolume'])
-        idex_tikers_set.append({'token': token, 'ask': ask, 'bid': bid, 'volume': volume})
+    if len(idex_tikers_set) == 0:
+        for data in jData:
+            ask = 0
+            bid = 0
+            token = data['market'].replace('ETH', '').replace('-', '')
+            if data['ask']:
+                ask = float(data['ask'])
+            if data['bid']:
+                bid = float(data['bid'])
+            volume = float(data['quoteVolume'])
+            idex_tikers_set.append({'token': token, 'ask': ask, 'bid': bid, 'volume': volume})
+    else:
+        for data in jData:
+            ask = 0
+            bid = 0
+            token = data['market'].replace('ETH', '').replace('-', '')
+            if data['ask']:
+                ask = float(data['ask'])
+            if data['bid']:
+                bid = float(data['bid'])
+            volume = float(data['quoteVolume'])
+            for i, tiker in enumerate(idex_tikers_set):
+                if tiker['token'] == token:
+                    idex_tikers_set[i]['ask'] = ask
+                    idex_tikers_set[i]['bid'] = bid
+                    idex_tikers_set[i]['volume'] = volume
+
     # print('end idex tickers: ' + str(datetime.datetime.now()))
 
 

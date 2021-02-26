@@ -9,6 +9,7 @@ from aiohttp_socks import SocksConnector
 
 from exchange_comparison.utils import _query
 from exchange_pairs.models import Settings, TrustedPairs
+from idex_module.services import idex_tikers_set
 from .models import Hotbit
 
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
@@ -40,25 +41,6 @@ proxys = [
 ]
 
 
-# Set Profits
-async def get_idex_tiker_all():
-    url = f'https://api.idex.io/v1/tickers'
-    async with aiohttp.ClientSession() as session:
-        try:
-            async with session.get(url) as response:
-                html = await response.text()
-                return json.loads(html)
-        except asyncio.TimeoutError:
-            return None
-
-
-async def get_idex_market(token):
-    for tiker in idex_tiker_all:
-        if tiker['market'].replace('-ETH', '') == token:
-            return tiker
-    return None
-
-
 async def get_hotbit_depth(symbol, proxy):
     url = f"https://api.hotbit.io/api/v1/order.depth?interval=1e-8&&limit=20&market={symbol}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
@@ -81,7 +63,6 @@ async def get_hotbit_depth(symbol, proxy):
                         isTD = True
         except:
             time.sleep(1)
-
 
 
 async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
@@ -152,52 +133,54 @@ async def compare_markets(symbol, percent, currency, proxy, cnt):
         currency = 1
     hotbit_depth = await get_hotbit_depth(symbol[1], proxy)
     if hotbit_depth:
-        if 'error' in hotbit_depth and hotbit_depth['result'] is not None:
-            hotbit_asks = hotbit_depth['result']['asks']
-            hotbit_bids = hotbit_depth['result']['bids']
-            if 'idex' in symbol[3]:
-                idex_ticker = await get_idex_market(symbol[0])
-                # print(idex_ticker)
-                if idex_ticker is not None and float(idex_ticker['quoteVolume']) > 1:
-                    if idex_ticker['ask'] is not None:
-                        idex_ask = float(idex_ticker['ask'])
-                        # print('ask', idex_ask)
-                        a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to=exchange_name, symbols=symbol,
-                                          percent=percent, currency=currency, cnt=cnt)
-                        if a is not None:
-                            compares.append(a)
-                    if idex_ticker['bid'] is not None:
-                        idex_bid = float(idex_ticker['bid'])
-                        # print('bid', idex_bid)
-                        b = await compare(asks=hotbit_asks, bids=idex_bid, where=exchange_name, to='IDEX', symbols=symbol,
-                                          percent=percent, currency=currency, cnt=cnt)
-                        if b is not None:
-                            compares.append(b)
-            else:
-                if symbol[5] > 0:
-                    a = await compare(symbol[5], hotbit_bids, symbol[3].upper(), exchange_name, symbol, percent, currency,
-                                      cnt)
+        hotbit_asks = hotbit_depth['asks']
+        hotbit_bids = hotbit_depth['bids']
+        if 'idex' in symbol[3]:
+            idex_ticker = None
+            for i in idex_tikers_set:
+                if i['token'] == symbol[0]:
+                    idex_ticker = i
+            # print(idex_ticker)
+            if idex_ticker is not None:
+                if idex_ticker['ask'] > 0:
+                    idex_ask = float(idex_ticker['ask'])
+                    a = await compare(asks=idex_ask, bids=hotbit_bids, where='IDEX', to=exchange_name,
+                                      symbols=symbol,
+                                      percent=percent, currency=currency, cnt=cnt)
                     if a is not None:
                         compares.append(a)
-                if symbol[4] > 0:
-                    b = await compare(hotbit_asks, symbol[4], exchange_name, symbol[3].upper(), symbol, percent, currency,
-                                      cnt)
+                if idex_ticker['bid'] > 0:
+                    idex_bid = float(idex_ticker['bid'])
+                    # print('bid', idex_bid)
+                    b = await compare(asks=hotbit_asks, bids=idex_bid, where=exchange_name, to='IDEX',
+                                      symbols=symbol,
+                                      percent=percent, currency=currency, cnt=cnt)
                     if b is not None:
                         compares.append(b)
         else:
-            pass
-            # print(hotbit_depth)
+            if symbol[5] > 0:
+                a = await compare(symbol[5], hotbit_bids, symbol[3].upper(), exchange_name, symbol, percent,
+                                  currency,
+                                  cnt)
+                if a is not None:
+                    compares.append(a)
+            if symbol[4] > 0:
+                b = await compare(hotbit_asks, symbol[4], exchange_name, symbol[3].upper(), symbol, percent,
+                                  currency,
+                                  cnt)
+                if b is not None:
+                    compares.append(b)
+    else:
+        pass
+        # print(hotbit_depth)
     return compares
 
 
-async def init(symbols, percent, currency):
-    global idex_tiker_all
-    while idex_tiker_all is None:
-        idex_tiker_all = await get_idex_tiker_all()
+async def init(all_symbols, percent, currency):
     async_tasks = []
     # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
     cnt = 0
-    for symbol in symbols:
+    for symbol in all_symbols:
         async_tasks.append(compare_markets(symbol, percent, currency, proxys[cnt], cnt))
         cnt += 1
         if cnt >= len(proxys):
@@ -221,7 +204,7 @@ def hotbit_profits():
                         mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume FROM exchange_pairs  
                         LEFT JOIN module_hotbit mh ON mh.id = hotbit_id  
                         LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
-                        WHERE hotbit_id is not null and idex_direction_id is not null and mi.volume >= 1 
+                        WHERE hotbit_id is not null and idex_direction_id is not null and mi.volume >= 0 
                         ORDER BY hotbit_id), kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals,  
                         'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs 
                         LEFT JOIN module_hotbit mh ON mh.id = hotbit_id 
@@ -355,6 +338,3 @@ def set_currencies():
         currencies_update(token, p[0], p[1], p[2], p[3], contract, decimals)
         contract = None
         decimals = None
-
-
-
