@@ -20,7 +20,7 @@ def init_start():
         idex_init(),
         bankor_init(),
         kyber_init(),
-        uniswap_v2_init(),
+        # uniswap_v2_init(),
         uniswap_v1_init(),
         exchange_set_init()
     ]
