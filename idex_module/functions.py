@@ -4,10 +4,12 @@ import json
 
 import aiohttp
 from aiohttp_socks import SocksConnector
+from asgiref.sync import sync_to_async
 
 from exchange_comparison.utils import _query
 from exchange_pairs.models import Settings
 from idex_module.models import Idex
+from idex_module.services import idex_tikers_set
 
 
 async def get_idex_depth(symbol, proxy):
@@ -32,7 +34,7 @@ async def compare_symbol(symbol, idex, percent):
     tokenid = symbol[4]
     result = []
     # From idex to exch
-    if symbol[2] > idex[2] > 0:
+    if symbol[2] > idex['ask'] > 0:
         sellurl = ''
         buy_name = 'IDEX'
         buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
@@ -46,14 +48,14 @@ async def compare_symbol(symbol, idex, percent):
                 tokenid) + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
         elif sell_name == 'uniswap_one':
             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(tokenid) + '&use=v1'
-        buy = idex[2]
+        buy = idex['ask']
         sell = symbol[2]
         profit_percent = (sell - buy) / buy * 100
         result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                        'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
         # print(result)
     # From exch to idex
-    if idex[3] > symbol[3] > 0:
+    if idex['bid'] > symbol[3] > 0:
         buyurl = ''
         buy_name = symbol[1].lower()
         if buy_name == 'uniswap':
@@ -68,7 +70,7 @@ async def compare_symbol(symbol, idex, percent):
         sell_name = 'IDEX'
         sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
         buy = symbol[3]
-        sell = idex[3]
+        sell = idex['bid']
         profit_percent = (sell - buy) / buy * 100
         result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                        'percent': profit_percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
@@ -79,18 +81,21 @@ async def compare_symbol(symbol, idex, percent):
 
 async def init_compare(all_symbols, all_idex, percent):
     async_tasks = []
+    while len(all_idex) < 1 and len(all_symbols) < 1:
+        await asyncio.sleep(0.2)
     for idex in all_idex:
         for symbol in all_symbols:
-            if symbol[0] == idex[1] and 'usd' not in idex[1].lower():
+            if symbol[0] == idex['token'] and 'usd' not in idex['token'].lower():
                 async_tasks.append(compare_symbol(symbol, idex, percent))
     results = await asyncio.gather(*async_tasks)
     return results
 
 
+# @sync_to_async
 def idex_profits():
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
-    all_idex = _query("SELECT * FROM module_idex WHERE is_active is TRUE ORDER BY exch_direction;")
+    # all_idex = _query("SELECT * FROM module_idex WHERE is_active is TRUE ORDER BY exch_direction;")
     all_symbols = _query(f'''WITH bankor as (
             SELECT mb.exch_direction, 'bankor' as site, mb.highest_bid, mb.lowest_ask, mb.link_id token_id, mb.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
@@ -113,7 +118,7 @@ def idex_profits():
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-    init_result = loop.run_until_complete(init_compare(all_symbols, all_idex, percent))
+    init_result = loop.run_until_complete(init_compare(all_symbols, idex_tikers_set, percent))
     compare_result = []
     for result in init_result:
         if len(result) > 0:
