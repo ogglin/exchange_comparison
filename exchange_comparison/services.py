@@ -8,6 +8,7 @@ from asgiref.sync import sync_to_async
 from exchange_pairs.models import ComparePairs, TrustedPairs, CustomSql, ExchangePairs
 from hotbit_module.models import Hotbit
 from idex_module.models import Idex
+from idex_module.socket_services import _query
 from uniswap_module.models import *
 from bancor_module.models import *
 from kyber_module.models import *
@@ -17,6 +18,7 @@ from kyber_module.models import *
 
 @sync_to_async
 def token_exchange_set():
+    _query(f'REFRESH MATERIALIZED VIEW "all_compare_tokens";')
     trusted_pair = list(TrustedPairs.objects.filter(is_active=True).values_list())
     for pair in trusted_pair:
         token = pair[1]
