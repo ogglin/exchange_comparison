@@ -15,15 +15,15 @@ def init_start():
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     async_tasks = [
-        # tikers_set_idex_init(),
-        # idex_init(),
-        # exchanges_idex(),
-        # exchanges_hotbit(),
-        # bankor_init(),
-        # kyber_init(),
+        tikers_set_idex_init(),
+        idex_init(),
+        exchanges_idex(),
+        exchanges_hotbit(),
+        bankor_init(),
+        kyber_init(),
         uniswap_v2_init(),
-        # uniswap_v1_init(),
-        # exchange_set_init()
+        uniswap_v1_init(),
+        exchange_set_init()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))
 
