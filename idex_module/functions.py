@@ -99,17 +99,17 @@ def idex_profits():
     all_symbols = _query(f'''WITH bankor as (
             SELECT mb.exch_direction, 'bankor' as site, mb.highest_bid, mb.lowest_ask, mb.link_id token_id, mb.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
-            LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id
+            LEFT JOIN module_bancor mb ON mb.id = bancor_direction_id and mb.is_active = true
             WHERE idex_direction_id is not null and bancor_direction_id is not null ORDER BY hotbit_id
             ), kyber as (
             SELECT mk.exch_direction, 'kyber' as site, mk.highest_bid, mk.lowest_ask, mk.token_id, mk.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
-            LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id
+            LEFT JOIN module_kyber mk ON mk.id = kyber_direction_id and mk.is_active = true
             WHERE idex_direction_id is not null and kyber_direction_id is not null ORDER BY exch_direction
             ), uniswap as (
             SELECT mu.exch_direction, 'uniswap' as site, mu.highest_bid, mu.lowest_ask, lower(mu.tokenid) token_id, mu.volume FROM exchange_pairs 
             LEFT JOIN module_idex mi ON mi.id = idex_direction_id 
-            LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id
+            LEFT JOIN module_uniswap mu ON mu.id = uniswap_direction_id and mu.is_active = true
             WHERE idex_direction_id is not null and uniswap_direction_id is not null ORDER BY exch_direction
             ) SELECT * FROM uniswap 
             UNION ALL SELECT * FROM bankor 
