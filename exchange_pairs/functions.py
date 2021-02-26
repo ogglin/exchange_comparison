@@ -12,10 +12,10 @@ from idex_module.functions import idex_profits
 
 @sync_to_async
 def idex_result():
-    print('start idex exchanges: ' + str(datetime.datetime.now()))
+    # print('start idex exchanges: ' + str(datetime.datetime.now()))
     idex_result = idex_profits()
-    print('result idex exchanges: ' + str(datetime.datetime.now()))
-    print('start fill database: ' + str(datetime.datetime.now()))
+    # print('result idex exchanges: ' + str(datetime.datetime.now()))
+    # print('start fill database: ' + str(datetime.datetime.now()))
     ProfitExchanges.objects.filter(Q(buy_name__contains='IDEX') | Q(sell_name__contains='IDEX')).delete()
     with transaction.atomic():
         for result in idex_result:
@@ -23,7 +23,7 @@ def idex_result():
                                    sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                    tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
             pair.save()
-    print('end idex exchanges: ' + str(datetime.datetime.now()))
+    # print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
 @sync_to_async
