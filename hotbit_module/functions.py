@@ -200,8 +200,8 @@ def hotbit_profits():
                          f"WHERE hotbit_id IS NOT NULL AND uniswap_one_direction_id IS NOT NULL  AND muo.volume >=1 "
                          f"ORDER BY hotbit_id) 
                          UNION ALL SELECT * FROM uniswap_one'''
-    all_symbols = _query(f'''WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site, mi.highest_
-        bid, mi.lowest_ask, mi.token_id, mi.volume, mh.is_active FROM trusted_pairs tp 
+    all_symbols = _query(f'''WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site,  
+        mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_idex mi ON mi.tsymbol = mh.tsymbol WHERE mi.exch_direction is not null and tp.is_active is true
          and mh.is_active is true ),
