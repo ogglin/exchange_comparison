@@ -11,6 +11,7 @@ from idex_module.functions import idex_profits
 
 @sync_to_async
 def idex_result():
+    print('start idex exchanges: ' + str(datetime.datetime.now()))
     idex_result = idex_profits()
     ProfitExchanges.objects.filter(Q(buy_name__contains='IDEX') | Q(sell_name__contains='IDEX')).delete()
     for result in idex_result:
@@ -18,6 +19,7 @@ def idex_result():
                                sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
         pair.save()
+    print('start idex exchanges: ' + str(datetime.datetime.now()))
 
 
 @sync_to_async
@@ -32,7 +34,6 @@ def hotbit_result():
 
 
 async def exchanges_idex():
-    print('start idex exchanges: ' + str(datetime.datetime.now()))
     while True:
         await idex_result()
         # print('end exchanges: ' + str(datetime.datetime.now()))
