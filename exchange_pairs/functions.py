@@ -19,7 +19,7 @@ def idex_result():
                                sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
         pair.save()
-    print('start idex exchanges: ' + str(datetime.datetime.now()))
+    print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
 @sync_to_async
