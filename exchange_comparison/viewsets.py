@@ -102,27 +102,30 @@ class ExchangePairViewSet(viewsets.ModelViewSet):
 class ExchangePairSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
     queryset = CustomSql.objects.raw('''
-        SELECT tp.id, tp.token exch_direction, 
-            mi.highest_bid idexbid, mi.lowest_ask idexask, 
-            mb.highest_bid bancorbid, mb.lowest_ask bancorask, mb.link_id bancorid,
-            mk.highest_bid kyberbid, mk.lowest_ask kyberask,
-            mu.highest_bid uniswapbid, mu.lowest_ask uniswapask, mu.tokenid uniswapid,
-            muo.highest_bid uniswaponebid, muo.lowest_ask uniswaponeask, muo.tokenid uniswaponeid
-            FROM trusted_pairs tp
-            LEFT JOIN module_idex mi ON lower(tp.token) = lower(mi.exch_direction) AND mi.is_active AND mi.volume > 0
-            LEFT JOIN module_bancor mb ON lower(tp.token) = lower(mb.exch_direction) AND mb.is_active AND mb.volume > 0
-            LEFT JOIN module_kyber mk ON lower(tp.token) = lower(mk.exch_direction) AND mk.is_active AND mk.volume > 0
-            LEFT JOIN module_uniswap mu ON lower(tp.token) = lower(mu.exch_direction) AND mu.is_active AND mu.volume > 0 
-            AND lower(tp.contract) = lower(mu.tokenid)
-            LEFT JOIN module_uniswap_one muo ON lower(tp.token) = lower(muo.exch_direction) AND muo.is_active 
-            AND lower(tp.contract) = lower(muo.tokenid)
-            WHERE tp.is_active = TRUE and (
-            mi.highest_bid is not null or mi.lowest_ask is not null or 
-            mb.lowest_ask is not null or mb.lowest_ask is not null or 
-            mk.lowest_ask is not null or mk.lowest_ask is not null or 
-            mu.lowest_ask is not null or mu.lowest_ask is not null or 
-            muo.lowest_ask is not null or	muo.lowest_ask is not null 
-            ) ORDER BY tp.token
+        WITH tp AS (SELECT trusted_pairs.tsymbol, trusted_pairs.contract FROM trusted_pairs
+          WHERE ((trusted_pairs.is_active IS TRUE) AND (trusted_pairs.contract IS NOT NULL))
+          ORDER BY trusted_pairs.tsymbol
+        ),
+
+        idex as (SELECT tp.tsymbol, tp.contract, me.exch_direction, me.highest_bid sell, me.lowest_ask buy, 'idex' site FROM module_idex me
+         LEFT JOIN trusted_pairs tp ON lower(tp.tsymbol) = lower(me.tsymbol) WHERE me.is_active is true AND tp.is_active is true AND (me.highest_bid is not null or me.lowest_ask is not null) ),
+        
+        hotbit as (SELECT tp.tsymbol, tp.contract, me.symbol, me.sell sell, me.buy buy, 'hotbit' site FROM module_hotbit me
+         LEFT JOIN trusted_pairs tp ON lower(tp.tsymbol) = lower(me.tsymbol) WHERE me.is_active is true AND tp.is_active is true AND (me.sell is not null or me.buy is not null) ),
+        
+        bancor as (SELECT tp.tsymbol, tp.contract, me.exch_direction, me.highest_bid sell, me.lowest_ask buy, 'bancor' site FROM module_bancor me
+         LEFT JOIN trusted_pairs tp ON lower(tp.tsymbol) = lower(me.tsymbol) WHERE me.is_active is true AND tp.is_active is true AND (me.highest_bid is not null or me.lowest_ask is not null) ),
+        
+        kyber as (SELECT tp.tsymbol, tp.contract, me.exch_direction, me.highest_bid sell, me.lowest_ask buy, 'kyber' site FROM module_kyber me
+         LEFT JOIN trusted_pairs tp ON lower(tp.tsymbol) = lower(me.tsymbol) WHERE me.is_active is true AND tp.is_active is true AND (me.highest_bid is not null or me.lowest_ask is not null) ),
+        
+        uniswap as (SELECT tp.tsymbol, tp.contract, me.exch_direction, me.highest_bid sell, me.lowest_ask buy, 'uniswap' site FROM module_uniswap me
+         LEFT JOIN trusted_pairs tp ON lower(tp.tsymbol) = lower(me.tsymbol) WHERE me.is_active is true AND tp.is_active is true AND (me.highest_bid is not null or me.lowest_ask is not null) ),
+        
+        uniswap_one as (SELECT tp.tsymbol, tp.contract, me.exch_direction, me.highest_bid sell, me.lowest_ask buy, 'uniswap_one' site FROM module_uniswap_one me
+         LEFT JOIN trusted_pairs tp ON lower(tp.tsymbol) = lower(me.tsymbol) WHERE me.is_active is true AND tp.is_active is true AND (me.highest_bid is not null or me.lowest_ask is not null) )
+        
+        SELECT * FROM idex UNION SELECT * FROM hotbit UNION SELECT * FROM bancor UNION SELECT * FROM kyber UNION SELECT * FROM uniswap UNION SELECT * FROM uniswap_one;
         ''')
     serializer_class = ExchangePairSerializer
 
