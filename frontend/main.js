@@ -669,7 +669,6 @@ class SocketComponent {
             this.connect(tokens);
             tokenPrice = this.tokenPrices;
         });
-        this.showLog();
     }
     // tslint:disable-next-line:typedef
     ngOnChanges(changes) {
@@ -745,56 +744,56 @@ class SocketComponent {
         tokenPrice.forEach(token => {
             if (token.exch_direction.toLowerCase() === trade.m.replace('-ETH', '').toLowerCase()) {
                 const tradePrice = parseFloat(trade.p);
-                if (token.kyberbid) {
+                if (token.site === 'kyber') {
                     data.push({
                         time: new Date(trade.t).toLocaleString(),
                         type: trade.s,
                         market: 'Kyber',
                         token: trade.m.replace('-ETH', ''),
                         iprice: tradePrice,
-                        price: token.kyberbid,
-                        percent: Number((token.kyberbid - tradePrice) / (tradePrice / 100)).toFixed(2),
+                        price: token.sell,
+                        percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
                         urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
                         urlsell: 'https://kyberswap.com/swap/ent-' + trade.m.replace('-ETH', '').toLowerCase()
                     });
                 }
-                if (token.bancorbid) {
+                if (token.site === 'bancor') {
                     data.push({
                         time: new Date(trade.t).toLocaleString(),
                         type: trade.s,
                         market: 'Bankor',
                         token: trade.m.replace('-ETH', ''),
                         iprice: tradePrice,
-                        price: token.bancorbid,
-                        percent: Number((token.bancorbid - tradePrice) / (tradePrice / 100)).toFixed(2),
+                        price: token.sell,
+                        percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
                         urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
                         urlsell: 'https://www.bancor.network/?q=' + trade.m.replace('-ETH', '').toLowerCase()
                     });
                 }
-                if (token.uniswaponebid) {
-                    data.push({
-                        time: new Date(trade.t).toLocaleString(),
-                        type: trade.s,
-                        market: 'Uniswap_V1',
-                        token: trade.m.replace('-ETH', ''),
-                        iprice: tradePrice,
-                        price: token.uniswaponebid,
-                        percent: Number((token.uniswaponebid - tradePrice) / (tradePrice / 100)).toFixed(2),
-                        urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
-                        urlsell: 'https://app.uniswap.org/#/swap?outputCurrency=' + token.uniswaponeid + '&use=v1'
-                    });
-                }
-                if (token.uniswapbid) {
+                // if (token.uniswaponebid) {
+                //   data.push({
+                //     time: new Date(trade.t).toLocaleString(),
+                //     type: trade.s,
+                //     market: 'Uniswap_V1',
+                //     token: trade.m.replace('-ETH', ''),
+                //     iprice: tradePrice,
+                //     price: token.sell,
+                //     percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
+                //     urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
+                //     urlsell: 'https://app.uniswap.org/#/swap?outputCurrency=' + token.uniswaponeid + '&use=v1'
+                //   });
+                // }
+                if (token.site === 'uniswap') {
                     data.push({
                         time: new Date(trade.t).toLocaleString(),
                         type: trade.s,
                         market: 'Uniswap_V2',
                         token: trade.m.replace('-ETH', ''),
                         iprice: tradePrice,
-                        price: token.uniswapbid,
-                        percent: Number((token.uniswapbid - tradePrice) / (tradePrice / 100)).toFixed(2),
+                        price: token.sell,
+                        percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
                         urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
-                        urlsell: 'https://app.uniswap.org/#/swap?outputCurrency=' + token.uniswapid
+                        urlsell: 'https://app.uniswap.org/#/swap?outputCurrency=' + token.contract
                     });
                 }
                 if (trade.s === 'buy') {
@@ -806,17 +805,16 @@ class SocketComponent {
     }
     showLog() {
         this.api.getApi('websocket_log/').subscribe((res) => {
+            const jDatas = [];
             res.forEach(elem => {
-                if (JSON.parse(elem.log).data) {
-                    this.getComparToket(JSON.parse(elem.log).data).subscribe(result => {
-                        this.socketMsg.push(result);
-                    });
+                if (!JSON.parse(elem.log).data) {
+                    jDatas.push(JSON.parse(elem.log));
                 }
-                else {
-                    this.getComparToket(JSON.parse(elem.log)).subscribe(result => {
-                        this.socketMsg.push(result);
-                    });
-                }
+            });
+            jDatas.forEach(el => {
+                this.getComparToket(el).subscribe(result => {
+                    this.socketMsg.push(result);
+                });
             });
         });
     }
