@@ -108,20 +108,12 @@ class WebsocketLog(models.Model):
 
 
 class CustomSql(models.Model):
+    tsymbol = models.CharField(max_length=100)
+    contract = models.CharField(max_length=100)
     exch_direction = models.CharField(max_length=100)
-    idexbid = models.FloatField()
-    idexask = models.FloatField()
-    bancorbid = models.FloatField()
-    bancorask = models.FloatField()
-    bancorid = models.CharField(max_length=255)
-    kyberbid = models.FloatField()
-    kyberask = models.FloatField()
-    uniswaponebid = models.FloatField()
-    uniswaponeask = models.FloatField()
-    uniswaponeid = models.CharField(max_length=500)
-    uniswapbid = models.FloatField()
-    uniswapask = models.FloatField()
-    uniswapid = models.CharField(max_length=500)
+    sell = models.FloatField()
+    buy = models.FloatField()
+    site = models.CharField(max_length=100)
 
     class Meta:
         managed = False
