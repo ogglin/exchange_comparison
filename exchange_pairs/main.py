@@ -20,7 +20,7 @@ def init_start():
         idex_init(),
         exchanges_idex(),
         exchanges_hotbit(),
-        hitbtc_tiker_init(),
+        # hitbtc_tiker_init(),
         bankor_init(),
         kyber_init(),
         uniswap_v2_init(),
