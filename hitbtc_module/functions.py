@@ -69,7 +69,7 @@ def get_tiker():
             volume = jd['volume']
             hitbtc_tikers_set.append(
                 {'token': exch_direction, 'ask': buy, 'bid': sell, 'volume': volume, 'symbol': symbol})
-    await currencies_update()
+    currencies_update()
 
 
 async def hitbtc_tiker_init():
