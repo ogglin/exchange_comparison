@@ -8,6 +8,7 @@ from exchange_pairs.main import init_start
 
 # from exchange_pairs.tests import set_new_token
 from exchange_pairs.test_utils import init_test
+from hitbtc_module.functions import hitbtc_tiker_init
 
 
 class Command(BaseCommand):
@@ -18,11 +19,15 @@ class Command(BaseCommand):
         #     set_new_token()
         if options['start_all']:
             print('Start all exchange')
-            subprocess.Popen(init_start())
+            init_start()
         if options['test']:
             print('Start test', datetime.datetime.now())
             init_test()
             print('End test', datetime.datetime.now())
+        if options['hbtc']:
+            print('Start Hitbtc', datetime.datetime.now())
+            hitbtc_tiker_init()
+            print('End Hitbtc', datetime.datetime.now())
 
     def add_arguments(self, parser):
         # parser.add_argument(
@@ -45,4 +50,11 @@ class Command(BaseCommand):
             action='store_true',
             default=False,
             help='Start test'
+        )
+        parser.add_argument(
+            '-hbtc',
+            '--hbtc',
+            action='store_true',
+            default=False,
+            help='Hitbtc test'
         )
