@@ -201,17 +201,17 @@ def hotbit_profits():
                          f"ORDER BY hotbit_id) 
                          UNION ALL SELECT * FROM uniswap_one'''
     all_symbols = _query(f'''WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site,  
-        mi.highest_bid, mi.lowest_ask, mi.token_id, mi.volume, mh.is_active FROM trusted_pairs tp 
+        mi.highest_bid, mi.lowest_ask, tp.contract, mi.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_idex mi ON mi.tsymbol = mh.tsymbol WHERE mi.exch_direction is not null and tp.is_active is true
          and mh.is_active is true ),
         kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, 'kyber' as site, mk.highest_bid, mk.lowest_ask, 
-        mk.token_id, mk.volume, mh.is_active FROM trusted_pairs tp 
+        tp.contract, mk.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_kyber mk ON mk.tsymbol = mh.tsymbol WHERE mk.exch_direction is not null and 
         tp.is_active is true and mh.is_active is true ),
         uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, 'uniswap' as site, mu.highest_bid, mu.lowest_ask, 
-        lower(mu.tokenid) token_id, mu.volume , mh.is_active 
+        tp.contract, mu.volume , mh.is_active 
         FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_uniswap mu ON mu.tsymbol = mh.tsymbol WHERE mu.exch_direction is not null and 
