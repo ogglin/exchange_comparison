@@ -115,7 +115,7 @@ async def compare_markets(symbol, percent, currency, proxy):
         for ask in hotbit_deth['ask']:
             asks.append([ask['price'], ask['size']])
         return ct('hitbtc', asks, 0, symbol[3], symbol[4], 1, symbol[1],
-                  symbol[2], percent, currency).compare()
+                  symbol[6], percent, currency).compare()
 
 
 async def init_compare(all_symbols, percent, currency):
@@ -163,44 +163,47 @@ def hitbtc_profits():
     print('hitbtc_profits end', datetime.datetime.now())
     compare_result = []
     for result in init_result:
-        if len(result) > 0:
-            pair = result[0][0]
-            buy_name = result[0][1]
-            buy = result[0][2]
-            sell_name = result[0][4]
-            sell = result[0][5]
-            percent = result[0][7]
+        print(result)
+        if result:
+            pair = result['symbol'].replace('ETH', '').replace('BTC', '')
+            buy_name = result['buy_from']
+            buy = result['buy_price']
+            sell_name = result['sell_to']
+            sell = result['sell_price']
+            percent = result['percent']
+            contract = result['contract']
             tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            if 'HOTBIT' in result[0][1]:
-                buyurl = 'https://hitbtc.com/' + result[0][0].replace('ETH', '').replace('BTC', '') + '-to-btc'
-            if result[0][1] == 'IDEX':
-                buyurl = 'https://exchange.idex.io/trading/' + result[0][0] + '-ETH'
+            if 'hitbtc' in buy_name:
+                buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
+            if buy_name == 'idex':
+                buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
             # if result[0][1] == 'BANKOR':
             #     buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
             #              result[0][8]
-            if result[0][1] == 'KYBER':
-                buyurl = 'https://kyberswap.com/swap/eth-' + result[0][0]
-            if result[0][1] == 'UNISWAP':
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
+            if buy_name == 'kyber':
+                buyurl = 'https://kyberswap.com/swap/eth-' + pair
+            if buy_name == 'uniswap':
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
             # if result[0][1] == 'UNISWAP_ONE':
             #     buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
 
-            if 'HOTBIT' in result[0][4]:
-                sellurl = 'https://hitbtc.com/' + result[0][0].replace('ETH', '').replace('BTC', '') + '-to-btc'
-            if result[0][4] == 'IDEX':
-                sellurl = 'https://exchange.idex.io/trading/' + result[0][3] + '-ETH'
+            if 'hitbtc' in sell_name:
+                sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
+            if sell_name == 'idex':
+                sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
             # if result[0][4] == 'BANKOR':
             #     sellurl = 'https://app.bancor.network/eth/swap?from=' + result[0][
             #         8] + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-            if result[0][4] == 'KYBER':
-                sellurl = 'https://kyberswap.com/swap/eth-' + result[0][3]
-            if result[0][4] == 'UNISWAP':
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8])
+            if sell_name == 'kyber':
+                sellurl = 'https://kyberswap.com/swap/eth-' + pair
+            if sell_name == 'uniswap':
+                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
             # if result[0][4] == 'UNISWAP_ONE':
             #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
             compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
     loop.close()
+    print(compare_result)
     return compare_result
 
 
