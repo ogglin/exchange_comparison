@@ -6,6 +6,7 @@ from datetime import datetime
 import requests
 
 import websockets
+from asgiref.sync import sync_to_async
 from websockets import WebSocketClientProtocol
 # from exchange_pairs.models import WebsocketLog
 import psycopg2
@@ -66,6 +67,7 @@ async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
         data = json.loads(message)['data']
+        print(json.loads(message))
         log_message(data)
         try:
             log = f"INSERT INTO websocket_log (datetime, log) VALUES ('{datetime.utcnow()}', '{json.dumps(data)}');"
@@ -88,6 +90,7 @@ async def produce(message: str, host: str) -> None:
         await websocket.recv()
 
 
+@sync_to_async
 def get_wss():
     tokens = get_tokens()
     message = {

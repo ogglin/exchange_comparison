@@ -3,8 +3,7 @@ import subprocess
 
 from django.core.management.base import BaseCommand
 
-from exchange_pairs.main import init_start
-
+from exchange_pairs.main import init_start, init_start_test
 
 # from exchange_pairs.tests import set_new_token
 from exchange_pairs.test_utils import init_test
@@ -26,7 +25,7 @@ class Command(BaseCommand):
             print('End test', datetime.datetime.now())
         if options['hbtc']:
             print('Start Hitbtc', datetime.datetime.now())
-            hitbtc_tiker_init()
+            init_start_test()
             print('End Hitbtc', datetime.datetime.now())
 
     def add_arguments(self, parser):

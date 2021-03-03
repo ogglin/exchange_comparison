@@ -701,9 +701,10 @@ class SocketComponent {
                         this.socketMsg.unshift(res);
                     });
                 }, 10);
-                this.api.postApi('websocket_log/', { log: JSON.stringify(sdata) }).subscribe((res) => {
-                    console.log(res);
-                });
+                // const logData = JSON.stringify(sdata);
+                // this.api.postApi('websocket_log/', {log: logData}).subscribe((res: any[]) => {
+                //   console.log(res);
+                // });
             }
         };
         wss.onerror = (err) => {

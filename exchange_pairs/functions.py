@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.models import Q
 
 from exchange_pairs.models import ProfitExchanges
+from hitbtc_module.functions import hitbtc_profits
 from hotbit_module.functions import hotbit_profits
 from idex_module.functions import idex_profits
 
@@ -38,6 +39,18 @@ def hotbit_result():
             pair.save()
 
 
+@sync_to_async
+def hitbtc_result():
+    hitbtc_result = hitbtc_profits()
+    ProfitExchanges.objects.filter(Q(buy_name__contains='hitbtc') | Q(sell_name__contains='hitbtc')).delete()
+    with transaction.atomic():
+        for result in hitbtc_result:
+            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+                                   sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
+                                   tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
+            pair.save()
+
+
 async def exchanges_idex():
     while True:
         await idex_result()
@@ -49,3 +62,9 @@ async def exchanges_hotbit():
     while True:
         await hotbit_result()
         # print('end exchanges: ' + str(datetime.datetime.now()))
+
+
+async def exchanges_hitbtc():
+    print('start hotbit exchanges: ' + str(datetime.datetime.now()))
+    while True:
+        await hitbtc_result()
