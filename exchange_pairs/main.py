@@ -18,17 +18,17 @@ def init_start():
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     async_tasks = [
         tikers_set_idex_init(),
-        # idex_init(),
-        # exchanges_idex(),
-        # exchanges_hotbit(),
+        idex_init(),
+        exchanges_idex(),
+        exchanges_hotbit(),
         hitbtc_tiker_init(),
         exchanges_hitbtc(),
-        # bankor_init(),
-        # kyber_init(),
-        # uniswap_v2_init(),
-        # uniswap_v1_init(),
-        # exchange_set_init(),
-        # get_wss()
+        bankor_init(),
+        kyber_init(),
+        uniswap_v2_init(),
+        uniswap_v1_init(),
+        exchange_set_init(),
+        get_wss()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))
 
