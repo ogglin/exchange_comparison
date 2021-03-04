@@ -170,7 +170,7 @@ def hitbtc_profits():
     compare_result = []
     for result in init_result:
         if result:
-            pair = result['symbol'].replace('ETH', '').replace('BTC', '')
+            pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
             sell_symbol = result['sell_symbol']
             buy_name = result['buy_from']
             buy = result['buy_price']
@@ -180,7 +180,10 @@ def hitbtc_profits():
             contract = result['contract']
             tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
             if 'hitbtc' in buy_name:
-                buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
+                if 'ETH' in result['buy_symbol']:
+                    buyurl = 'https://hitbtc.com/' + pair + '-to-eth'
+                if 'BTC' in result['buy_symbol']:
+                    buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
             if 'hotbit' in buy_name:
                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
             if buy_name == 'idex':
@@ -196,7 +199,10 @@ def hitbtc_profits():
             #     buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
 
             if 'hitbtc' in sell_name:
-                sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
+                if 'ETH' in result['buy_symbol']:
+                    sellurl = 'https://hitbtc.com/' + pair + '-to-eth'
+                if 'BTC' in result['buy_symbol']:
+                    sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
             if 'hotbit' in sell_name:
                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
             if sell_name == 'idex':
