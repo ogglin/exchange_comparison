@@ -114,8 +114,9 @@ async def compare_markets(symbol, percent, currency, proxy):
     if hotbit_deth:
         for ask in hotbit_deth['ask']:
             asks.append([ask['price'], ask['size']])
-        return ct('hitbtc', asks, 0, symbol[3], symbol[4], 1, symbol[1],
-                  symbol[6], percent, currency).compare()
+        return ct(buy_from='hitbtc', buy_prices=asks, buy_volume=0, sell_to=symbol[3], sell_prices=symbol[4],
+                  sell_volume=1, buy_symbol=symbol[1], sell_symbol=symbol[2],
+                  contract=symbol[6], profit_percent=percent, currency=currency).compare()
 
 
 async def init_compare(all_symbols, percent, currency):
@@ -141,7 +142,12 @@ def hitbtc_profits():
         mi.highest_bid, mi.lowest_ask, tp.contract, mi.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_idex mi ON mi.tsymbol = mh.tsymbol WHERE mi.exch_direction is not null and tp.is_active is true
-         and mh.is_active is true ),
+         and mh.is_active is true ), 
+        hotbit as (SELECT mhb.symbol, mh.symbol, mh.decimals, 'hotbit' as site,  
+        mhb.sell, mhb.buy, tp.contract, mhb.volume, mh.is_active FROM trusted_pairs tp 
+        LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
+        LEFT JOIN module_hotbit mhb ON mhb.tsymbol = mh.tsymbol WHERE mhb.exch_direction is not null and 
+        tp.is_active is true and mh.is_active is true ),
         kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, 'kyber' as site, mk.highest_bid, mk.lowest_ask, 
         tp.contract, mk.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
@@ -153,7 +159,7 @@ def hitbtc_profits():
         LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_uniswap mu ON mu.tsymbol = mh.tsymbol WHERE mu.exch_direction is not null and 
         tp.is_active is true and mh.is_active is true )
-        SELECT * FROM idex UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM uniswap;''')
+        SELECT * FROM idex UNION ALL SELECT * FROM hotbit UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM uniswap;''')
     currency = Settings.objects.all().values()[0]['currency']
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -200,11 +206,11 @@ def hitbtc_profits():
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
             # if result[0][4] == 'UNISWAP_ONE':
             #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
-            compare_result.append({'pair': result['symbol'], 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
-                                   'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+            compare_result.append(
+                {'pair': result['symbol'], 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                 'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
     loop.close()
     return compare_result
-
 
 # async def hitbtc_profits_init():
 #     while True:

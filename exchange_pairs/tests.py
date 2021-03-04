@@ -33,8 +33,8 @@ def init():
     for ask in depth['ask']:
         asks.append([ask['price'], ask['size']])
     print(asks)
-    compare = ct(buy_from='hitbtc', asks=asks, buy_volume=0, sell_to='uniswap', bids=0.00235603, sell_volume=1,
-                 symbol='OPTBTC', contract='0x4fe5851c9af07df9e5ad8217afae1ea72737ebda', profit_percent=1,
+    compare = ct(buy_from='hitbtc', buy_prices=asks, buy_volume=0, sell_to='uniswap', sell_prices=0.00235603, sell_volume=1,
+                 buy_symbol='OPTBTC', sell_symbol='OPT', contract='0x4fe5851c9af07df9e5ad8217afae1ea72737ebda', profit_percent=1,
                  currency=0.031639).compare()
     print(compare)
 
