@@ -26,10 +26,15 @@ class CompareToken(object):
         if isinstance(self.asks, list):
             self.buy_price = 0
             self.buy_volume = 0
+            print(self.currency)
             for ask in self.asks:
                 if self.buy_volume <= self.e_vol:
                     self.buy_price = float(ask[0]) / self.currency
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.currency
+                    print(float(ask[0]))
+                    print(self.buy_price)
+                    print(self.buy_volume)
+                    print('-------------')
         else:
             self.buy_price = self.asks
 
@@ -52,8 +57,8 @@ class CompareToken(object):
                       'sell_to': self.sell_to, 'sell_price': self.sell_price, 'sell_volume': self.sell_volume}
         else:
             profit = None
+        print(profit)
         if self.percent > self.profit_percent:
-            print(profit)
             return profit
         else:
             return None

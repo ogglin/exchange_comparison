@@ -200,10 +200,9 @@ def hitbtc_profits():
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
             # if result[0][4] == 'UNISWAP_ONE':
             #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
-            compare_result.append({'pair': pair, 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+            compare_result.append({'pair': result['symbol'], 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
                                    'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
     loop.close()
-    print(compare_result)
     return compare_result
 
 
