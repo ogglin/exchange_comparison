@@ -36,10 +36,10 @@ class CompareToken(object):
                 if self.buy_volume <= self.e_vol:
                     self.buy_price = float(ask[0]) / self.buy_currency
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.buy_currency
-                    # print(float(ask[0]))
-                    # print(self.buy_price)
-                    # print(self.buy_volume)
-                    # print('-------------')
+                    print(float(ask[0]))
+                    print(self.buy_price)
+                    print(self.buy_volume)
+                    print('-------------')
         else:
             self.buy_price = self.asks
 

@@ -204,18 +204,18 @@ def hotbit_profits():
         mi.highest_bid, mi.lowest_ask, tp.contract, mi.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_idex mi ON mi.tsymbol = mh.tsymbol WHERE mi.exch_direction is not null and tp.is_active is true
-         and mh.is_active is true ),
+         and mh.is_active is true and mi.is_active is true),
         kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, 'kyber' as site, mk.highest_bid, mk.lowest_ask, 
         tp.contract, mk.volume, mh.is_active FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_kyber mk ON mk.tsymbol = mh.tsymbol WHERE mk.exch_direction is not null and 
-        tp.is_active is true and mh.is_active is true ),
+        tp.is_active is true and mh.is_active is true and mk.is_active is true),
         uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, 'uniswap' as site, mu.highest_bid, mu.lowest_ask, 
         tp.contract, mu.volume , mh.is_active 
         FROM trusted_pairs tp 
         LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol 
         LEFT JOIN module_uniswap mu ON mu.tsymbol = mh.tsymbol WHERE mu.exch_direction is not null and 
-        tp.is_active is true and mh.is_active is true )
+        tp.is_active is true and mh.is_active is true and mu.is_active is true)
         SELECT * FROM idex UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM uniswap;''')
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
