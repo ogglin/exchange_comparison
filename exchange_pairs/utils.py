@@ -57,9 +57,10 @@ class CompareToken(object):
         """Check profit and return it"""
         if self.buy_price > 0 and self.sell_price > 0 and self.buy_volume > self.vol and self.sell_volume > self.vol:
             self.percent = (self.sell_price - self.buy_price) / self.sell_price * 100
-            profit = {'symbol': self.buy_symbol, 'percent': self.percent, 'contract': self.contract,
-                      'buy_from': self.buy_from, 'buy_price': self.buy_price, 'buy_volume': self.buy_volume,
-                      'sell_to': self.sell_to, 'sell_price': self.sell_price, 'sell_volume': self.sell_volume}
+            profit = {'buy_symbol': self.buy_symbol, 'percent': self.percent, 'contract': self.contract,
+                      'buy_from': self.buy_from.lower(), 'buy_price': self.buy_price, 'buy_volume': self.buy_volume,
+                      'sell_to': self.sell_to.lower(), 'sell_price': self.sell_price, 'sell_volume': self.sell_volume,
+                      'sell_symbol': self.sell_symbol}
         else:
             profit = None
         # print(profit)

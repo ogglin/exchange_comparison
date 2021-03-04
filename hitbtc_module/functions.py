@@ -171,6 +171,7 @@ def hitbtc_profits():
     for result in init_result:
         if result:
             pair = result['symbol'].replace('ETH', '').replace('BTC', '')
+            sell_symbol = result['sell_symbol']
             buy_name = result['buy_from']
             buy = result['buy_price']
             sell_name = result['sell_to']
@@ -180,6 +181,8 @@ def hitbtc_profits():
             tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
             if 'hitbtc' in buy_name:
                 buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
+            if 'hotbit' in buy_name:
+                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
             if buy_name == 'idex':
                 buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
             # if result[0][1] == 'BANKOR':
@@ -194,6 +197,8 @@ def hitbtc_profits():
 
             if 'hitbtc' in sell_name:
                 sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
+            if 'hotbit' in sell_name:
+                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
             if sell_name == 'idex':
                 sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
             # if result[0][4] == 'BANKOR':
