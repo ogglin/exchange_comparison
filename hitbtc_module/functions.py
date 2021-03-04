@@ -115,7 +115,7 @@ async def compare_markets(symbol, percent, currency, proxy):
         for ask in hotbit_deth['ask']:
             asks.append([ask['price'], ask['size']])
         return ct(buy_from='hitbtc', buy_prices=asks, buy_volume=0, sell_to=symbol[3], sell_prices=symbol[4],
-                  sell_volume=1, buy_symbol=symbol[1], sell_symbol=symbol[2],
+                  sell_volume=1, buy_symbol=symbol[1], sell_symbol=symbol[0],
                   contract=symbol[6], profit_percent=percent, currency=currency).compare()
 
 
@@ -169,7 +169,6 @@ def hitbtc_profits():
     print('hitbtc_profits end', datetime.datetime.now())
     compare_result = []
     for result in init_result:
-        print(result)
         if result:
             pair = result['symbol'].replace('ETH', '').replace('BTC', '')
             buy_name = result['buy_from']
