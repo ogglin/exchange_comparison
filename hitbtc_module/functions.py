@@ -9,12 +9,11 @@ import requests
 from aiohttp_socks import SocksConnector
 from asgiref.sync import sync_to_async
 
-from exchange_comparison.utils import _query
 from exchange_pairs.models import Settings
+import exchange_pairs.services as ex_serv
+from exchange_pairs.utils import CompareToken as ct, GetTokens as gt
 from hitbtc_module.models import Hitbtc
 from hotbit_module.functions import proxys
-
-from exchange_pairs.utils import CompareToken as ct
 
 hitbtc_tikers_set = []
 
@@ -108,26 +107,40 @@ async def get_hitbtc_depth(symbol, proxy):
             time.sleep(1)
 
 
-async def compare_markets(symbol, percent, currency, proxy):
-    hotbit_deth = await get_hitbtc_depth(symbol[1], proxy)
+async def compare_markets(token, percent, currency, proxy, exch):
+    # tsymbol, contract, site, token, sell, buy, volume
+    hitbtc_deth = await get_hitbtc_depth(token[3], proxy)
     asks = []
-    if hotbit_deth:
-        for ask in hotbit_deth['ask']:
-            asks.append([ask['price'], ask['size']])
-        return ct(buy_from='hitbtc', buy_prices=asks, buy_volume=0, sell_to=symbol[3], sell_prices=symbol[4],
-                  sell_volume=1, buy_symbol=symbol[1], sell_symbol=symbol[0],
-                  contract=symbol[6], profit_percent=percent, currency=currency).compare()
+    bids = []
+    if hitbtc_deth:
+        if 'ask' in exch:
+            for ask in hitbtc_deth['ask']:
+                asks.append([ask['price'], ask['size']])
+            return ct(buy_from='hitbtc', buy_symbol=token[2], buy_prices=asks, buy_volume=0, sell_to=token[2],
+                      sell_prices=token[4],
+                      sell_volume=1, sell_symbol=token[0],
+                      contract=token[1], profit_percent=percent, currency=currency).compare()
+        else:
+            for ask in hitbtc_deth['bid']:
+                bids.append([ask['price'], ask['size']])
+            return ct(buy_from='hitbtc', buy_symbol=token[2], buy_prices=token[4], buy_volume=0, sell_to=token[2],
+                      sell_prices=bids,
+                      sell_volume=1, sell_symbol=token[0],
+                      contract=token[1], profit_percent=percent, currency=currency).compare()
 
 
-async def init_compare(all_symbols, percent, currency):
+async def init_compare(hitbtc_tokens, all_tokens, percent, currency):
     async_tasks = []
     # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
     cnt = 0
-    for symbol in all_symbols:
-        async_tasks.append(compare_markets(symbol, percent, currency, proxys[cnt]))
-        cnt += 1
-        if cnt >= len(proxys):
-            cnt = 0
+    for htoken in hitbtc_tokens:
+        for token in all_tokens:
+            if htoken[0] == token[0]:
+                async_tasks.append(compare_markets(token, percent, currency, proxys[cnt], 'ask'))
+                async_tasks.append(compare_markets(token, percent, currency, proxys[cnt], 'bid'))
+                cnt += 1
+                if cnt >= len(proxys):
+                    cnt = 0
     # print('end  collect symbols: ' + str(len(async_tasks)) + str(datetime.datetime.now()))
     results = await asyncio.gather(*async_tasks)
     return results
@@ -135,47 +148,59 @@ async def init_compare(all_symbols, percent, currency):
 
 # @sync_to_async
 def hitbtc_profits():
+    # global all_compared_tokens
     print('hitbtc_profits start', datetime.datetime.now())
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
-    all_symbols = _query(f'''WITH idex as (SELECT mi.exch_direction, mh.symbol, mh.decimals, 'idex' as site,  
-        mi.highest_bid, mi.lowest_ask, tp.contract, mi.volume, mh.is_active FROM trusted_pairs tp 
-        LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
-        LEFT JOIN module_idex mi ON mi.tsymbol = mh.tsymbol WHERE mi.exch_direction is not null and tp.is_active is true
-         and mh.is_active is true and mi.is_active is true),  
-        hotbit as (SELECT mhb.symbol, mh.symbol, mh.decimals, 'hotbit' as site,  
-        mhb.sell, mhb.buy, tp.contract, mhb.volume, mh.is_active FROM trusted_pairs tp 
-        LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
-        LEFT JOIN module_hotbit mhb ON mhb.tsymbol = mh.tsymbol WHERE mhb.exch_direction is not null and tp.is_active is true
-         and mh.is_active is true  and mhb.is_active is true),
-        kyber as (SELECT mk.exch_direction, mh.symbol, mh.decimals, 'kyber' as site, mk.highest_bid, mk.lowest_ask, 
-        tp.contract, mk.volume, mh.is_active FROM trusted_pairs tp 
-        LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
-        LEFT JOIN module_kyber mk ON mk.tsymbol = mh.tsymbol WHERE mk.exch_direction is not null and 
-        tp.is_active is true and mh.is_active is true and mk.is_active is true ),
-        uniswap as (SELECT mu.exch_direction, mh.symbol, mh.decimals, 'uniswap' as site, mu.highest_bid, mu.lowest_ask, 
-        tp.contract, mu.volume , mh.is_active 
-        FROM trusted_pairs tp 
-        LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol 
-        LEFT JOIN module_uniswap mu ON mu.tsymbol = mh.tsymbol WHERE mu.exch_direction is not null and 
-        tp.is_active is true and mh.is_active is true and mu.is_active is true)
-        SELECT * FROM idex UNION ALL SELECT * FROM hotbit UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM uniswap;''')
+    # tsymbol, contract, site, token, sell, buy, volume
+    isTD = True
+    hitbtc_tokens = []
+    all_tokens = []
+    while isTD:
+        if len(ex_serv.all_compared_tokens) > 0:
+            for token in ex_serv.all_compared_tokens:
+                if 'hitbtc' in token[2]:
+                    hitbtc_tokens.append(token)
+                else:
+                    all_tokens.append(token)
+            isTD = False
+        else:
+            isTD = True
+            time.sleep(1)
+            print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-    init_result = loop.run_until_complete(init_compare(all_symbols, percent, currency))
+    init_result = loop.run_until_complete(init_compare(hitbtc_tokens, all_tokens, percent, currency))
     print('hitbtc_profits end', datetime.datetime.now())
     compare_result = []
     for result in init_result:
         if result:
-            pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
-            sell_symbol = result['sell_symbol']
+            '''
+            'buy_from',
+            'buy_symbol':,
+            'buy_price': ,
+            'buy_volume':,
+            'buy_ask':,
+            'sell_to':,
+            'sell_symbol':,
+            'sell_price':,
+            'sell_volume':,
+            'sell_bid':,
+            'percent':,
+            'contract':,
+            '''
+
             buy_name = result['buy_from']
+            pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
             buy = result['buy_price']
+            buy_ask = result['buy_ask']
             sell_name = result['sell_to']
+            sell_symbol = result['sell_symbol']
             sell = result['sell_price']
+            sell_bid = result['sell_bid']
             percent = result['percent']
             contract = result['contract']
             tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -217,7 +242,8 @@ def hitbtc_profits():
             # if result[0][4] == 'UNISWAP_ONE':
             #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
             compare_result.append(
-                {'pair': result['buy_symbol'], 'buy_name': buy_name, 'buy': buy, 'sell_name': sell_name, 'sell': sell,
+                {'pair': result['buy_symbol'], 'buy_name': buy_name, 'buy': buy, 'buy_ask': buy_ask,
+                 'sell_name': sell_name, 'sell': sell, 'sell_bid': sell_bid,
                  'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
     loop.close()
     return compare_result

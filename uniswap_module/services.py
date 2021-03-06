@@ -15,6 +15,7 @@ from exchange_comparison.utils import _query
 from exchange_pairs.models import TrustedPairs
 from .models import Uniswap, UniswapOne
 
+
 koef = 0.99
 uniswap_prices_set = []
 

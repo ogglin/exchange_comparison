@@ -12,6 +12,8 @@ from exchange_pairs.models import Settings, TrustedPairs
 from idex_module.services import idex_tikers_set
 from .models import Hotbit
 
+from exchange_pairs.utils import CompareToken as ct
+
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
 
 prices = []
@@ -67,7 +69,7 @@ async def get_hotbit_depth(symbol, proxy):
 
 async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
     # print('---------/ ', cnt, currency, '/---------')
-    # print(where, asks, to, bids, symbols, percent, currency)
+    print(where, asks, to, bids, symbols, percent, currency)
     volume = 0
     ask_price = asks
     bid_price = bids
@@ -109,15 +111,6 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
             count = 1
 
     if bid_price > 0 and ask_price > 0 and token_volume >= 0.1 and full_volume > 0.8:
-        # print('/--------------------------')
-        # print('token vol:', token_volume)
-        # print('full vol:', full_volume)
-        # print('vol:', volume)
-        # print(where, asks, to, bids, symbols, percent, currency)
-        # print('/ ' + w_symbol + ' from ' + where + ' to ' + t_symbol + ' ' + to + ' currency = ' + str(currency) + ' /')
-        # print('/ buy ' + str(ask_price) + ' sell ' + str(bid_price) + ' volume ' + str(volume) + ' % ' + str(
-        #     (bid_price - ask_price) / bid_price * 100) + ' /')
-        # print('--------------------------/')
         return [w_symbol, where, ask_price, t_symbol, to, bid_price, volume, (bid_price - ask_price) / bid_price * 100,
                 token_id]
     else:
@@ -125,8 +118,12 @@ async def compare(asks, bids, where, to, symbols, percent, currency, cnt):
 
 
 async def compare_markets(symbol, percent, currency, proxy, cnt):
+    # ct(buy_from='hotbit', buy_symbol='', buy_prices=asks, buy_volume=0,
+    #    sell_to='', sell_symbol='', sell_prices=0.00235603, sell_volume=1,
+    #    contract='', profit_percent=1,
+    #    currency=0.031639).compare()
     compares = []
-    exchange_name = 'HOTBIT'
+    exchange_name = 'hotbit'
     if 'BTC' in symbol[1]:
         exchange_name = 'HOTBIT / BTC'
     else:

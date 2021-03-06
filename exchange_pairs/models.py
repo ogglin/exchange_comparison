@@ -129,6 +129,8 @@ class ProfitExchanges(models.Model):
     tokenid = models.CharField(max_length=100)
     buyurl = models.CharField(max_length=200)
     sellurl = models.CharField(max_length=200)
+    buy_ask = models.FloatField()
+    sell_bid = models.FloatField()
 
     def __str__(self):
         return self.pair

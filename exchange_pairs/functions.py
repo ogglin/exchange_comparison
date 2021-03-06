@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.models import Q
 
 from exchange_pairs.models import ProfitExchanges
+from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
 from hotbit_module.functions import hotbit_profits
 from idex_module.functions import idex_profits
@@ -20,7 +21,8 @@ def idex_result():
     ProfitExchanges.objects.filter(Q(buy_name__contains='IDEX') | Q(sell_name__contains='IDEX')).delete()
     with transaction.atomic():
         for result in idex_result:
-            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'], buy_ask=0,
+                                   sell_bid=0,
                                    sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                    tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
             pair.save()
@@ -33,7 +35,8 @@ def hotbit_result():
     ProfitExchanges.objects.filter(Q(buy_name__contains='HOTBIT') | Q(sell_name__contains='HOTBIT')).delete()
     with transaction.atomic():
         for result in hotbit_result:
-            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'], buy_ask=0,
+                                   sell_bid=0,
                                    sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                    tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
             pair.save()
@@ -42,13 +45,21 @@ def hotbit_result():
 @sync_to_async
 def hitbtc_result():
     hitbtc_result = hitbtc_profits()
+    print(hitbtc_result)
     ProfitExchanges.objects.filter(Q(buy_name__contains='hitbtc') | Q(sell_name__contains='hitbtc')).delete()
     with transaction.atomic():
         for result in hitbtc_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
-                                   sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
-                                   tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
+                                   buy_ask=result['buy_ask'], buyurl=result['buyurl'],
+                                   sell_name=result['sell_name'], sell=result['sell'], sell_bid=result['sell_bid'],
+                                   percent=result['percent'], tokenid=result['tokenid'],  sellurl=result['sellurl'])
             pair.save()
+
+
+async def init_all_compared_tokens():
+    print('start set compared_tokens: ' + str(datetime.datetime.now()))
+    while True:
+        await set_all_compared_tokens()
 
 
 async def exchanges_idex():
