@@ -18,7 +18,7 @@ def idex_result():
     idex_result = idex_profits()
     # print('result idex exchanges: ' + str(datetime.datetime.now()))
     # print('start fill database: ' + str(datetime.datetime.now()))
-    ProfitExchanges.objects.filter(Q(buy_name__contains='IDEX') | Q(sell_name__contains='IDEX')).delete()
+    ProfitExchanges.objects.filter(Q(buy_name__contains='idex') | Q(sell_name__contains='idex')).delete()
     with transaction.atomic():
         for result in idex_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'], buy_ask=0,
@@ -32,7 +32,7 @@ def idex_result():
 @sync_to_async
 def hotbit_result():
     hotbit_result = hotbit_profits()
-    ProfitExchanges.objects.filter(Q(buy_name__contains='HOTBIT') | Q(sell_name__contains='HOTBIT')).delete()
+    ProfitExchanges.objects.filter(Q(buy_name__contains='hotbit') | Q(sell_name__contains='hotbit')).delete()
     with transaction.atomic():
         for result in hotbit_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'], buy_ask=0,

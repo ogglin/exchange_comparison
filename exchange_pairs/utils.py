@@ -95,48 +95,51 @@ class GetTokens(object):
 
     def __idex(self):
         return _query('''
-            SELECT tp.tsymbol, tp.contract, 'idex' as site, mi.exch_direction token, mi.highest_bid, mi.lowest_ask, 
-            mi.volume FROM trusted_pairs tp LEFT JOIN module_idex mi ON mi.tsymbol = tp.tsymbol and tp.contract is not null
-            LEFT JOIN settings_modules ON settings_modules.module_name = 'idex' WHERE mi.exch_direction is not null 
-            and tp.is_active is true AND mi.is_active is true and settings_modules.is_active is true''')
+            SELECT tp.tsymbol, lower(tp.contract), 'idex' as site, mi.exch_direction token, mi.highest_bid, mi.lowest_ask, 
+            mi.volume FROM trusted_pairs tp LEFT JOIN module_idex mi ON lower(mi.tsymbol) = lower(tp.tsymbol) and 
+            tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'idex' 
+            WHERE mi.exch_direction is not null  and tp.is_active is true AND mi.is_active is true and 
+            settings_modules.is_active is true''')
 
     def __hotbit(self):
         return _query('''
-            SELECT tp.tsymbol, tp.contract, 'hotbit' as site, mh.symbol token, mh.sell, mh.buy, mh.volume 
-            FROM trusted_pairs tp LEFT JOIN module_hotbit mh ON mh.tsymbol = tp.tsymbol and tp.contract is not null
-            LEFT JOIN settings_modules ON settings_modules.module_name = 'hotbit' WHERE mh.exch_direction is not null 
-            and tp.is_active is true AND mh.is_active is true and settings_modules.is_active is true''')
+            SELECT tp.tsymbol, lower(tp.contract), 'hotbit' as site, mh.symbol token, mh.sell, mh.buy, mh.volume 
+            FROM trusted_pairs tp LEFT JOIN module_hotbit mh ON lower(mh.tsymbol) = lower(tp.tsymbol) and 
+            tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hotbit' 
+            WHERE mh.exch_direction is not null  and tp.is_active is true AND mh.is_active is true and 
+            settings_modules.is_active is true''')
 
     def __hitbtc(self):
         return _query('''
-            SELECT tp.tsymbol, tp.contract, 'hitbtc' as site, mh.symbol token, mh.sell, mh.buy, mh.volume 
-            FROM trusted_pairs tp LEFT JOIN module_hitbtc mh ON mh.tsymbol = tp.tsymbol and tp.contract is not null 
-            LEFT JOIN settings_modules ON settings_modules.module_name = 'hitbtc' WHERE mh.exch_direction is not null 
-            and tp.is_active is true AND mh.is_active is true and settings_modules.is_active is true''')
+            SELECT tp.tsymbol, lower(tp.contract), 'hitbtc' as site, mh.symbol token, mh.sell, mh.buy, mh.volume 
+            FROM trusted_pairs tp LEFT JOIN module_hitbtc mh ON lower(mh.tsymbol) = (tp.tsymbol) and 
+            tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hitbtc' 
+            WHERE mh.exch_direction is not null and tp.is_active is true AND mh.is_active is true and 
+            settings_modules.is_active is true''')
 
     def __uniswap(self):
         return _query('''
-            SELECT tp.tsymbol, tp.contract, 'uniswap' as site, mu.exch_direction token, mu.highest_bid sell, 
+            SELECT tp.tsymbol, lower(tp.contract), 'uniswap' as site, mu.exch_direction token, mu.highest_bid sell, 
             mu.lowest_ask buy, mu.volume FROM trusted_pairs tp 
-            LEFT JOIN module_uniswap mu ON mu.tsymbol = tp.tsymbol and tp.contract is not null 
+            LEFT JOIN module_uniswap mu ON lower(mu.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
             LEFT JOIN settings_modules ON settings_modules.module_name = 'uniswap' WHERE mu.exch_direction is not null 
             and tp.is_active is true AND mu.is_active is true and settings_modules.is_active is true 
             and (mu.highest_bid > 0 or mu.lowest_ask > 0)''')
 
     def __bancor(self):
         return _query('''
-            SELECT tp.tsymbol, tp.contract, 'bancor' as site, mb.exch_direction token, mb.highest_bid sell, 
+            SELECT tp.tsymbol, lower(tp.contract), 'bancor' as site, mb.exch_direction token, mb.highest_bid sell, 
             mb.lowest_ask buy, mb.volume FROM trusted_pairs tp 
-            LEFT JOIN module_bancor mb ON mb.tsymbol = tp.tsymbol and tp.contract is not null 
+            LEFT JOIN module_bancor mb ON lower(mb.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
             LEFT JOIN settings_modules ON settings_modules.module_name = 'bancor' WHERE mb.exch_direction is not null 
             and tp.is_active is true AND mb.is_active is true and settings_modules.is_active is true 
             and (mb.highest_bid > 0 or mb.lowest_ask > 0)''')
 
     def __kyber(self):
         return _query('''
-            SELECT tp.tsymbol, tp.contract, 'kyber' as site, mk.exch_direction token, mk.highest_bid sell, 
+            SELECT tp.tsymbol, lower(tp.contract), 'kyber' as site, mk.exch_direction token, mk.highest_bid sell, 
             mk.lowest_ask buy, mk.volume FROM trusted_pairs tp 
-            LEFT JOIN module_kyber mk ON mk.tsymbol = tp.tsymbol and tp.contract is not null 
+            LEFT JOIN module_kyber mk ON lower(mk.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
             LEFT JOIN settings_modules ON settings_modules.module_name = 'kyber' WHERE mk.exch_direction is not null 
             and tp.is_active is true AND mk.is_active is true and settings_modules.is_active is true 
             and (mk.highest_bid > 0 or mk.lowest_ask > 0)''')
