@@ -2,6 +2,9 @@ import json
 import time
 
 import requests
+from django.db.models import Q
+
+from exchange_pairs.models import ProfitExchanges
 from exchange_pairs.utils import CompareToken as ct, GetTokens as gt
 
 
@@ -27,21 +30,28 @@ def get_hitbtc_depth(symbol):
 
 
 def init():
-    all_compared_tokens = gt(module='all', _all=True).tokens()
-    for token in all_compared_tokens:
-        print(token)
-    print(len(all_compared_tokens))
-    symbols = ['OPTBTC']
-    depth = get_hitbtc_depth(symbols[0])
-    asks = []
-    for ask in depth['ask']:
-        asks.append([ask['price'], ask['size']])
-    print(asks)
-    compare = ct(buy_from='hitbtc', buy_symbol='PLRBTC', buy_prices=asks, buy_volume=0,
-                 sell_to='uniswap', sell_symbol='OPT', sell_prices=0.00235603, sell_volume=1,
-                 contract='0x4fe5851c9af07df9e5ad8217afae1ea72737ebda', profit_percent=1,
-                 currency=0.031639).compare()
-    print(compare)
+    # all_compared_tokens = gt(module='all', _all=True).tokens()
+    # for token in all_compared_tokens:
+    #     print(token)
+    # print(len(all_compared_tokens))
+    # symbols = ['OPTBTC']
+    # depth = get_hitbtc_depth(symbols[0])
+    # asks = []
+    # for ask in depth['ask']:
+    #     asks.append([ask['price'], ask['size']])
+    # print(asks)
+    # compare = ct(buy_from='hitbtc', buy_symbol='PLRBTC', buy_prices=asks, buy_volume=0,
+    #              sell_to='uniswap', sell_symbol='OPT', sell_prices=0.00235603, sell_volume=1,
+    #              contract='0x4fe5851c9af07df9e5ad8217afae1ea72737ebda', profit_percent=1,
+    #              currency=0.031639).compare()
+    # print(compare)
+    # ProfitExchanges.objects.all().delete()
+    # ProfitExchanges.objects.filter(Q(buy_name__contains='idex') | Q(sell_name__contains='idex')).delete()
+    # ProfitExchanges.objects.filter(Q(buy_name__contains='hotbit') | Q(sell_name__contains='hotbit')).delete()
+    # ProfitExchanges.objects.filter(Q(buy_name__contains='hitbtc') | Q(sell_name__contains='hitbtc')).delete()
+    print(ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | Q(sell_name__icontains='idex')))
+    print(ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | Q(sell_name__icontains='hotbit')))
+    print(ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | Q(sell_name__icontains='hitbtc')))
 
 
 if __name__ == '__main__':

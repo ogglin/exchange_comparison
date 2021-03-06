@@ -18,7 +18,7 @@ def idex_result():
     idex_result = idex_profits()
     # print('result idex exchanges: ' + str(datetime.datetime.now()))
     # print('start fill database: ' + str(datetime.datetime.now()))
-    ProfitExchanges.objects.filter(Q(buy_name__contains='idex') | Q(sell_name__contains='idex')).delete()
+    ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | Q(sell_name__icontains='idex')).delete()
     with transaction.atomic():
         for result in idex_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'], buy_ask=0,
@@ -32,7 +32,7 @@ def idex_result():
 @sync_to_async
 def hotbit_result():
     hotbit_result = hotbit_profits()
-    ProfitExchanges.objects.filter(Q(buy_name__contains='hotbit') | Q(sell_name__contains='hotbit')).delete()
+    ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | Q(sell_name__icontains='hotbit')).delete()
     with transaction.atomic():
         for result in hotbit_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'], buy_ask=0,
@@ -46,7 +46,7 @@ def hotbit_result():
 def hitbtc_result():
     hitbtc_result = hitbtc_profits()
     print(hitbtc_result)
-    ProfitExchanges.objects.filter(Q(buy_name__contains='hitbtc') | Q(sell_name__contains='hitbtc')).delete()
+    ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | Q(sell_name__icontains='hitbtc')).delete()
     with transaction.atomic():
         for result in hitbtc_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
