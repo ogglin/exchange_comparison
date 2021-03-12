@@ -47,7 +47,7 @@ async def compare_markets(itoken, all_tokens, percent, currency, proxy, dtime):
                            contract=token[1], profit_percent=percent, currency=currency).compare())
                 if len(idex_depth['bids']) > 0:
                     compare_result.append(
-                        ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[4], buy_volume=0, sell_to='idex',
+                        ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=0, sell_to='idex',
                            sell_prices=idex_depth['bids'], sell_volume=1, sell_symbol=itoken[3],
                            contract=token[1], profit_percent=percent, currency=currency).compare())
                 return compare_result

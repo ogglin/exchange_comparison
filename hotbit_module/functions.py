@@ -53,11 +53,11 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy):
         for token in all_tokens:
             if token[0] == htoken[0]:
                 compare_result.append(
-                    ct(buy_from='hitbtc', buy_symbol=htoken[3], buy_prices=hotbit_depth['asks'], buy_volume=0,
+                    ct(buy_from='hotbit', buy_symbol=htoken[3], buy_prices=hotbit_depth['asks'], buy_volume=0,
                        sell_to=token[2], sell_prices=token[4], sell_volume=1, sell_symbol=token[3],
                        contract=token[1], profit_percent=percent, currency=currency).compare())
                 compare_result.append(
-                    ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[4], buy_volume=0, sell_to='hitbtc',
+                    ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=0, sell_to='hotbit',
                        sell_prices=hotbit_depth['bids'], sell_volume=1, sell_symbol=htoken[3],
                        contract=token[1], profit_percent=percent, currency=currency).compare())
                 return compare_result
