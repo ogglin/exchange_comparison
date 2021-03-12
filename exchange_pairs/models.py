@@ -139,6 +139,7 @@ class ProfitExchanges(models.Model):
     sellurl = models.CharField(max_length=200)
     buy_ask = models.FloatField()
     sell_bid = models.FloatField()
+    sell_symbol = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.pair

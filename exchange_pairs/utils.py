@@ -82,6 +82,7 @@ class CompareToken(object):
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.buy_currency
         else:
             self.buy_price = self.asks / self.buy_currency
+            self.buy_ask = self.asks
 
         """Set sell price"""
         if isinstance(self.bids, list):
@@ -94,6 +95,7 @@ class CompareToken(object):
                     self.sell_volume += float(bid[1]) * float(bid[0]) / self.sell_currency
         else:
             self.sell_price = self.bids / self.sell_currency
+            self.sell_bid = self.bids
 
         if self.breverse and self.buy_price > 0:
             self.buy_price = 1 / self.buy_price
@@ -258,9 +260,9 @@ class ResultPrepare(object):
                         tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
                         if 'hitbtc' in buy_from:
                             if 'ETH' in result['buy_symbol']:
-                                buyurl = 'https://hitbtc.com/' + pair + '-to-eth'
+                                buyurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-eth'
                             if 'BTC' in result['buy_symbol']:
-                                buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
+                                buyurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-btc'
                         if 'hotbit' in buy_from:
                             buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if buy_from == 'idex':
@@ -296,6 +298,6 @@ class ResultPrepare(object):
                         if buy_ask > 0 and sell_bid > 0:
                             compare_result.append(
                                 {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
-                                 'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid,
-                                 'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+                                 'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
+                                 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol})
         return compare_result
