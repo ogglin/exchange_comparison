@@ -7,6 +7,7 @@ import time
 
 import aiohttp
 import requests
+from django.db import transaction
 from aiohttp_socks import SocksConnector
 from asgiref.sync import sync_to_async
 
@@ -21,26 +22,37 @@ hitbtc_tikers_set = []
 @sync_to_async
 def currencies_update():
     # print('start idex currency update: ' + str(datetime.datetime.now()))
-    update_list = []
-    objs = Hitbtc.objects.all().order_by('id')
-    if len(objs) > 0:
+    # update_list = []
+    # objs = Hitbtc.objects.all().order_by('id')
+    # if len(objs) > 0:
+    with transaction.atomic():
         for data in hitbtc_tikers_set:
-            try:
-                obj = objs.get(exch_direction=data['token'])
-                obj.lowest_ask = data['ask']
-                obj.highest_bid = data['bid']
-                obj.volume = data['volume']
-                update_list.append(obj)
-            except:
+            pair_id = Hitbtc.objects.filter(symbol=data['symbol']).values('id')
+            if len(pair_id) > 0:
+                Hitbtc.objects.filter(id=pair_id[0]['id']).update(buy=data['ask'], sell=data['bid'],
+                                                                  volume=data['volume'])
+            else:
                 pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
                               volume=data['volume'], symbol=data['symbol'])
                 pair.save()
-    else:
-        for data in hitbtc_tikers_set:
-            pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
-                          volume=data['volume'], symbol=data['symbol'])
-            pair.save()
-    Hitbtc.objects.bulk_update(update_list, ['buy', 'sell', 'volume'])
+            # print(data)
+            # try:
+            #     obj = objs.get(symbol=data['symbol'])
+            #     obj.lowest_ask = data['ask']
+            #     obj.highest_bid = data['bid']
+            #     obj.volume = data['volume']
+            #     update_list.append(obj)
+            # except:
+            #     pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
+            #                   volume=data['volume'], symbol=data['symbol'])
+            #     pair.save()
+    # else:
+    #     with transaction.atomic():
+    #         for data in hitbtc_tikers_set:
+    #             pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
+    #                           volume=data['volume'], symbol=data['symbol'])
+    #             pair.save()
+    # Hitbtc.objects.bulk_update(update_list, ['buy', 'sell', 'volume'])
     # print('end idex currency update: ' + str(datetime.datetime.now()))
 
 
@@ -75,11 +87,12 @@ async def get_tiker():
             hitbtc_tikers_set.append(
                 {'token': exch_direction, 'ask': buy, 'bid': sell, 'volume': volume, 'symbol': symbol})
     await currencies_update()
-    print('tiker update', datetime.datetime.now())
+    # print('end tiker update', datetime.datetime.now())
 
 
 async def hitbtc_tiker_init():
     while True:
+        # print('start tiker update', datetime.datetime.now())
         await get_tiker()
 
 
@@ -146,8 +159,7 @@ async def init_compare(hitbtc_tokens, all_tokens, percent, currency):
 
 # @sync_to_async
 def hitbtc_profits():
-    # global all_compared_tokens
-    print('hitbtc_profits start', datetime.datetime.now())
+    # print('hitbtc_profits start', datetime.datetime.now())
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     # tsymbol, contract, site, token, sell, buy, volume
@@ -181,7 +193,7 @@ def hitbtc_profits():
         init_result = loop.run_until_complete(init_compare(parts_hitbtc_tokens, all_tokens, percent, currency))
         loop.close()
         all_result.extend(init_result)
-    print('hitbtc_profits end', datetime.datetime.now())
+    # print('hitbtc_profits end', datetime.datetime.now())
     compare_result = rprep(all_result=all_result, exchanger='hitbtc').result()
     return compare_result
 
