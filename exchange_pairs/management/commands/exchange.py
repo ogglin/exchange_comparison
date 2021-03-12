@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from exchange_pairs.main import init_start, init_start_test
 
 # from exchange_pairs.tests import set_new_token
-from exchange_comparison.test_utils import init_test
+# from exchange_comparison.test_utils import init_test
 
 
 class Command(BaseCommand):
@@ -19,7 +19,7 @@ class Command(BaseCommand):
             init_start()
         if options['test']:
             print('Start test', datetime.datetime.now())
-            init_test()
+            # init_test()
             print('End test', datetime.datetime.now())
         if options['hbtc']:
             print('Start Hitbtc', datetime.datetime.now())
