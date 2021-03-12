@@ -1,5 +1,28 @@
 from exchange_comparison.utils import _query
 
+proxys = [
+    ['193.111.152.28', '16881', 'user53105', '3x7cyr'],
+    ['185.161.211.209', '16881', 'user53105', '3x7cyr'],
+    ['193.111.155.237', '16881', 'user53105', '3x7cyr'],
+    ['193.111.152.168', '16881', 'user53105', '3x7cyr'],
+    ['185.20.187.218', '16881', 'user53105', '3x7cyr'],
+    ['193.111.154.67', '16881', 'user53105', '3x7cyr'],
+    ['185.161.209.185', '16881', 'user53105', '3x7cyr'],
+    ['185.36.189.145', '16881', 'user53105', '3x7cyr'],
+    ['185.36.190.130', '16881', 'user53105', '3x7cyr'],
+    ['193.111.152.90', '16881', 'user53105', '3x7cyr'],
+    ['213.32.84.200', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.143', '11565', 'user53105', '3x7cyr'],
+    ['79.137.15.162', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.176', '11565', 'user53105', '3x7cyr'],
+    ['147.135.175.235', '11565', 'user53105', '3x7cyr'],
+    ['178.32.67.197', '11565', 'user53105', '3x7cyr'],
+    ['178.32.67.151', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.202', '11565', 'user53105', '3x7cyr'],
+    ['147.135.206.67', '11565', 'user53105', '3x7cyr'],
+    ['213.32.84.46', '11565', 'user53105', '3x7cyr'],
+]
+
 
 class CompareToken(object):
     buy_price = 0
@@ -10,7 +33,6 @@ class CompareToken(object):
 
     def __init__(self, buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume,
                  contract, profit_percent, currency):
-        # print(buy_from, asks, buy_volume, sell_to, bids, sell_volume, symbol, contract, profit_percent, currency)
         """Constructor"""
         self.buy_from = buy_from
         self.buy_symbol = buy_symbol
@@ -39,10 +61,6 @@ class CompareToken(object):
                 if self.buy_volume <= self.e_vol:
                     self.buy_price = float(ask[0])
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.buy_currency
-                    print(float(ask[0]))
-                    print(self.buy_price)
-                    print(self.buy_volume)
-                    print('-------------')
         else:
             self.buy_price = self.asks
 
@@ -77,7 +95,6 @@ class CompareToken(object):
             }
         else:
             profit = None
-        # print(profit)
         if self.percent > self.profit_percent:
             return profit
         else:
@@ -99,7 +116,7 @@ class GetTokens(object):
             mi.volume FROM trusted_pairs tp LEFT JOIN module_idex mi ON lower(mi.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'idex' 
             WHERE mi.exch_direction is not null  and tp.is_active is true AND mi.is_active is true and 
-            settings_modules.is_active is true''')
+            settings_modules.is_active is true;''')
 
     def __hotbit(self):
         return _query('''
@@ -107,15 +124,15 @@ class GetTokens(object):
             FROM trusted_pairs tp LEFT JOIN module_hotbit mh ON lower(mh.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hotbit' 
             WHERE mh.exch_direction is not null  and tp.is_active is true AND mh.is_active is true and 
-            settings_modules.is_active is true''')
+            settings_modules.is_active is true;''')
 
     def __hitbtc(self):
         return _query('''
             SELECT tp.tsymbol, lower(tp.contract), 'hitbtc' as site, mh.symbol token, mh.sell, mh.buy, mh.volume 
-            FROM trusted_pairs tp LEFT JOIN module_hitbtc mh ON lower(mh.tsymbol) = (tp.tsymbol) and 
+            FROM trusted_pairs tp LEFT JOIN module_hitbtc mh ON lower(mh.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hitbtc' 
             WHERE mh.exch_direction is not null and tp.is_active is true AND mh.is_active is true and 
-            settings_modules.is_active is true''')
+            settings_modules.is_active is true;''')
 
     def __uniswap(self):
         return _query('''
@@ -124,7 +141,7 @@ class GetTokens(object):
             LEFT JOIN module_uniswap mu ON lower(mu.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
             LEFT JOIN settings_modules ON settings_modules.module_name = 'uniswap' WHERE mu.exch_direction is not null 
             and tp.is_active is true AND mu.is_active is true and settings_modules.is_active is true 
-            and (mu.highest_bid > 0 or mu.lowest_ask > 0)''')
+            and (mu.highest_bid > 0 or mu.lowest_ask > 0);''')
 
     def __bancor(self):
         return _query('''
@@ -133,7 +150,7 @@ class GetTokens(object):
             LEFT JOIN module_bancor mb ON lower(mb.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
             LEFT JOIN settings_modules ON settings_modules.module_name = 'bancor' WHERE mb.exch_direction is not null 
             and tp.is_active is true AND mb.is_active is true and settings_modules.is_active is true 
-            and (mb.highest_bid > 0 or mb.lowest_ask > 0)''')
+            and (mb.highest_bid > 0 or mb.lowest_ask > 0);''')
 
     def __kyber(self):
         return _query('''
@@ -142,7 +159,7 @@ class GetTokens(object):
             LEFT JOIN module_kyber mk ON lower(mk.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
             LEFT JOIN settings_modules ON settings_modules.module_name = 'kyber' WHERE mk.exch_direction is not null 
             and tp.is_active is true AND mk.is_active is true and settings_modules.is_active is true 
-            and (mk.highest_bid > 0 or mk.lowest_ask > 0)''')
+            and (mk.highest_bid > 0 or mk.lowest_ask > 0);''')
 
     def tokens(self):
         if self._all:
@@ -178,3 +195,73 @@ class GetTokens(object):
             if 'kyber' in self.module:
                 self.at = self.__kyber()
         return self.at
+
+
+class ResultPrepare(object):
+    rpo = None
+
+    def __init__(self, all_result, exchanger):
+        # Get module name
+        """Constructor"""
+        self.all_result = all_result
+        self.exchanger = exchanger
+
+    def result(self):
+        compare_result = []
+        for results in self.all_result:
+            if results:
+                for result in results:
+                    if result:
+                        buy_name = result['buy_from']
+                        pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
+                        buy = result['buy_price']
+                        buy_ask = result['buy_ask']
+                        sell_name = result['sell_to']
+                        sell_symbol = result['sell_symbol']
+                        sell = result['sell_price']
+                        sell_bid = result['sell_bid']
+                        percent = result['percent']
+                        contract = result['contract']
+                        tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
+                        if 'hitbtc' in buy_name:
+                            if 'ETH' in result['buy_symbol']:
+                                buyurl = 'https://hitbtc.com/' + pair + '-to-eth'
+                            if 'BTC' in result['buy_symbol']:
+                                buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
+                        if 'hotbit' in buy_name:
+                            buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
+                        if buy_name == 'idex':
+                            buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
+                        if buy_name == 'bankor':
+                            buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
+                                     str(contract)
+                        if buy_name == 'kyber':
+                            buyurl = 'https://kyberswap.com/swap/eth-' + pair
+                        if buy_name == 'uniswap':
+                            buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
+                        if buy_name == 'uniswap_one':
+                            buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
+
+                        if 'hitbtc' in sell_name:
+                            if 'ETH' in result['buy_symbol']:
+                                sellurl = 'https://hitbtc.com/' + pair + '-to-eth'
+                            if 'BTC' in result['buy_symbol']:
+                                sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
+                        if 'hotbit' in sell_name:
+                            sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
+                        if sell_name == 'idex':
+                            sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
+                        if sell_name == 'bankor':
+                            sellurl = 'https://app.bancor.network/eth/swap?from=' + str(contract) \
+                                      + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+                        if sell_name == 'kyber':
+                            sellurl = 'https://kyberswap.com/swap/eth-' + pair
+                        if sell_name == 'uniswap':
+                            sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
+                        if sell_name == 'uniswap_one':
+                            sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
+                        compare_result.append(
+                            {'pair': result['buy_symbol'], 'buy_name': buy_name, 'buy': buy, 'buy_ask': buy_ask,
+                             'sell_name': sell_name, 'sell': sell, 'sell_bid': sell_bid,
+                             'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
+        return compare_result

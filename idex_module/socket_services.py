@@ -63,14 +63,74 @@ def get_tokens():
     return tokens
 
 
+def save_log(data):
+    if 'type' in data:
+        data = data['data']
+    token = _query(
+        f"SELECT tsymbol FROM module_idex WHERE exch_direction = '{data['m'].replace('ETH', '').replace('-', '')}'")[0][
+        0]
+    contract = _query(f"SELECT contract FROM trusted_pairs WHERE tsymbol = '{token}';")[0][0]
+    compare_prices = _query(
+        f"""with hotbit as (SELECT 'hotbit' as site, buy, sell FROM module_hotbit WHERE tsymbol = '{token}' and symbol not ilike '%BTC%'),
+                hitbtc as (SELECT 'hitbtc' as site, buy, sell FROM module_hitbtc WHERE tsymbol = '{token}' and symbol not ilike '%BTC%'),
+                kyber as (SELECT 'kyber' as site, lowest_ask buy, highest_bid sell FROM module_kyber WHERE tsymbol = '{token}'),
+                bancor as (SELECT 'bancor' as site, lowest_ask buy, highest_bid sell FROM module_bancor WHERE tsymbol = '{token}'),
+                uniswap as (SELECT 'uniswap' as site, lowest_ask buy, highest_bid sell FROM module_uniswap WHERE tsymbol = '{token}'),
+                uniswap_one as (SELECT 'uniswap_one' as site, lowest_ask buy, highest_bid sell FROM module_uniswap_one WHERE tsymbol = '{token}')
+                SELECT * FROM hotbit UNION ALL SELECT * FROM hitbtc UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM bancor UNION ALL SELECT * FROM uniswap UNION ALL SELECT * FROM uniswap_one;""")
+    price = float(data['p'])
+    for compare in compare_prices:
+        if data['s'] == 'buy':
+            stype = "buy"
+            sprice = compare[2]
+            buyurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
+            sellurl = ''
+            if 'hitbtc' in compare[0]:
+                sellurl = 'https://hitbtc.com/' + token.lower() + '-to-eth'
+            if 'hotbit' in compare[0]:
+                sellurl = 'https://www.hotbit.io/exchange?symbol=' + token.lower() + '/eth'
+            if 'bankor' in compare[0]:
+                sellurl = 'https://app.bancor.network/eth/swap?from=' + str(
+                    contract) + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+            if 'kyber' in compare[0]:
+                sellurl = 'https://kyberswap.com/swap/eth-' + token
+            if 'uniswap' in compare[0]:
+                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
+            if 'uniswap_one' in compare[0]:
+                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
+            return stype, price, sprice, (sprice - price) / (price / 100), token, buyurl, sellurl, compare[0]
+        if data['s'] == 'sell':
+            stype = "sell"
+            sprice = compare[1]
+            buyurl = ''
+            sellurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
+            if 'hitbtc' in compare[0]:
+                buyurl = 'https://hitbtc.com/' + token.lower() + '-to-eth'
+            if 'hotbit' in compare[0]:
+                buyurl = 'https://www.hotbit.io/exchange?symbol=' + token.lower() + '/eth'
+            if 'bankor' in compare[0]:
+                buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
+                         str(contract)
+            if 'kyber' in compare[0]:
+                buyurl = 'https://kyberswap.com/swap/eth-' + token
+            if 'uniswap' in compare[0]:
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
+            if 'uniswap_one' in compare[0]:
+                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
+            return stype, price, sprice, (sprice - price) / (price / 100), token, buyurl, sellurl, compare[0]
+
+
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
         data = json.loads(message)['data']
         print(json.loads(message))
         log_message(data)
+        log = json.dumps(data)
+        stype, price, sprice, percent, token, buyurl, sellurl, site = save_log(data)
         try:
-            log = f"INSERT INTO websocket_log (datetime, log) VALUES ('{datetime.utcnow()}', '{json.dumps(data)}');"
+            log = f"INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site) " \
+                  f"VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', '{stype}', '{site}');"
             _query(log)
         except:
             pass

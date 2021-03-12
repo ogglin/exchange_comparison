@@ -1,11 +1,12 @@
 import datetime
+import time
 
 import requests
 import json
 
 from asgiref.sync import sync_to_async
 
-from exchange_pairs.models import ComparePairs, TrustedPairs, CustomSql, ExchangePairs
+from exchange_pairs.models import ComparePairs, TrustedPairs, CustomSql, ExchangePairs, Settings
 from hotbit_module.models import Hotbit
 from idex_module.models import Idex
 from idex_module.socket_services import _query
@@ -109,8 +110,25 @@ def token_set():
         token_update(token, contract, decimals)
 
 
+@sync_to_async
+def set_gas():
+    try:
+        time.sleep(2)
+        url = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=7EERE6KTUK3UH5X9CPAK63CTP93SJRF1NI'
+        response = requests.get(url=url)
+        jData = json.loads(response.content)['result']
+        _query(f"UPDATE settings SET gas_fast = {jData['FastGasPrice']}, gas_normal={jData['ProposeGasPrice']} WHERE id = 1;")
+    except:
+        pass
+
+
 async def exchange_set_init():
     print('start exchanges: ' + str(datetime.datetime.now()))
     while True:
         await token_exchange_set()
         # print('end exchanges: ' + str(datetime.datetime.now()))
+
+
+async def set_gas_init():
+    while True:
+        await set_gas()

@@ -71,6 +71,8 @@ class Settings(models.Model):
     market_koef = models.FloatField(verbose_name='Коэффициет бирж', help_text='учет отклонения для сравнения бирж в %',
                                     null=True, blank=True)
     currency = models.FloatField(verbose_name='ETH/BTC', help_text='Курс ETH к BTC', null=True, blank=True)
+    gas_normal = models.IntegerField()
+    gas_fast = models.IntegerField()
 
     def __str__(self):
         return 'Кастройки коэффициентов'
@@ -97,6 +99,12 @@ class SettingsModules(models.Model):
 class WebsocketLog(models.Model):
     datetime = models.DateTimeField(verbose_name='Дата', auto_now_add=True, editable=False)
     log = models.TextField(verbose_name='Лог')
+    buy_url = models.CharField(null=True, blank=True, max_length=255)
+    sell_url = models.CharField(null=True, blank=True, max_length=255)
+    type = models.CharField(null=True, blank=True, max_length=255)
+    site = models.CharField(null=True, blank=True, max_length=255)
+    percent = models.FloatField(default=0, blank=True, null=True)
+    token = models.CharField(null=True, blank=True, max_length=255)
 
     def __str__(self):
         return self.datetime

@@ -1,13 +1,11 @@
 import datetime
-import subprocess
 
 from django.core.management.base import BaseCommand
 
 from exchange_pairs.main import init_start, init_start_test
 
 # from exchange_pairs.tests import set_new_token
-from exchange_pairs.test_utils import init_test
-from hitbtc_module.functions import hitbtc_tiker_init
+from exchange_comparison.test_utils import init_test
 
 
 class Command(BaseCommand):

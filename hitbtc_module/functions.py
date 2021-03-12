@@ -2,6 +2,7 @@ import asyncio
 import concurrent.futures
 import datetime
 import json
+import math
 import time
 
 import aiohttp
@@ -11,9 +12,8 @@ from asgiref.sync import sync_to_async
 
 from exchange_pairs.models import Settings
 import exchange_pairs.services as ex_serv
-from exchange_pairs.utils import CompareToken as ct, GetTokens as gt
+from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
 from hitbtc_module.models import Hitbtc
-from hotbit_module.functions import proxys
 
 hitbtc_tikers_set = []
 
@@ -84,7 +84,7 @@ async def hitbtc_tiker_init():
 
 
 async def get_hitbtc_depth(symbol, proxy):
-    url = f"https://api.hitbtc.com/api/2/public/orderbook/{symbol}"
+    url = f"https://api.hitbtc.com/api/2/public/orderbook/{symbol.replace('/', '')}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
     isTD = True
@@ -107,41 +107,38 @@ async def get_hitbtc_depth(symbol, proxy):
             time.sleep(1)
 
 
-async def compare_markets(token, percent, currency, proxy, exch):
-    # tsymbol, contract, site, token, sell, buy, volume
-    hitbtc_deth = await get_hitbtc_depth(token[3], proxy)
+async def compare_markets(htoken, all_tokens, percent, currency, proxy):
+    hitbtc_deth = await get_hitbtc_depth(htoken[3], proxy)
+    # print(token, percent, currency, proxy, exch, hitbtc_deth)
     asks = []
     bids = []
+    compare_result = []
     if hitbtc_deth:
-        if 'ask' in exch:
-            for ask in hitbtc_deth['ask']:
-                asks.append([ask['price'], ask['size']])
-            return ct(buy_from='hitbtc', buy_symbol=token[2], buy_prices=asks, buy_volume=0, sell_to=token[2],
-                      sell_prices=token[4],
-                      sell_volume=1, sell_symbol=token[0],
-                      contract=token[1], profit_percent=percent, currency=currency).compare()
-        else:
-            for ask in hitbtc_deth['bid']:
-                bids.append([ask['price'], ask['size']])
-            return ct(buy_from='hitbtc', buy_symbol=token[2], buy_prices=token[4], buy_volume=0, sell_to=token[2],
-                      sell_prices=bids,
-                      sell_volume=1, sell_symbol=token[0],
-                      contract=token[1], profit_percent=percent, currency=currency).compare()
+        for token in all_tokens:
+            if token[0] == htoken[0]:
+                for ask in hitbtc_deth['ask']:
+                    asks.append([ask['price'], ask['size']])
+                compare_result.append(
+                    ct(buy_from='hitbtc', buy_symbol=htoken[3], buy_prices=asks, buy_volume=0, sell_to=token[2],
+                       sell_prices=token[4], sell_volume=1, sell_symbol=token[3],
+                       contract=token[1], profit_percent=percent, currency=currency).compare())
+                for bid in hitbtc_deth['bid']:
+                    bids.append([bid['price'], bid['size']])
+                compare_result.append(
+                    ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[4], buy_volume=0, sell_to='hitbtc',
+                       sell_prices=bids, sell_volume=1, sell_symbol=htoken[3],
+                       contract=token[1], profit_percent=percent, currency=currency).compare())
+                return compare_result
 
 
 async def init_compare(hitbtc_tokens, all_tokens, percent, currency):
     async_tasks = []
-    # print('start collect symbols ' + str(len(symbols)) + ' :' + str(datetime.datetime.now()))
     cnt = 0
     for htoken in hitbtc_tokens:
-        for token in all_tokens:
-            if htoken[0] == token[0]:
-                async_tasks.append(compare_markets(token, percent, currency, proxys[cnt], 'ask'))
-                async_tasks.append(compare_markets(token, percent, currency, proxys[cnt], 'bid'))
-                cnt += 1
-                if cnt >= len(proxys):
-                    cnt = 0
-    # print('end  collect symbols: ' + str(len(async_tasks)) + str(datetime.datetime.now()))
+        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, proxys[cnt]))
+        cnt += 1
+        if cnt >= len(proxys):
+            cnt = 0
     results = await asyncio.gather(*async_tasks)
     return results
 
@@ -169,83 +166,24 @@ def hitbtc_profits():
             time.sleep(1)
             print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop = asyncio.get_event_loop()
-    loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-    init_result = loop.run_until_complete(init_compare(hitbtc_tokens, all_tokens, percent, currency))
+    all_result = []
+    xlen = math.ceil(len(hitbtc_tokens) / 200)
+    n = 0
+    for i in range(xlen):
+        parts_hitbtc_tokens = []
+        for htoken in hitbtc_tokens:
+            if n <= 200 + 200 * i:
+                n += 1
+                parts_hitbtc_tokens.append(htoken)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop = asyncio.get_event_loop()
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
+        init_result = loop.run_until_complete(init_compare(hitbtc_tokens, all_tokens, percent, currency))
+        loop.close()
+        all_result.extend(init_result)
     print('hitbtc_profits end', datetime.datetime.now())
-    compare_result = []
-    for result in init_result:
-        if result:
-            '''
-            'buy_from',
-            'buy_symbol':,
-            'buy_price': ,
-            'buy_volume':,
-            'buy_ask':,
-            'sell_to':,
-            'sell_symbol':,
-            'sell_price':,
-            'sell_volume':,
-            'sell_bid':,
-            'percent':,
-            'contract':,
-            '''
-
-            buy_name = result['buy_from']
-            pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
-            buy = result['buy_price']
-            buy_ask = result['buy_ask']
-            sell_name = result['sell_to']
-            sell_symbol = result['sell_symbol']
-            sell = result['sell_price']
-            sell_bid = result['sell_bid']
-            percent = result['percent']
-            contract = result['contract']
-            tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            if 'hitbtc' in buy_name:
-                if 'ETH' in result['buy_symbol']:
-                    buyurl = 'https://hitbtc.com/' + pair + '-to-eth'
-                if 'BTC' in result['buy_symbol']:
-                    buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
-            if 'hotbit' in buy_name:
-                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
-            if buy_name == 'idex':
-                buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-            # if result[0][1] == 'BANKOR':
-            #     buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
-            #              result[0][8]
-            if buy_name == 'kyber':
-                buyurl = 'https://kyberswap.com/swap/eth-' + pair
-            if buy_name == 'uniswap':
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            # if result[0][1] == 'UNISWAP_ONE':
-            #     buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
-
-            if 'hitbtc' in sell_name:
-                if 'ETH' in result['buy_symbol']:
-                    sellurl = 'https://hitbtc.com/' + pair + '-to-eth'
-                if 'BTC' in result['buy_symbol']:
-                    sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
-            if 'hotbit' in sell_name:
-                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
-            if sell_name == 'idex':
-                sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-            # if result[0][4] == 'BANKOR':
-            #     sellurl = 'https://app.bancor.network/eth/swap?from=' + result[0][
-            #         8] + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-            if sell_name == 'kyber':
-                sellurl = 'https://kyberswap.com/swap/eth-' + pair
-            if sell_name == 'uniswap':
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            # if result[0][4] == 'UNISWAP_ONE':
-            #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(result[0][8]) + '&use=v1'
-            compare_result.append(
-                {'pair': result['buy_symbol'], 'buy_name': buy_name, 'buy': buy, 'buy_ask': buy_ask,
-                 'sell_name': sell_name, 'sell': sell, 'sell_bid': sell_bid,
-                 'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
-    loop.close()
+    compare_result = rprep(all_result=all_result, exchanger='hitbtc').result()
     return compare_result
 
 # async def hitbtc_profits_init():

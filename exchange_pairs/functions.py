@@ -14,10 +14,7 @@ from idex_module.functions import idex_profits
 
 @sync_to_async
 def idex_result():
-    # print('start idex exchanges: ' + str(datetime.datetime.now()))
     idex_result = idex_profits()
-    # print('result idex exchanges: ' + str(datetime.datetime.now()))
-    # print('start fill database: ' + str(datetime.datetime.now()))
     ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | Q(sell_name__icontains='idex')).delete()
     with transaction.atomic():
         for result in idex_result:
@@ -26,7 +23,6 @@ def idex_result():
                                    sell_name=result['sell_name'], sell=result['sell'], percent=result['percent'],
                                    tokenid=result['tokenid'], buyurl=result['buyurl'], sellurl=result['sellurl'])
             pair.save()
-    # print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
 @sync_to_async
@@ -45,14 +41,13 @@ def hotbit_result():
 @sync_to_async
 def hitbtc_result():
     hitbtc_result = hitbtc_profits()
-    print(hitbtc_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | Q(sell_name__icontains='hitbtc')).delete()
     with transaction.atomic():
         for result in hitbtc_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
                                    buy_ask=result['buy_ask'], buyurl=result['buyurl'],
                                    sell_name=result['sell_name'], sell=result['sell'], sell_bid=result['sell_bid'],
-                                   percent=result['percent'], tokenid=result['tokenid'],  sellurl=result['sellurl'])
+                                   percent=result['percent'], tokenid=result['tokenid'], sellurl=result['sellurl'])
             pair.save()
 
 
@@ -64,8 +59,9 @@ async def init_all_compared_tokens():
 
 async def exchanges_idex():
     while True:
+        print('start idex exchanges: ' + str(datetime.datetime.now()))
         await idex_result()
-        # print('end exchanges: ' + str(datetime.datetime.now()))
+        print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
 async def exchanges_hotbit():
