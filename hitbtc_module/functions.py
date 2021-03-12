@@ -125,8 +125,8 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy):
                 for bid in hitbtc_deth['bid']:
                     bids.append([bid['price'], bid['size']])
                 compare_result.append(
-                    ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[4], buy_volume=0, sell_to='hitbtc',
-                       sell_prices=bids, sell_volume=1, sell_symbol=htoken[3],
+                    ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=1, sell_to='hitbtc',
+                       sell_prices=bids, sell_volume=0, sell_symbol=htoken[3],
                        contract=token[1], profit_percent=percent, currency=currency).compare())
                 return compare_result
 

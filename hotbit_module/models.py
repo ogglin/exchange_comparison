@@ -15,7 +15,7 @@ class Hotbit(models.Model):
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
     def __str__(self):
-        return self.exch_direction
+        return self.symbol
 
     class Meta:
         db_table = 'module_hotbit'

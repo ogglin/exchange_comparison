@@ -8,7 +8,7 @@ from django.db.models import Q
 from exchange_pairs.models import ProfitExchanges
 from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
-from hotbit_module.functions import hotbit_profits
+from hotbit_module.functions import hotbit_profits, set_currencies
 from idex_module.functions import idex_profits
 
 
@@ -64,6 +64,12 @@ async def exchanges_idex():
         print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
+async def tiker_hotbit():
+    print('start hotbit tiker: ' + str(datetime.datetime.now()))
+    while True:
+        await set_currencies()
+
+
 async def exchanges_hotbit():
     print('start hotbit exchanges: ' + str(datetime.datetime.now()))
     while True:
@@ -73,5 +79,5 @@ async def exchanges_hotbit():
 
 async def exchanges_hitbtc():
     print('start hotbit exchanges: ' + str(datetime.datetime.now()))
-    while True:
-        await hitbtc_result()
+    # while True:
+    await hitbtc_result()

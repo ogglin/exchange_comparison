@@ -1,3 +1,5 @@
+import re
+
 from exchange_comparison.utils import _query
 
 proxys = [
@@ -30,6 +32,8 @@ class CompareToken(object):
     percent = 0
     vol = 0.8
     e_vol = 1
+    breverse = False
+    sreverse = False
 
     def __init__(self, buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume,
                  contract, profit_percent, currency):
@@ -46,23 +50,38 @@ class CompareToken(object):
         self.profit_percent = profit_percent
         self.buy_currency = currency
         self.sell_currency = currency
+        self.buy_ask = buy_prices
+        self.sell_bid = sell_prices
 
     def compare(self):
         """Compare tokens"""
         """Set buy price"""
+
+        if 'usd' in self.sell_symbol.lower() or 'usd' in self.buy_symbol.lower():
+            return None
+
         if 'btc' not in self.buy_symbol.lower():
             self.buy_currency = 1
         if 'btc' not in self.sell_symbol.lower():
             self.sell_currency = 1
+
+        if 'hitbtc' in self.buy_from:
+            if len(re.findall(r'^ETH', self.buy_symbol)) > 0:
+                self.breverse = True
+        if 'hitbtc' in self.sell_to:
+            if len(re.findall(r'^ETH', self.sell_symbol)) > 0:
+                self.sreverse = True
+
         if isinstance(self.asks, list):
             self.buy_price = 0
             self.buy_volume = 0
             for ask in self.asks:
                 if self.buy_volume <= self.e_vol:
-                    self.buy_price = float(ask[0])
+                    self.buy_price = float(ask[0]) / self.buy_currency
+                    self.buy_ask = float(ask[0])
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.buy_currency
         else:
-            self.buy_price = self.asks
+            self.buy_price = self.asks / self.buy_currency
 
         """Set sell price"""
         if isinstance(self.bids, list):
@@ -70,32 +89,46 @@ class CompareToken(object):
             self.sell_volume = 0
             for bid in self.bids:
                 if self.sell_volume <= self.e_vol:
-                    self.sell_price = float(bid[0])
+                    self.sell_price = float(bid[0]) / self.sell_currency
+                    self.sell_bid = float(bid[0])
                     self.sell_volume += float(bid[1]) * float(bid[0]) / self.sell_currency
         else:
-            self.sell_price = self.bids
+            self.sell_price = self.bids / self.sell_currency
+
+        if self.breverse and self.buy_price > 0:
+            self.buy_price = 1 / self.buy_price
+        if self.sreverse and self.sell_price > 0:
+            self.sell_price = 1 / self.sell_price
 
         """Check profit and return it"""
-        if self.buy_price / self.buy_currency > 0 and self.sell_price / self.sell_currency > 0 and self.buy_volume > self.vol and self.sell_volume > self.vol:
-            self.percent = (
-                                   self.sell_price / self.sell_currency - self.buy_price / self.buy_currency) / self.sell_price / self.sell_currency * 100
+        if self.buy_price > 0 and self.sell_price > 0 and self.buy_volume > self.vol and self.sell_volume > self.vol:
+            self.percent = (self.sell_price - self.buy_price) / self.buy_price * 100
             profit = {
                 'buy_from': self.buy_from.lower(),
                 'buy_symbol': self.buy_symbol,
-                'buy_price': self.buy_price / self.buy_currency,
+                'buy_price': self.buy_price,
                 'buy_volume': self.buy_volume,
-                'buy_ask': self.buy_price,
+                'buy_ask': self.buy_ask,
                 'sell_to': self.sell_to.lower(),
                 'sell_symbol': self.sell_symbol,
-                'sell_price': self.sell_price / self.sell_currency,
+                'sell_price': self.sell_price,
                 'sell_volume': self.sell_volume,
-                'sell_bid': self.sell_price,
+                'sell_bid': self.sell_bid,
                 'percent': self.percent,
                 'contract': self.contract,
             }
         else:
             profit = None
-        if self.percent > self.profit_percent:
+        if 20 > self.percent > self.profit_percent:
+            # print('_________________')
+            # if self.breverse:
+            #     print('reverse buy ', self.buy_price)
+            #     self.buy_price = 1 / self.buy_price
+            # if self.sreverse:
+            #     print('reverse sell ', self.sell_price)
+            #     self.sell_price = 1 / self.sell_price
+            # print(self.buy_currency, self.sell_currency)
+            # print(profit)
             return profit
         else:
             return None
@@ -212,56 +245,56 @@ class ResultPrepare(object):
             if results:
                 for result in results:
                     if result:
-                        buy_name = result['buy_from']
+                        buy_from = result['buy_from']
                         pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
                         buy = result['buy_price']
                         buy_ask = result['buy_ask']
-                        sell_name = result['sell_to']
+                        sell_to = result['sell_to']
                         sell_symbol = result['sell_symbol']
                         sell = result['sell_price']
                         sell_bid = result['sell_bid']
                         percent = result['percent']
                         contract = result['contract']
                         tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
-                        if 'hitbtc' in buy_name:
+                        if 'hitbtc' in buy_from:
                             if 'ETH' in result['buy_symbol']:
                                 buyurl = 'https://hitbtc.com/' + pair + '-to-eth'
                             if 'BTC' in result['buy_symbol']:
                                 buyurl = 'https://hitbtc.com/' + pair + '-to-btc'
-                        if 'hotbit' in buy_name:
+                        if 'hotbit' in buy_from:
                             buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
-                        if buy_name == 'idex':
+                        if buy_from == 'idex':
                             buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-                        if buy_name == 'bankor':
+                        if buy_from == 'bankor':
                             buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
                                      str(contract)
-                        if buy_name == 'kyber':
+                        if buy_from == 'kyber':
                             buyurl = 'https://kyberswap.com/swap/eth-' + pair
-                        if buy_name == 'uniswap':
+                        if buy_from == 'uniswap':
                             buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-                        if buy_name == 'uniswap_one':
+                        if buy_from == 'uniswap_one':
                             buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
 
-                        if 'hitbtc' in sell_name:
-                            if 'ETH' in result['buy_symbol']:
+                        if 'hitbtc' in sell_to:
+                            if 'ETH' in sell_symbol:
                                 sellurl = 'https://hitbtc.com/' + pair + '-to-eth'
-                            if 'BTC' in result['buy_symbol']:
+                            if 'BTC' in sell_symbol:
                                 sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
-                        if 'hotbit' in sell_name:
-                            sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
-                        if sell_name == 'idex':
+                        if 'hotbit' in sell_to:
+                            sell_to = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
+                        if sell_to == 'idex':
                             sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
-                        if sell_name == 'bankor':
+                        if sell_to == 'bankor':
                             sellurl = 'https://app.bancor.network/eth/swap?from=' + str(contract) \
                                       + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-                        if sell_name == 'kyber':
+                        if sell_to == 'kyber':
                             sellurl = 'https://kyberswap.com/swap/eth-' + pair
-                        if sell_name == 'uniswap':
+                        if sell_to == 'uniswap':
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-                        if sell_name == 'uniswap_one':
+                        if sell_to == 'uniswap_one':
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
                         compare_result.append(
-                            {'pair': result['buy_symbol'], 'buy_name': buy_name, 'buy': buy, 'buy_ask': buy_ask,
-                             'sell_name': sell_name, 'sell': sell, 'sell_bid': sell_bid,
+                            {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
+                             'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid,
                              'percent': percent, 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl})
         return compare_result

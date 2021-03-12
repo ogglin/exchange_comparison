@@ -7,6 +7,7 @@ import time
 import aiohttp
 import requests
 from aiohttp_socks import SocksConnector
+from asgiref.sync import sync_to_async
 
 import exchange_pairs.services as ex_serv
 from exchange_pairs.models import Settings, TrustedPairs
@@ -115,23 +116,21 @@ def hotbit_profits():
 
 
 # Set Prices
-def set_prices(token, symbol, buy, sell, volume):
-    prices.append({token: [symbol, buy, sell, volume]})
+def set_prices(symbol, buy, sell, volume):
+    prices.append([symbol, buy, sell, volume])
 
 
 def get_eth_btc():
     try:
         response = requests.get(f'https://api.hotbit.io/api/v1/market.status?market=ETH/BTC&period=10')
         Settings.objects.filter(id=1).update(currency=float(json.loads(response.content)['result']['last']))
+        return float(json.loads(response.content)['result']['last'])
     except:
-        pass
+        return getattr(Settings.objects.get(pk=1), 'currency')
 
 
 def get_ticker():
     currency = get_eth_btc()
-    ask_btc = currency
-    bit_btc = currency
-    token = ''
     resp_get = True
     while resp_get:
         try:
@@ -142,44 +141,30 @@ def get_ticker():
     jData = sorted(json.loads(response.content)['ticker'], key=lambda x: x['symbol'], reverse=False)
     for data in jData:
         if 'USDT' not in data['symbol']:
-            buy = float(data['buy'])
-            sell = float(data['sell'])
+            buy = float(data['high'])
+            sell = float(data['buy'])
             volume = float(data['vol'])
-            token = data['symbol'].replace('_ETH', '').replace('_BTC', '')
             if (buy > 0 or sell > 0) and volume > 0:
                 if 'ETH_BTC' in data['symbol']:
-                    set_prices('BTC', 'ETH/BTC', 1 / buy, 1 / sell, volume)
+                    set_prices('ETH/BTC', 1 / buy, 1 / sell, volume)
                 elif 'BTC' in data['symbol'] and 'ETH' not in data['symbol']:
-                    buy = buy * ask_btc
-                    sell = sell * ask_btc
-                    set_prices(token, data['symbol'].replace('_BTC', '') + '/BTC', buy, sell, volume)
+                    set_prices(data['symbol'], buy, sell, volume)
                 else:
-                    set_prices(token, data['symbol'].replace('_ETH', '') + '/ETH', buy, sell, volume)
+                    set_prices(data['symbol'], buy, sell, volume)
 
 
-def currencies_update(token, symbol, buy, sell, volume, contract, decimals):
-    pair_id = Hotbit.objects.filter(symbol=symbol).values('id')
+def currencies_update(symbol, buy, sell, volume):
+    pair_id = Hotbit.objects.filter(symbol=symbol.replace('_', '/')).values('id')
     if len(pair_id) > 0:
-        Hotbit.objects.filter(id=pair_id[0]['id']).update(exch_direction=token, symbol=symbol, buy=buy, sell=sell,
-                                                          volume=volume, contract=contract, decimals=decimals)
+        Hotbit.objects.filter(id=pair_id[0]['id']).update(buy=buy, sell=sell, volume=volume)
     else:
-        pair = Hotbit(exch_direction=token, symbol=symbol, buy=buy, sell=sell, volume=volume, is_active=True,
-                      contract=contract, decimals=decimals)
+        pair = Hotbit(exch_direction=symbol, symbol=symbol.replace('_', '/'), buy=buy, sell=sell, volume=volume,
+                      is_active=True, decimals=18)
         pair.save()
 
 
+@sync_to_async
 def set_currencies():
     get_ticker()
-    trusted_pair = list(TrustedPairs.objects.all().values_list())
-    contract = None
-    decimals = None
-    for price in prices:
-        token = list(price.keys())[0]
-        p = list(list(price.values()))[0]
-        for pair in trusted_pair:
-            if token == pair[1]:
-                contract = pair[2]
-                decimals = pair[3]
-        currencies_update(token, p[0], p[1], p[2], p[3], contract, decimals)
-        contract = None
-        decimals = None
+    for p in prices:
+        currencies_update(p[0], p[1], p[2], p[3])
