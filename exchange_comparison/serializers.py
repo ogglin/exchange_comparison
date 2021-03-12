@@ -93,4 +93,4 @@ class TrustedPairsSerializer(serializers.HyperlinkedModelSerializer):
 class WebsocketLogSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WebsocketLog
-        fields = ['datetime', 'log']
+        fields = ['datetime', 'log', 'buy_url', 'sell_url', 'type', 'site', 'percent', 'token']
