@@ -277,7 +277,7 @@ class ResultPrepare(object):
                             if 'BTC' in sell_symbol:
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-btc'
                         if 'hotbit' in sell_to:
-                            sell_to = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
+                            sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if sell_to == 'idex':
                             sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
                         if sell_to == 'bankor':
