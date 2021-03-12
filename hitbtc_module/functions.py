@@ -169,18 +169,16 @@ def hitbtc_profits():
     currency = Settings.objects.all().values()[0]['currency']
     all_result = []
     xlen = math.ceil(len(hitbtc_tokens) / 200)
-    n = 0
     for i in range(xlen):
         parts_hitbtc_tokens = []
-        for htoken in hitbtc_tokens:
-            if n <= 200 + 200 * i:
-                n += 1
+        for hi, htoken in enumerate(hitbtc_tokens):
+            if 200 * i <= hi < 200 * (i + 1):
                 parts_hitbtc_tokens.append(htoken)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
         loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-        init_result = loop.run_until_complete(init_compare(hitbtc_tokens, all_tokens, percent, currency))
+        init_result = loop.run_until_complete(init_compare(parts_hitbtc_tokens, all_tokens, percent, currency))
         loop.close()
         all_result.extend(init_result)
     print('hitbtc_profits end', datetime.datetime.now())

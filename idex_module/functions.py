@@ -89,13 +89,11 @@ def idex_profits():
     currency = Settings.objects.all().values()[0]['currency']
     all_result = []
     xlen = math.ceil(len(idex_tokens) / 200)
-    n = 0
     for i in range(xlen):
         parts_idex_tokens = []
-        for itoken in idex_tokens:
-            if n <= 200 + 200 * i:
-                n += 1
-                parts_idex_tokens.append(itoken)
+        for hi, htoken in enumerate(idex_tokens):
+            if 200 * i <= hi < 200 * (i + 1):
+                parts_idex_tokens.append(htoken)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()

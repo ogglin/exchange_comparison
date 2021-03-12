@@ -47,7 +47,6 @@ async def get_hotbit_depth(symbol, proxy):
 
 async def compare_markets(htoken, all_tokens, percent, currency, proxy):
     hotbit_depth = await get_hotbit_depth(htoken[3], proxy)
-    # print(token, percent, currency, proxy, exch, hitbtc_deth)
     compare_result = []
     if hotbit_depth:
         for token in all_tokens:
@@ -98,12 +97,10 @@ def hotbit_profits():
     currency = Settings.objects.all().values()[0]['currency']
     all_result = []
     xlen = math.ceil(len(hotbit_tokens) / 200)
-    n = 0
     for i in range(xlen):
         parts_hotbit_tokens = []
-        for htoken in hotbit_tokens:
-            if n <= 200 + 200 * i:
-                n += 1
+        for hi, htoken in enumerate(hotbit_tokens):
+            if 200 * i <= hi < 200 * (i + 1):
                 parts_hotbit_tokens.append(htoken)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)

@@ -123,13 +123,6 @@ class CompareToken(object):
             profit = None
         if 20 > self.percent > self.profit_percent:
             # print('_________________')
-            # if self.breverse:
-            #     print('reverse buy ', self.buy_price)
-            #     self.buy_price = 1 / self.buy_price
-            # if self.sreverse:
-            #     print('reverse sell ', self.sell_price)
-            #     self.sell_price = 1 / self.sell_price
-            # print(self.buy_currency, self.sell_currency)
             # print(profit)
             return profit
         else:
@@ -247,6 +240,7 @@ class ResultPrepare(object):
             if results:
                 for result in results:
                     if result:
+                        print(result)
                         buy_from = result['buy_from']
                         pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
                         buy = result['buy_price']
@@ -279,9 +273,9 @@ class ResultPrepare(object):
 
                         if 'hitbtc' in sell_to:
                             if 'ETH' in sell_symbol:
-                                sellurl = 'https://hitbtc.com/' + pair + '-to-eth'
+                                sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-eth'
                             if 'BTC' in sell_symbol:
-                                sellurl = 'https://hitbtc.com/' + pair + '-to-btc'
+                                sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-btc'
                         if 'hotbit' in sell_to:
                             sell_to = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if sell_to == 'idex':
@@ -295,9 +289,8 @@ class ResultPrepare(object):
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
                         if sell_to == 'uniswap_one':
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
-                        if buy_ask > 0 and sell_bid > 0:
-                            compare_result.append(
-                                {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
-                                 'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
-                                 'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol})
+                        compare_result.append(
+                            {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
+                             'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
+                             'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol})
         return compare_result
