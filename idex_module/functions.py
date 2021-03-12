@@ -45,7 +45,7 @@ async def compare_markets(itoken, all_tokens, percent, currency, proxy, dtime):
                         ct(buy_from='idex', buy_symbol=itoken[3], buy_prices=idex_depth['asks'], buy_volume=0,
                            sell_to=token[2], sell_prices=token[4], sell_volume=1, sell_symbol=token[3],
                            contract=token[1], profit_percent=percent, currency=currency).compare())
-                if len(idex_depth['bids']) > 0:
+                if len(idex_depth['bids']) > 0 and ('bancor' in token[2] or 'uniswap' in token[2] or 'kyber' in token[2] or 'uniswap_one' in token[2]):
                     compare_result.append(
                         ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=0, sell_to='idex',
                            sell_prices=idex_depth['bids'], sell_volume=1, sell_symbol=itoken[3],

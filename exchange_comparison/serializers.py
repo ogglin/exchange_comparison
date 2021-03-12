@@ -68,7 +68,7 @@ class SettingsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Settings
         fields = ['timeout_refresh_data', 'timeout_notice', 'koef_top', 'koef_low', 'koef_push', 'freeze_percent',
-                  'api_keys']
+                  'api_keys', 'currency', 'gas_normal', 'gas_fast']
 
 
 class SettingsModulesSerializer(serializers.HyperlinkedModelSerializer):
