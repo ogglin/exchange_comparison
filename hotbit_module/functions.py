@@ -12,6 +12,7 @@ from asgiref.sync import sync_to_async
 import exchange_pairs.services as ex_serv
 from exchange_pairs.models import Settings, TrustedPairs
 from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
+from utils.gets import get_hotbit_depth, get_idex_depth, get_hitbtc_depth
 from .models import Hotbit
 
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
@@ -21,39 +22,33 @@ PRODUCERS_COUNT = 20
 idex_tiker_all = None
 
 
-async def get_hotbit_depth(symbol, proxy):
-    url = f"https://api.hotbit.io/api/v1/order.depth?interval=1e-8&&limit=20&market={symbol}"
-    socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
-    connector = SocksConnector.from_url(socks_url)
-    isTD = True
-    while isTD:
-        try:
-            async with aiohttp.ClientSession(connector=connector) as session:
-                async with session.get(url) as response:
-                    html = await response.text()
-                    jhtml = json.loads(html)
-                    if jhtml['error'] is None:
-                        isTD = False
-                        return jhtml['result']
-                    elif jhtml['error']:
-                        isTD = False
-                        print(jhtml['error'])
-                        return None
-                    else:
-                        isTD = True
-        except:
-            time.sleep(1)
-
-
 async def compare_markets(htoken, all_tokens, percent, currency, proxy):
     hotbit_depth = await get_hotbit_depth(htoken[3], proxy)
     compare_result = []
     if hotbit_depth:
         for token in all_tokens:
             if token[0] == htoken[0]:
+                c_bids = None
+                if 'idex' in token[2]:
+                    idex_depth = await get_idex_depth(token[3], proxy)
+                    if idex_depth:
+                        if len(idex_depth['bids']) > 0:
+                            c_bids = idex_depth['bids']
+                        else:
+                            c_bids = None
+                    else:
+                        c_bids = None
+                elif 'hitbtc' in token[2]:
+                    hitbtc_deth = await get_hitbtc_depth(token[3], proxy)
+                    if hitbtc_deth:
+                        c_bids = []
+                        for bid in hitbtc_deth['bid']:
+                            c_bids.append([bid['price'], bid['size']])
+                else:
+                    c_bids = token[4]
                 compare_result.append(
                     ct(buy_from='hotbit', buy_symbol=htoken[3], buy_prices=hotbit_depth['asks'], buy_volume=0,
-                       sell_to=token[2], sell_prices=token[4], sell_volume=1, sell_symbol=token[3],
+                       sell_to=token[2], sell_prices=c_bids, sell_volume=1, sell_symbol=token[3],
                        contract=token[1], profit_percent=percent, currency=currency).compare())
                 if 'bancor' in token[2] or 'uniswap' in token[2] or 'kyber' in token[2] or 'uniswap_one' in token[2]:
                     compare_result.append(
@@ -92,7 +87,6 @@ def hotbit_profits():
         else:
             isTD = True
             time.sleep(1)
-            print('wait for tokens')
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
     all_result = []

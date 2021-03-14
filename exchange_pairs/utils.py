@@ -37,6 +37,8 @@ class CompareToken(object):
 
     def __init__(self, buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume,
                  contract, profit_percent, currency):
+        # print(buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume, contract,
+        #       profit_percent, currency)
         """Constructor"""
         self.buy_from = buy_from
         self.buy_symbol = buy_symbol
@@ -55,9 +57,8 @@ class CompareToken(object):
 
     def compare(self):
         """Compare tokens"""
-        """Set buy price"""
-
-        if 'usd' in self.sell_symbol.lower() or 'usd' in self.buy_symbol.lower():
+        if 'usd' in self.sell_symbol.lower() or 'usd' in self.buy_symbol.lower() or self.asks is None or self.bids is None:
+            # print('return None', self.buy_from, self.buy_symbol.lower(), self.asks, self.sell_to, self.sell_symbol.lower(), self.bids)
             return None
 
         if 'btc' not in self.buy_symbol.lower():
@@ -72,6 +73,7 @@ class CompareToken(object):
             if len(re.findall(r'^ETH', self.sell_symbol)) > 0:
                 self.sreverse = True
 
+        """Set buy price"""
         if isinstance(self.asks, list):
             self.buy_price = 0
             self.buy_volume = 0
@@ -122,7 +124,7 @@ class CompareToken(object):
         else:
             profit = None
         if 20 > self.percent > self.profit_percent:
-            # print('_________________')
+            # print('----------------')
             # print(profit)
             return profit
         else:

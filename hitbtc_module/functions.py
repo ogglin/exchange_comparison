@@ -1,30 +1,26 @@
 import asyncio
 import concurrent.futures
-import datetime
 import json
 import math
 import time
 
-import aiohttp
+
 import requests
 from django.db import transaction
-from aiohttp_socks import SocksConnector
+
 from asgiref.sync import sync_to_async
 
 from exchange_pairs.models import Settings
 import exchange_pairs.services as ex_serv
 from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
 from hitbtc_module.models import Hitbtc
+from utils.gets import get_hotbit_depth, get_idex_depth, get_hitbtc_depth
 
 hitbtc_tikers_set = []
 
 
 @sync_to_async
 def currencies_update():
-    # print('start idex currency update: ' + str(datetime.datetime.now()))
-    # update_list = []
-    # objs = Hitbtc.objects.all().order_by('id')
-    # if len(objs) > 0:
     with transaction.atomic():
         for data in hitbtc_tikers_set:
             pair_id = Hitbtc.objects.filter(symbol=data['symbol']).values('id')
@@ -35,25 +31,6 @@ def currencies_update():
                 pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
                               volume=data['volume'], symbol=data['symbol'])
                 pair.save()
-            # print(data)
-            # try:
-            #     obj = objs.get(symbol=data['symbol'])
-            #     obj.lowest_ask = data['ask']
-            #     obj.highest_bid = data['bid']
-            #     obj.volume = data['volume']
-            #     update_list.append(obj)
-            # except:
-            #     pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
-            #                   volume=data['volume'], symbol=data['symbol'])
-            #     pair.save()
-    # else:
-    #     with transaction.atomic():
-    #         for data in hitbtc_tikers_set:
-    #             pair = Hitbtc(exch_direction=data['token'], buy=data['ask'], sell=data['bid'], is_active=True,
-    #                           volume=data['volume'], symbol=data['symbol'])
-    #             pair.save()
-    # Hitbtc.objects.bulk_update(update_list, ['buy', 'sell', 'volume'])
-    # print('end idex currency update: ' + str(datetime.datetime.now()))
 
 
 async def get_tiker():
@@ -96,44 +73,31 @@ async def hitbtc_tiker_init():
         await get_tiker()
 
 
-async def get_hitbtc_depth(symbol, proxy):
-    url = f"https://api.hitbtc.com/api/2/public/orderbook/{symbol.replace('/', '')}"
-    socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
-    connector = SocksConnector.from_url(socks_url)
-    isTD = True
-    while isTD:
-        try:
-            async with aiohttp.ClientSession(connector=connector) as session:
-                async with session.get(url) as response:
-                    html = await response.text()
-                    jhtml = json.loads(html)
-                    if jhtml['ask']:
-                        isTD = False
-                        return jhtml
-                    elif jhtml['error']:
-                        isTD = False
-                        print(jhtml['error'])
-                        return None
-                    else:
-                        isTD = True
-        except:
-            time.sleep(1)
-
-
 async def compare_markets(htoken, all_tokens, percent, currency, proxy):
     hitbtc_deth = await get_hitbtc_depth(htoken[3], proxy)
-    # print(token, percent, currency, proxy, exch, hitbtc_deth)
     asks = []
     bids = []
     compare_result = []
     if hitbtc_deth:
         for token in all_tokens:
             if token[0] == htoken[0]:
+                c_bids = None
+                if 'idex' in token[2]:
+                    idex_depth = await get_idex_depth(token[3], proxy)
+                    if idex_depth:
+                        if len(idex_depth['bids']) > 0:
+                            c_bids = idex_depth['bids']
+                elif 'hotbit' in token[2]:
+                    hotbit_depth = await get_hotbit_depth(token[3], proxy)
+                    if hotbit_depth:
+                        c_bids = hotbit_depth['bids']
+                else:
+                    c_bids = token[4]
                 for ask in hitbtc_deth['ask']:
                     asks.append([ask['price'], ask['size']])
                 compare_result.append(
                     ct(buy_from='hitbtc', buy_symbol=htoken[3], buy_prices=asks, buy_volume=0, sell_to=token[2],
-                       sell_prices=token[4], sell_volume=1, sell_symbol=token[3],
+                       sell_prices=c_bids, sell_volume=1, sell_symbol=token[3],
                        contract=token[1], profit_percent=percent, currency=currency).compare())
                 if 'bancor' in token[2] or 'uniswap' in token[2] or 'kyber' in token[2] or 'uniswap_one' in token[2]:
                     for bid in hitbtc_deth['bid']:
@@ -177,7 +141,6 @@ def hitbtc_profits():
         else:
             isTD = True
             time.sleep(1)
-            print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
     all_result = []
     xlen = math.ceil(len(hitbtc_tokens) / 200)

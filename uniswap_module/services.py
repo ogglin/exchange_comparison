@@ -159,7 +159,5 @@ async def uniswap_v1_init():
 
 
 async def uniswap_v2_init():
-    # print('start uniswap_v2: ' + str(datetime.datetime.now()))
-    # while True:
-    await get_uni_2()
-    # print('end uniswap_v2: ' + str(datetime.datetime.now()))
+    while True:
+        await get_uni_2()
