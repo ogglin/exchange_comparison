@@ -262,7 +262,7 @@ class ResultPrepare(object):
                         if 'hotbit' in buy_from:
                             buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if buy_from == 'idex':
-                            buyurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
+                            buyurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
                         if buy_from == 'bankor':
                             buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
                                      str(contract)
@@ -281,7 +281,7 @@ class ResultPrepare(object):
                         if 'hotbit' in sell_to:
                             sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if sell_to == 'idex':
-                            sellurl = 'https://exchange.idex.io/trading/' + pair + '-ETH'
+                            sellurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
                         if sell_to == 'bankor':
                             sellurl = 'https://app.bancor.network/eth/swap?from=' + str(contract) \
                                       + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'

@@ -141,6 +141,7 @@ def hitbtc_profits():
         else:
             isTD = True
             time.sleep(1)
+            print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
     all_result = []
     xlen = math.ceil(len(hitbtc_tokens) / 200)

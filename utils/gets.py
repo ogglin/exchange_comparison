@@ -20,6 +20,7 @@ async def get_idex_depth(symbol, proxy):
                         isTD = False
                         return jhtml
                     elif 'code' in html:
+                        print(jhtml['code'])
                         isTD = False
                         return None
         except:
