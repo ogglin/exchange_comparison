@@ -129,8 +129,8 @@ async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
         log = json.dumps(data)
         stype, price, sprice, percent, token, buyurl, sellurl, site = save_log(data)
         try:
-            log = f"INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site) " \
-                  f"VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', '{stype}', '{site}');"
+            log = f"INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, sprice) " \
+                  f"VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', '{stype}', '{site}', {price}, {sprice});"
             _query(log)
         except:
             pass
