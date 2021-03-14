@@ -30,9 +30,9 @@ def init_start():
         kyber_init(),
         uniswap_v2_init(),
         uniswap_v1_init(),
-        # exchange_set_init(),
-        # set_gas_init(),
-        # get_wss()
+        exchange_set_init(),
+        set_gas_init(),
+        get_wss()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))
 
