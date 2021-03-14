@@ -1,13 +1,18 @@
-import datetime
-import time
 import json
+import random
+import time
+
 import aiohttp
 from aiohttp_socks import SocksConnector
+
+from exchange_pairs.utils import proxys
 
 idex_api = 'cddba27a-916f-48e7-bad3-884c0869b627'
 
 
 async def get_idex_depth(symbol, proxy):
+    n = random.randint(0, 20)
+    proxy = proxys[n]
     headers = {
         'IDEX-API-KEY': idex_api,
     }
@@ -78,3 +83,14 @@ async def get_hitbtc_depth(symbol, proxy):
                         isTD = True
         except:
             time.sleep(1)
+
+
+def get_proxy():
+    n = random.randint(0, 20)
+    print(n)
+    # proxy = proxys[n]
+    # print(proxy)
+
+
+if __name__ == "__main__":
+    get_proxy()
