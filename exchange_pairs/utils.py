@@ -242,7 +242,7 @@ class ResultPrepare(object):
             if results:
                 for result in results:
                     if result:
-                        print(result)
+                        # print(result)
                         buy_from = result['buy_from']
                         pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
                         buy = result['buy_price']

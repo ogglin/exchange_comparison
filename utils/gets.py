@@ -4,15 +4,20 @@ import json
 import aiohttp
 from aiohttp_socks import SocksConnector
 
+idex_api = 'cddba27a-916f-48e7-bad3-884c0869b627'
+
 
 async def get_idex_depth(symbol, proxy):
+    headers = {
+        'IDEX-API-KEY': idex_api,
+    }
     url = f"https://api.idex.io/v1/orderbook?market={symbol}-ETH&level=2&limit=20"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
     isTD = True
     while isTD:
         try:
-            async with aiohttp.ClientSession(connector=connector) as session:
+            async with aiohttp.ClientSession(connector=connector, headers=headers) as session:
                 async with session.get(url) as response:
                     html = await response.text()
                     jhtml = json.loads(html)
