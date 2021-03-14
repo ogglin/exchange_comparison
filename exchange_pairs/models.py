@@ -105,6 +105,8 @@ class WebsocketLog(models.Model):
     site = models.CharField(null=True, blank=True, max_length=255)
     percent = models.FloatField(default=0, blank=True, null=True)
     token = models.CharField(null=True, blank=True, max_length=255)
+    price = models.FloatField(default=0, blank=True, null=True)
+    sprice = models.FloatField(default=0, blank=True, null=True)
 
     def __str__(self):
         return self.datetime
