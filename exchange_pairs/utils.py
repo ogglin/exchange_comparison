@@ -57,8 +57,7 @@ class CompareToken(object):
 
     def compare(self):
         """Compare tokens"""
-        if 'usd' in self.sell_symbol.lower() or 'usd' in self.buy_symbol.lower() or self.asks is None or self.bids is None:
-            # print('return None', self.buy_from, self.buy_symbol.lower(), self.asks, self.sell_to, self.sell_symbol.lower(), self.bids)
+        if self.asks is None or self.bids is None:
             return None
 
         if 'btc' not in self.buy_symbol.lower():
@@ -75,6 +74,11 @@ class CompareToken(object):
         if 'hitbtc' in self.sell_to:
             if len(re.findall(r'^ETH', self.sell_symbol)) > 0:
                 self.sreverse = True
+
+        if 'idex' in self.buy_from:
+            self.buy_volume = 1
+        if 'idex' in self.sell_to:
+            self.sell_volume = 1
 
         """Set buy price"""
         if isinstance(self.asks, list):
@@ -149,7 +153,7 @@ class GetTokens(object):
             mi.volume FROM trusted_pairs tp LEFT JOIN module_idex mi ON lower(mi.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'idex' 
             WHERE mi.exch_direction is not null  and tp.is_active is true AND mi.is_active is true and 
-            settings_modules.is_active is true;''')
+            settings_modules.is_active is true ORDER BY token;''')
 
     def __hotbit(self):
         return _query('''

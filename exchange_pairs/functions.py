@@ -58,10 +58,10 @@ async def init_all_compared_tokens():
 
 
 async def exchanges_idex():
+    print('start idex exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start idex exchanges: ' + str(datetime.datetime.now()))
         await idex_result()
-        print('end idex exchanges: ' + str(datetime.datetime.now()))
+        # print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
 async def tiker_hotbit():

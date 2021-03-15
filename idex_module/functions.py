@@ -10,11 +10,13 @@ from utils.gets import get_hotbit_depth, get_idex_depth, get_hitbtc_depth
 
 
 async def compare_markets(itoken, all_tokens, percent, currency, proxy):
-    idex_depth = await get_idex_depth(itoken[3], proxy)
+    # idex_depth = await get_idex_depth(itoken[3], proxy)
     compare_result = []
-    if idex_depth:
+    # if idex_depth:
+    if itoken[0] == 'LCX':
         for token in all_tokens:
-            if token[0] == itoken[0]:
+            if token[0] == itoken[0] and 'usd' not in token[0].lower() and 'usd' not in itoken[0].lower():
+                idex_depth = {'asks': itoken[5], 'bids': itoken[4]}
                 c_bids = None
                 if 'hotbit' in token[2]:
                     hotbit_depth = await get_hotbit_depth(token[3], proxy)
@@ -28,18 +30,18 @@ async def compare_markets(itoken, all_tokens, percent, currency, proxy):
                             c_bids.append([bid['price'], bid['size']])
                 else:
                     c_bids = token[4]
-                if len(idex_depth['asks']) > 0:
+                if idex_depth['asks']:
                     compare_result.append(
                         ct(buy_from='idex', buy_symbol=itoken[3], buy_prices=idex_depth['asks'], buy_volume=0,
                            sell_to=token[2], sell_prices=c_bids, sell_volume=1, sell_symbol=token[3],
                            contract=token[1], profit_percent=percent, currency=currency).compare())
-                if len(idex_depth['bids']) > 0 and ('bancor' in token[2] or 'uniswap' in token[2] or 'kyber' in token[2]
+                if idex_depth['bids'] and ('bancor' in token[2] or 'uniswap' in token[2] or 'kyber' in token[2]
                                                     or 'uniswap_one' in token[2]):
                     compare_result.append(
                         ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=0, sell_to='idex',
                            sell_prices=idex_depth['bids'], sell_volume=1, sell_symbol=itoken[3],
                            contract=token[1], profit_percent=percent, currency=currency).compare())
-                return compare_result
+    return compare_result
 
 
 async def init_compare(idex_tokens, all_tokens, percent, currency):

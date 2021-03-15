@@ -4,15 +4,13 @@ import json
 import math
 import time
 
-import aiohttp
 import requests
-from aiohttp_socks import SocksConnector
 from asgiref.sync import sync_to_async
 
 import exchange_pairs.services as ex_serv
-from exchange_pairs.models import Settings, TrustedPairs
+from exchange_pairs.models import Settings
 from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
-from utils.gets import get_hotbit_depth, get_idex_depth, get_hitbtc_depth
+from utils.gets import get_hotbit_depth, get_hitbtc_depth
 from .models import Hotbit
 
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
@@ -27,7 +25,7 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy):
     compare_result = []
     if hotbit_depth:
         for token in all_tokens:
-            if token[0] == htoken[0]:
+            if token[0] == htoken[0] and 'usd' not in token[0].lower() and 'usd' not in htoken[0].lower():
                 c_bids = None
                 # if 'idex' in token[2]:
                 #     idex_depth = await get_idex_depth(token[3], proxy)
@@ -55,7 +53,7 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy):
                         ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=0, sell_to='hotbit',
                            sell_prices=hotbit_depth['bids'], sell_volume=1, sell_symbol=htoken[3],
                            contract=token[1], profit_percent=percent, currency=currency).compare())
-                return compare_result
+    return compare_result
 
 
 async def init_compare(hotbit_tokens, all_tokens, percent, currency):
