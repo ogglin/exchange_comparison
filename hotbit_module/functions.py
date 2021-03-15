@@ -29,16 +29,16 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy):
         for token in all_tokens:
             if token[0] == htoken[0]:
                 c_bids = None
-                if 'idex' in token[2]:
-                    idex_depth = await get_idex_depth(token[3], proxy)
-                    if idex_depth:
-                        if len(idex_depth['bids']) > 0:
-                            c_bids = idex_depth['bids']
-                        else:
-                            c_bids = None
-                    else:
-                        c_bids = None
-                elif 'hitbtc' in token[2]:
+                # if 'idex' in token[2]:
+                #     idex_depth = await get_idex_depth(token[3], proxy)
+                #     if idex_depth:
+                #         if len(idex_depth['bids']) > 0:
+                #             c_bids = idex_depth['bids']
+                #         else:
+                #             c_bids = None
+                #     else:
+                #         c_bids = None
+                if 'hitbtc' in token[2]:
                     hitbtc_deth = await get_hitbtc_depth(token[3], proxy)
                     if hitbtc_deth:
                         c_bids = []
