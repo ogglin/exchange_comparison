@@ -11,8 +11,8 @@ idex_api = 'cddba27a-916f-48e7-bad3-884c0869b627'
 
 
 async def get_idex_depth(symbol, proxy):
-    n = random.randint(0, 19)
-    proxy = proxys[n]
+    # n = random.randint(0, 19)
+    # proxy = proxys[n]
     headers = {
         'IDEX-API-KEY': idex_api,
     }
