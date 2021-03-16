@@ -761,9 +761,9 @@ class SocketComponent {
                 };
                 results.push(result);
             });
-            if (this.socketMsg !== results) {
-                this.playAlarm();
-            }
+            // if (this.socketMsg !== results) {
+            //   this.playAlarm();
+            // }
             this.socketMsg = [];
             this.socketMsg = results;
         });
