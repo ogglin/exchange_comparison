@@ -68,13 +68,13 @@ def currencies_update():
     update_list = []
     objs = Idex.objects.all().order_by('id')
     for data in idex_tikers_set:
-        obj = objs.get(exch_direction=data['token'])
-        if obj:
+        try:
+            obj = objs.get(exch_direction=data['token'])
             obj.lowest_ask = data['ask']
             obj.highest_bid = data['bid']
             obj.volume = data['volume']
             update_list.append(obj)
-        else:
+        except:
             pair = Idex(exch_direction=data['token'], lowest_ask=data['ask'], highest_bid=data['bid'], is_active=True,
                         volume=data['volume'])
             pair.save()
