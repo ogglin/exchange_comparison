@@ -258,6 +258,8 @@ class ResultPrepare(object):
                         sell_bid = result['sell_bid']
                         percent = result['percent']
                         contract = result['contract']
+                        sellurl = ''
+                        buyurl = ''
                         tokenid = '0x0000000000000000000000000000000000000000000000000000000000000000'
                         if 'hitbtc' in buy_from:
                             if 'ETH' in result['buy_symbol']:
@@ -268,7 +270,7 @@ class ResultPrepare(object):
                             buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if buy_from == 'idex':
                             buyurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
-                        if buy_from == 'bankor':
+                        if buy_from == 'bancor':
                             buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
                                      str(contract)
                         if buy_from == 'kyber':
@@ -287,7 +289,7 @@ class ResultPrepare(object):
                             sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if sell_to == 'idex':
                             sellurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
-                        if sell_to == 'bankor':
+                        if sell_to == 'bancor':
                             sellurl = 'https://app.bancor.network/eth/swap?from=' + str(contract) \
                                       + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
                         if sell_to == 'kyber':
