@@ -590,11 +590,11 @@ class SocketComponent {
         this.socketMsg = socketMsgs;
         this.socketStatus = socketStatuses;
         this.playAlarm = () => {
-            // const audio = new Audio();
-            // audio.src = '../../../assets/beep-4.mp3';
-            // audio.load();
-            // audio.volume = 0.2;
-            // audio.play();
+            const audio = new Audio();
+            audio.src = '../../../assets/beep-4.mp3';
+            audio.load();
+            audio.volume = 0.2;
+            audio.play();
         };
         // console.log(await publicClient.getServerTime());
         moment__WEBPACK_IMPORTED_MODULE_2__["locale"]('ru');
@@ -761,6 +761,9 @@ class SocketComponent {
                 };
                 results.push(result);
             });
+            if (this.socketMsg !== results) {
+                this.playAlarm();
+            }
             this.socketMsg = [];
             this.socketMsg = results;
         });
