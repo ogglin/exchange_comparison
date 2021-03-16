@@ -6,6 +6,7 @@ from exchange_pairs.main import init_start, init_start_test
 
 # from exchange_pairs.tests import set_new_token
 # from exchange_comparison.test_utils import init_test
+from utils.main import init_utest
 
 
 class Command(BaseCommand):
@@ -21,6 +22,10 @@ class Command(BaseCommand):
             print('Start test', datetime.datetime.now())
             # init_test()
             print('End test', datetime.datetime.now())
+        if options['utest']:
+            print('Start utest', datetime.datetime.now())
+            init_utest()
+            print('End utest', datetime.datetime.now())
         if options['hbtc']:
             print('Start Hitbtc', datetime.datetime.now())
             init_start_test()
@@ -47,6 +52,13 @@ class Command(BaseCommand):
             action='store_true',
             default=False,
             help='Start test'
+        )
+        parser.add_argument(
+            '-utest',
+            '--utest',
+            action='store_true',
+            default=False,
+            help='Start utest'
         )
         parser.add_argument(
             '-hbtc',

@@ -85,38 +85,38 @@ def save_log(data):
             sprice = compare[2]
             buyurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
             sellurl = ''
-            if 'hitbtc' in compare[0]:
-                sellurl = 'https://hitbtc.com/' + token.lower() + '-to-eth'
-            if 'hotbit' in compare[0]:
-                sellurl = 'https://www.hotbit.io/exchange?symbol=' + token.lower() + '/eth'
-            if 'bankor' in compare[0]:
-                sellurl = 'https://app.bancor.network/eth/swap?from=' + str(
-                    contract) + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-            if 'kyber' in compare[0]:
-                sellurl = 'https://kyberswap.com/swap/eth-' + token
+            # if 'hitbtc' in compare[0]:
+            #     sellurl = 'https://hitbtc.com/' + token.lower() + '-to-eth'
+            # if 'hotbit' in compare[0]:
+            #     sellurl = 'https://www.hotbit.io/exchange?symbol=' + token.lower() + '/eth'
+            # if 'bankor' in compare[0]:
+            #     sellurl = 'https://app.bancor.network/eth/swap?from=' + str(
+            #         contract) + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+            # if 'kyber' in compare[0]:
+            #     sellurl = 'https://kyberswap.com/swap/eth-' + token
             if 'uniswap' in compare[0]:
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            if 'uniswap_one' in compare[0]:
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
+            # if 'uniswap_one' in compare[0]:
+            #     sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
             return stype, price, sprice, (sprice - price) / (price / 100), token, buyurl, sellurl, compare[0]
         if data['s'] == 'sell':
             stype = "sell"
             sprice = compare[1]
             buyurl = ''
             sellurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
-            if 'hitbtc' in compare[0]:
-                buyurl = 'https://hitbtc.com/' + token.lower() + '-to-eth'
-            if 'hotbit' in compare[0]:
-                buyurl = 'https://www.hotbit.io/exchange?symbol=' + token.lower() + '/eth'
-            if 'bankor' in compare[0]:
-                buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
-                         str(contract)
-            if 'kyber' in compare[0]:
-                buyurl = 'https://kyberswap.com/swap/eth-' + token
+            # if 'hitbtc' in compare[0]:
+            #     buyurl = 'https://hitbtc.com/' + token.lower() + '-to-eth'
+            # if 'hotbit' in compare[0]:
+            #     buyurl = 'https://www.hotbit.io/exchange?symbol=' + token.lower() + '/eth'
+            # if 'bankor' in compare[0]:
+            #     buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
+            #              str(contract)
+            # if 'kyber' in compare[0]:
+            #     buyurl = 'https://kyberswap.com/swap/eth-' + token
             if 'uniswap' in compare[0]:
                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            if 'uniswap_one' in compare[0]:
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
+            # if 'uniswap_one' in compare[0]:
+            #     buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
             return stype, price, sprice, (sprice - price) / (price / 100), token, buyurl, sellurl, compare[0]
 
 

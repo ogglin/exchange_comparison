@@ -12,6 +12,7 @@ class TrustedPairs(models.Model):
     tsymbol = models.CharField(max_length=100, blank=True, null=True)
     contract = models.CharField(max_length=100, blank=False, null=False)
     decimals = models.IntegerField(null=True)
+    token_name = models.CharField(max_length=255, blank=True, null=True)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
     def __str__(self):
