@@ -33,7 +33,7 @@ def init_start():
         exchange_set_init(),
         set_gas_init(),
         get_wss(),
-        init_utils()
+        # init_utils()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))
 
