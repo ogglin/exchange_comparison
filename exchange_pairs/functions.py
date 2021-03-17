@@ -96,4 +96,4 @@ async def exchanges_hitbtc():
 async def init_utils():
     print('Start utils: ' + str(datetime.datetime.now()))
     while True:
-        await hitbtc_token_status()
+        pass
