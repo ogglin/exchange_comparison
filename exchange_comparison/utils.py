@@ -17,7 +17,8 @@ def _query(q):
         cur.execute(q)
         data = cur.fetchall()
     except psycopg2.DatabaseError as err:
-        print("Error: ", err)
+        if 'no results' not in err:
+            print("Error: ", err)
     else:
         return data
     finally:
