@@ -26,7 +26,7 @@ options.add_argument("--window-size=1366,768")
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option('useAutomationExtension', False)
 
-DRIVER_FILE = str(Path(__file__).resolve(strict=True).parent) + '/chromedriver.exe'
+DRIVER_FILE = str(Path(__file__).resolve(strict=True).parent) + '/chromedriver'
 # sys.path.append(DRIVER_FILE)
 driver = webdriver.Chrome(executable_path=DRIVER_FILE, chrome_options=options)
 
