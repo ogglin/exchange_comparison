@@ -88,10 +88,10 @@ async def get_hitbtc_depth(symbol, proxy):
                 async with session.get(url) as response:
                     html = await response.text()
                     jhtml = json.loads(html)
-                    if jhtml['ask']:
+                    if 'ask' in html:
                         isTD = False
                         return jhtml
-                    elif jhtml['error']:
+                    elif 'error' in html:
                         isTD = False
                         print(jhtml['error'])
                         return None
