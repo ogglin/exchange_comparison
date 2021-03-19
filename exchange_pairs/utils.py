@@ -77,8 +77,10 @@ class CompareToken(object):
 
         if 'idex' in self.buy_from:
             self.buy_volume = 1
+            self.sell_volume = 1
         if 'idex' in self.sell_to:
             self.sell_volume = 1
+            self.buy_volume = 1
 
         """Set buy price"""
         if isinstance(self.asks, list):
@@ -130,7 +132,8 @@ class CompareToken(object):
             }
         else:
             profit = None
-        if 20 > self.percent > self.profit_percent:
+        # print(profit)
+        if self.percent > self.profit_percent:
             return profit
         else:
             return None
