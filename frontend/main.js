@@ -684,32 +684,32 @@ class SocketComponent {
         tokenPrice.forEach(token => {
             if (token.exch_direction.toLowerCase() === trade.m.replace('-ETH', '').toLowerCase()) {
                 const tradePrice = parseFloat(trade.p);
-                if (token.site === 'kyber') {
-                    data.push({
-                        time: new Date(trade.t).toLocaleString(),
-                        type: trade.s,
-                        market: 'Kyber',
-                        token: trade.m.replace('-ETH', ''),
-                        iprice: tradePrice,
-                        price: token.sell,
-                        percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
-                        urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
-                        urlsell: 'https://kyberswap.com/swap/ent-' + trade.m.replace('-ETH', '').toLowerCase()
-                    });
-                }
-                if (token.site === 'bancor') {
-                    data.push({
-                        time: new Date(trade.t).toLocaleString(),
-                        type: trade.s,
-                        market: 'Bankor',
-                        token: trade.m.replace('-ETH', ''),
-                        iprice: tradePrice,
-                        price: token.sell,
-                        percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
-                        urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
-                        urlsell: 'https://www.bancor.network/?q=' + trade.m.replace('-ETH', '').toLowerCase()
-                    });
-                }
+                // if (token.site === 'kyber') {
+                //   data.push({
+                //     time: new Date(trade.t).toLocaleString(),
+                //     type: trade.s,
+                //     market: 'Kyber',
+                //     token: trade.m.replace('-ETH', ''),
+                //     iprice: tradePrice,
+                //     price: token.sell,
+                //     percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
+                //     urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
+                //     urlsell: 'https://kyberswap.com/swap/ent-' + trade.m.replace('-ETH', '').toLowerCase()
+                //   });
+                // }
+                // if (token.site === 'bancor') {
+                //   data.push({
+                //     time: new Date(trade.t).toLocaleString(),
+                //     type: trade.s,
+                //     market: 'Bankor',
+                //     token: trade.m.replace('-ETH', ''),
+                //     iprice: tradePrice,
+                //     price: token.sell,
+                //     percent: Number((token.sell - tradePrice) / (tradePrice / 100)).toFixed(2),
+                //     urlbuy: 'https://exchange.idex.io/trading/' + trade.m.replace('-ETH', '') + '-ETH',
+                //     urlsell: 'https://www.bancor.network/?q=' + trade.m.replace('-ETH', '').toLowerCase()
+                //   });
+                // }
                 // if (token.uniswaponebid) {
                 //   data.push({
                 //     time: new Date(trade.t).toLocaleString(),
@@ -736,6 +736,7 @@ class SocketComponent {
                         urlsell: 'https://app.uniswap.org/#/swap?outputCurrency=' + token.contract
                     });
                 }
+                this.socketMsg.unshift(data);
                 if (trade.s === 'buy') {
                     this.playAlarm();
                 }
