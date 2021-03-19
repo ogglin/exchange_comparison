@@ -11,6 +11,8 @@ from websockets import WebSocketClientProtocol
 # from exchange_pairs.models import WebsocketLog
 import psycopg2
 
+from idex_module.models import IdexSocketLog
+
 DATABASE_NAME = 'exchange_comparison'
 DATABASE_USER = 'exchange_comparison'
 DATABASE_PASSWORD = '0L7OBgdmXgvV28'
@@ -103,6 +105,8 @@ def save_log(data):
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
+        slog = IdexSocketLog(log=str(message))
+        slog.save()
         data = json.loads(message)['data']
         print(json.loads(message))
         log_message(data)

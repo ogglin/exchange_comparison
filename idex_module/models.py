@@ -18,3 +18,13 @@ class Idex(models.Model):
 
     class Meta:
         db_table = 'module_idex'
+
+
+class IdexSocketLog(models.Model):
+    log = models.TextField
+
+    def __str__(self):
+        return self.log
+
+    class Meta:
+        db_table = 'idex_socket_log'
