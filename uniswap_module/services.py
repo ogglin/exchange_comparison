@@ -36,13 +36,13 @@ def currencies_update_v2():
     update_list = []
     objs = Uniswap.objects.all().order_by('id')
     for data in uniswap_prices_set:
-        obj = objs.get(tokenid__icontains=data['tokenid'])
-        if obj:
+        try:
+            obj = objs.get(tokenid__icontains=data['tokenid'])
             obj.lowest_ask = data['lowest_ask']
             obj.highest_bid = data['highest_bid']
             obj.volume = data['volume']
             update_list.append(obj)
-        else:
+        except:
             pair = Uniswap(exch_direction=data['token'], lowest_ask=data['lowest_ask'], highest_bid=data['highest_bid'],
                            is_active=True, volume=data['volume'], tokenid=data['tokenid'])
             pair.save()
