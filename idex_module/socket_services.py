@@ -106,7 +106,7 @@ def save_log(data, log, message):
             if 'uniswap' in compare[0]:
                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
             percent = (sprice - price) / (price / 100)
-        _query(f"""INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, 
+            _query(f"""INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, 
                         sprice) VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', 
                         '{stype}', '{compare[0]}', {price}, {sprice});""")
 
