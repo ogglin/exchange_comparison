@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import ssl
+import time
 from datetime import datetime
 import requests
 
@@ -111,11 +112,22 @@ def save_log(data, log, message):
                         '{stype}', '{compare[0]}', {price}, {sprice});""")
 
 
+async def check_connect(websocket):
+    while True:
+        print('try ping')
+        pong_waiter = await websocket.ping()
+        await pong_waiter
+        if pong_waiter.result():
+            print('Pong')
+        time.sleep(3)
+
+
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
+    # await check_connect(websocket)
     async for message in websocket:
-        data = json.loads(message)['data']
         print(json.loads(message))
+        data = json.loads(message)['data']
         log_message(data)
         log = json.dumps(data)
         try:
@@ -132,12 +144,6 @@ async def subscribe(host, message) -> None:
         await consumer_handler(websocket)
 
 
-async def produce(message: str, host: str) -> None:
-    async with websockets.connect(host) as websocket:
-        await websocket.send(message)
-        await websocket.recv()
-
-
 @sync_to_async
 def get_wss():
     tokens = get_tokens()
@@ -151,6 +157,7 @@ def get_wss():
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(subscribe(WSS_URL, json.dumps(message)))
+    loop.close()
 
 
 if __name__ == '__main__':
