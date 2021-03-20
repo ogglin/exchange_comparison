@@ -21,7 +21,7 @@ class Idex(models.Model):
 
 
 class IdexSocketLog(models.Model):
-    log = models.TextField
+    log = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.log

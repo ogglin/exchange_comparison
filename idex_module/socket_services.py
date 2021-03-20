@@ -124,7 +124,7 @@ async def subscribe(host, message) -> None:
     async with websockets.connect(host) as websocket:
         await websocket.send(message)
         subs = await websocket.recv()
-        # print('Subs: ', subs)
+        print('Subs: ', subs)
         await consumer_handler(websocket)
 
 
