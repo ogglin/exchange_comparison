@@ -21,7 +21,6 @@ DATABASE_PORT = '5432'
 
 
 def _query(q):
-    print(q)
     con = psycopg2.connect(
         database=DATABASE_NAME,
         user=DATABASE_USER,
