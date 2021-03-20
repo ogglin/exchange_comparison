@@ -51,6 +51,7 @@ WSS_URL = 'wss://websocket.idex.io/v1'
 MarketURL = 'https://api.idex.io/v1/markets'
 
 
+@sync_to_async
 def log_message(message: str) -> None:
     logging.info(f"Message: {message}")
 
@@ -64,7 +65,10 @@ def get_tokens():
     return tokens
 
 
-def save_log(data):
+@sync_to_async
+def save_log(data, log, message):
+    slog = IdexSocketLog(log=str(message))
+    slog.save()
     if 'type' in data:
         data = data['data']
     token = _query(
@@ -90,7 +94,10 @@ def save_log(data):
             sellurl = ''
             if 'uniswap' in compare[0]:
                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            return stype, price, sprice, (sprice - price) / (price / 100), token, buyurl, sellurl, compare[0]
+            percent = (sprice - price) / (price / 100)
+            _query(f"""INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, 
+                sprice) VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', 
+                '{stype}', '{compare[0]}', {price}, {sprice});""")
         if data['s'] == 'sell':
             stype = "sell"
             sprice = compare[1]
@@ -98,23 +105,21 @@ def save_log(data):
             sellurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
             if 'uniswap' in compare[0]:
                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            return stype, price, sprice, (sprice - price) / (price / 100), token, buyurl, sellurl, compare[0]
+            percent = (sprice - price) / (price / 100)
+        _query(f"""INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, 
+                        sprice) VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', 
+                        '{stype}', '{compare[0]}', {price}, {sprice});""")
 
 
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
     print('Subscribed')
     async for message in websocket:
-        slog = IdexSocketLog(log=str(message))
-        slog.save()
         data = json.loads(message)['data']
         print(json.loads(message))
         log_message(data)
         log = json.dumps(data)
-        stype, price, sprice, percent, token, buyurl, sellurl, site = save_log(data)
         try:
-            log = f"INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, sprice) " \
-                  f"VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', '{stype}', '{site}', {price}, {sprice});"
-            _query(log)
+            await save_log(data, log, message)
         except:
             pass
 
@@ -141,6 +146,7 @@ def get_wss():
         'markets': tokens,
         'subscriptions': ['trades', ]
     }
+    print(message)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
