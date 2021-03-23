@@ -14,18 +14,17 @@ from idex_module.functions import idex_profits
 @sync_to_async
 def idex_result():
     idex_result = idex_profits()
-    # print('idex_result', idex_result)
-    # ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | (
-    #         Q(sell_name__icontains='idex') & ~Q(buy_name__icontains='hotbit') & ~Q(
-    #     buy_name__icontains='hitbit'))).delete()
-    # with transaction.atomic():
-    #     for result in idex_result:
-    #         pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
-    #                                buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
-    #                                sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
-    #                                tokenid=result['tokenid'], sellurl=result['sellurl'],
-    #                                sell_symbol=result['sell_symbol'])
-    #         pair.save()
+    ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | (
+            Q(sell_name__icontains='idex') & ~Q(buy_name__icontains='hotbit') & ~Q(
+        buy_name__icontains='hitbit'))).delete()
+    with transaction.atomic():
+        for result in idex_result:
+            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+                                   buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
+                                   sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
+                                   tokenid=result['tokenid'], sellurl=result['sellurl'],
+                                   sell_symbol=result['sell_symbol'])
+            pair.save()
 
 
 @sync_to_async
