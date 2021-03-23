@@ -30,18 +30,17 @@ def idex_result():
 @sync_to_async
 def hotbit_result():
     hotbit_result = hotbit_profits()
-    # print(hotbit_result)
-    # ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | (
-    #         Q(sell_name__icontains='hotbit') & ~Q(buy_name__icontains='idex') & ~Q(
-    #     buy_name__icontains='hitbit'))).delete()
-    # with transaction.atomic():
-    #     for result in hotbit_result:
-    #         pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
-    #                                buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
-    #                                sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
-    #                                tokenid=result['tokenid'], sellurl=result['sellurl'],
-    #                                sell_symbol=result['sell_symbol'])
-    #         pair.save()
+    ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | (
+            Q(sell_name__icontains='hotbit') & ~Q(buy_name__icontains='idex') & ~Q(
+        buy_name__icontains='hitbit'))).delete()
+    with transaction.atomic():
+        for result in hotbit_result:
+            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+                                   buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
+                                   sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
+                                   tokenid=result['tokenid'], sellurl=result['sellurl'],
+                                   sell_symbol=result['sell_symbol'])
+            pair.save()
 
 
 @sync_to_async
