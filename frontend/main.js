@@ -816,17 +816,35 @@ class SocketComponent {
             const results = [];
             res.forEach(elem => {
                 const time = moment__WEBPACK_IMPORTED_MODULE_2__(elem.datetime).add(3, 'h');
-                const result = {
-                    time: time.format(),
-                    type: elem.type,
-                    market: elem.site,
-                    token: elem.token,
-                    iprice: elem.price,
-                    price: elem.sprice,
-                    percent: elem.percent,
-                    urlbuy: elem.buy_url,
-                    urlsell: elem.sell_url
-                };
+                let result;
+                if (elem.log && !elem.type) {
+                    const jLog = JSON.parse(elem.log).data;
+                    result = {
+                        time: time.format(),
+                        type: jLog.s,
+                        market: elem.site,
+                        token: jLog.m.replace('-ETH', ''),
+                        iprice: jLog.p,
+                        price: '-',
+                        percent: elem.percent,
+                        urlbuy: 'https://exchange.idex.io/trading/' + jLog.m.replace('-ETH', '') + '-ETH',
+                        urlsell: elem.sell_url
+                    };
+                }
+                else {
+                    result = {
+                        time: time.format(),
+                        type: elem.type,
+                        market: elem.site,
+                        token: elem.token,
+                        iprice: elem.price,
+                        price: elem.sprice,
+                        percent: elem.percent,
+                        urlbuy: elem.buy_url,
+                        urlsell: elem.sell_url
+                    };
+                }
+                console.log(result);
                 results.push(result);
             });
             // if (this.socketMsg !== results) {
