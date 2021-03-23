@@ -173,13 +173,14 @@ class GetTokens(object):
             settings_modules.is_active is true;''')
 
     def __uniswap(self):
-        return _query('''
-            SELECT tp.tsymbol, lower(tp.contract), 'uniswap' as site, mu.exch_direction token, mu.highest_bid sell, 
-            mu.lowest_ask buy, mu.volume FROM trusted_pairs tp 
-            LEFT JOIN module_uniswap mu ON lower(mu.tsymbol) = lower(tp.tsymbol) and tp.contract is not null 
-            LEFT JOIN settings_modules ON settings_modules.module_name = 'uniswap' WHERE mu.exch_direction is not null 
-            and tp.is_active is true AND mu.is_active is true and settings_modules.is_active is true 
-            and (mu.highest_bid > 0 or mu.lowest_ask > 0);''')
+        return []
+        # return _query('''
+        #     SELECT tp.tsymbol, lower(tp.contract), 'uniswap' as site, mu.exch_direction token, mu.highest_bid sell,
+        #     mu.lowest_ask buy, mu.volume FROM trusted_pairs tp
+        #     LEFT JOIN module_uniswap mu ON lower(mu.tsymbol) = lower(tp.tsymbol) and tp.contract is not null
+        #     LEFT JOIN settings_modules ON settings_modules.module_name = 'uniswap' WHERE mu.exch_direction is not null
+        #     and tp.is_active is true AND mu.is_active is true and settings_modules.is_active is true
+        #     and (mu.highest_bid > 0 or mu.lowest_ask > 0);''')
 
     def __bancor(self):
         return _query('''
