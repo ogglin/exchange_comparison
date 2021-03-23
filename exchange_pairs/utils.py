@@ -30,7 +30,7 @@ class CompareToken(object):
     buy_price = 0
     sell_price = 0
     percent = 0
-    vol = 0.25
+    vol = -0.25
     e_vol = 1
     breverse = False
     sreverse = False
@@ -65,7 +65,7 @@ class CompareToken(object):
         if 'btc' not in self.sell_symbol.lower():
             self.sell_currency = 1
 
-        if 'hitbtc' in self.buy_from or 'hitbtc' in self.sell_to or 'hotbit' in self.buy_from or 'hotbit' in self.sell_to:
+        if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from:
             self.vol = 0.8
 
         if 'hitbtc' in self.buy_from:
@@ -114,7 +114,7 @@ class CompareToken(object):
             self.sell_price = 1 / self.sell_price
 
         """Check profit and return it"""
-        if self.buy_price > 0 and self.sell_price > 0 and self.buy_volume > self.vol and self.sell_volume > self.vol:
+        if self.buy_price > 0 and self.sell_price > 0 and self.buy_volume >= self.vol and self.sell_volume >= self.vol:
             self.percent = (self.sell_price - self.buy_price) / self.buy_price * 100
             profit = {
                 'buy_from': self.buy_from.lower(),
@@ -132,7 +132,6 @@ class CompareToken(object):
             }
         else:
             profit = None
-        # print(profit)
         if self.percent > self.profit_percent:
             return profit
         else:
