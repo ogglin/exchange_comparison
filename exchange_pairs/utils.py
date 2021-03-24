@@ -32,7 +32,6 @@ class CompareToken(object):
     percent = 0
     s_vol = -0.25
     b_vol = -0.25
-    e_vol = 1
     breverse = False
     sreverse = False
 
@@ -82,19 +81,19 @@ class CompareToken(object):
             if len(re.findall(r'^ETH', self.sell_symbol)) > 0:
                 self.sreverse = True
 
-        if 'idex' in self.buy_from:
-            self.buy_volume = 1
-            self.sell_volume = 1
-        if 'idex' in self.sell_to:
-            self.sell_volume = 1
-            self.buy_volume = 1
+        # if 'idex' in self.buy_from:
+        #     self.buy_volume = 1
+        #     self.sell_volume = 1
+        # if 'idex' in self.sell_to:
+        #     self.sell_volume = 1
+        #     self.buy_volume = 1
 
         """Set buy price"""
         if isinstance(self.asks, list):
             self.buy_price = 0
             self.buy_volume = 0
             for ask in self.asks:
-                if self.buy_volume <= self.e_vol:
+                if self.buy_volume <= self.b_vol:
                     self.buy_price = float(ask[0]) / self.buy_currency
                     self.buy_ask = float(ask[0])
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.buy_currency
@@ -107,7 +106,7 @@ class CompareToken(object):
             self.sell_price = 0
             self.sell_volume = 0
             for bid in self.bids:
-                if self.sell_volume <= self.e_vol:
+                if self.sell_volume <= self.s_vol:
                     self.sell_price = float(bid[0]) / self.sell_currency
                     self.sell_bid = float(bid[0])
                     self.sell_volume += float(bid[1]) * float(bid[0]) / self.sell_currency
@@ -140,6 +139,7 @@ class CompareToken(object):
         else:
             profit = None
         if self.percent > self.profit_percent:
+            print(profit)
             return profit
         else:
             return None
