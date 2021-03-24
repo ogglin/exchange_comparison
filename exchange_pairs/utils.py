@@ -66,10 +66,14 @@ class CompareToken(object):
         if 'btc' not in self.sell_symbol.lower():
             self.sell_currency = 1
 
-        if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from or 'idex' in self.buy_from:
+        if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from:
             self.b_vol = 0.8
-        if 'hitbtc' in self.sell_to or 'hotbit' in self.sell_to or 'idex' in self.sell_to:
+        elif 'idex' in self.buy_from:
+            self.b_vol = 0.5
+        if 'hitbtc' in self.sell_to or 'hotbit' in self.sell_to:
             self.s_vol = 0.8
+        elif 'idex' in self.sell_to:
+            self.s_vol = 0.5
 
         if 'hitbtc' in self.buy_from:
             if len(re.findall(r'^ETH', self.buy_symbol)) > 0:
