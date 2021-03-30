@@ -1,4 +1,3 @@
-import numpy
 import psycopg2
 
 from exchange_comparison.env import *

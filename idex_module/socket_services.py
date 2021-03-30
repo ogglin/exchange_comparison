@@ -8,10 +8,12 @@ import requests
 
 import websockets
 from asgiref.sync import sync_to_async
+from django.db.models import Q
 from websockets import WebSocketClientProtocol
-# from exchange_pairs.models import WebsocketLog
 import psycopg2
 
+from exchange_pairs.models import WebsocketLog
+import exchange_pairs.services as exps
 from idex_module.models import IdexSocketLog
 
 DATABASE_NAME = 'exchange_comparison'
@@ -66,50 +68,34 @@ def get_tokens():
     return tokens
 
 
+def compare_price(data, compare, id):
+    tm = datetime.fromtimestamp(data['t'] / 1000)
+    token = data['m'].replace('-ETH', '')
+    price = float(data['p'])
+    if data['s'] == 'buy':
+        stype = "buy"
+        sprice = compare[4]
+        buyurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
+        sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(compare[1])
+        percent = (sprice - price) / (price / 100)
+        _query(f"""UPDATE websocket_log SET (datetime, log, buy_url, sell_url, percent, token, type, site, price,
+                sprice) = ('{tm}', '{json.dumps(data)}', '{buyurl}', '{sellurl}', {percent}, '{token}',
+                '{stype}', '{compare[0]}', {price}, {sprice}) WHERE id = {id};""")
+    if data['s'] == 'sell':
+        stype = "sell"
+        sprice = compare[5]
+        buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(compare[1])
+        sellurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
+        percent = (sprice - price) / (price / 100)
+        _query(f"""UPDATE websocket_log SET (datetime, log, buy_url, sell_url, percent, token, type, site, price,
+                        sprice) = ('{tm}', '{json.dumps(data)}', '{buyurl}', '{sellurl}', {percent}, '{token}',
+                        '{stype}', '{compare[0]}', {price}, {sprice}) WHERE id = {id};""")
+
+
 @sync_to_async
-def save_log(data, log, message):
+def save_log(message):
     slog = IdexSocketLog(log=str(message))
     slog.save()
-    if 'type' in data:
-        data = data['data']
-    token = _query(
-        f"SELECT tsymbol FROM module_idex WHERE exch_direction = '{data['m'].replace('ETH', '').replace('-', '')}'")[0][
-        0]
-    contract = _query(f"SELECT contract FROM trusted_pairs WHERE tsymbol = '{token}';")[0][0]
-    # compare_prices = _query(
-    #     f"""with hotbit as (SELECT 'hotbit' as site, buy, sell FROM module_hotbit WHERE tsymbol = '{token}' and symbol not ilike '%BTC%'),
-    #             hitbtc as (SELECT 'hitbtc' as site, buy, sell FROM module_hitbtc WHERE tsymbol = '{token}' and symbol not ilike '%BTC%'),
-    #             kyber as (SELECT 'kyber' as site, lowest_ask buy, highest_bid sell FROM module_kyber WHERE tsymbol = '{token}'),
-    #             bancor as (SELECT 'bancor' as site, lowest_ask buy, highest_bid sell FROM module_bancor WHERE tsymbol = '{token}'),
-    #             uniswap as (SELECT 'uniswap' as site, lowest_ask buy, highest_bid sell FROM module_uniswap WHERE tsymbol = '{token}'),
-    #             uniswap_one as (SELECT 'uniswap_one' as site, lowest_ask buy, highest_bid sell FROM module_uniswap_one WHERE tsymbol = '{token}')
-    #             SELECT * FROM hotbit UNION ALL SELECT * FROM hitbtc UNION ALL SELECT * FROM kyber UNION ALL SELECT * FROM bancor UNION ALL SELECT * FROM uniswap UNION ALL SELECT * FROM uniswap_one;""")
-    compare_prices = _query(
-        f"SELECT 'uniswap' as site, lowest_ask buy, highest_bid sell FROM module_uniswap WHERE tsymbol = '{token}';")
-    price = float(data['p'])
-    for compare in compare_prices:
-        if data['s'] == 'buy':
-            stype = "buy"
-            sprice = compare[2]
-            buyurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
-            sellurl = ''
-            if 'uniswap' in compare[0]:
-                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            percent = (sprice - price) / (price / 100)
-            _query(f"""INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, 
-                sprice) VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', 
-                '{stype}', '{compare[0]}', {price}, {sprice});""")
-        if data['s'] == 'sell':
-            stype = "sell"
-            sprice = compare[1]
-            buyurl = ''
-            sellurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
-            if 'uniswap' in compare[0]:
-                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
-            percent = (sprice - price) / (price / 100)
-            _query(f"""INSERT INTO websocket_log (datetime, log, buy_url, sell_url, percent, token, type, site, price, 
-                        sprice) VALUES ('{datetime.utcnow()}', '{log}', '{buyurl}', '{sellurl}', {percent}, '{token}', 
-                        '{stype}', '{compare[0]}', {price}, {sprice});""")
 
 
 async def check_connect(websocket):
@@ -129,9 +115,8 @@ async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
         print(json.loads(message))
         data = json.loads(message)['data']
         log_message(data)
-        log = json.dumps(data)
         try:
-            await save_log(data, log, message)
+            await save_log(message)
         except:
             pass
 
@@ -158,6 +143,29 @@ def get_wss():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(subscribe(WSS_URL, json.dumps(message)))
     loop.close()
+
+
+@sync_to_async
+def resave_wss():
+    wT = True
+    while wT:
+        if len(exps.uniswap_prices_set) > 0:
+            sLogs = WebsocketLog.objects.order_by('-id').filter(Q(token__isnull=True) & ~Q(log__icontains='error'))
+            for sLog in sLogs:
+                trade = json.loads(sLog.log)['data']
+                id = sLog.id
+                for uni_p in exps.uniswap_prices_set:
+                    if uni_p[0] == trade['m'].replace('-ETH', ''):
+                        compare_price(trade, uni_p, id)
+            wT = False
+        else:
+            time.sleep(2)
+
+
+async def init_resave():
+    while True:
+        await resave_wss()
+        time.sleep(60)
 
 
 if __name__ == '__main__':

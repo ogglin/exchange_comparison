@@ -1,5 +1,6 @@
 import psycopg2
 from django.db import connection
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework_api_key.permissions import HasAPIKey
 
@@ -89,7 +90,7 @@ class TrustedPairsSet(viewsets.ModelViewSet):
 
 class WebsocketLogSet(viewsets.ModelViewSet):
     permission_classes = [HasAPIKey]
-    queryset = WebsocketLog.objects.order_by('-id')[:40]
+    queryset = WebsocketLog.objects.order_by('-id')[:40].filter(Q(token__isnull=False) & ~Q(log__icontains='error'))
     serializer_class = WebsocketLogSerializer
 
 
