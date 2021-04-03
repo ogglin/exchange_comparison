@@ -145,6 +145,9 @@ class CompareToken(object):
         else:
             profit = None
         if self.percent > self.profit_percent:
+            # print('----------')
+            # print(self.buy_currency, self.buy_currency)
+            # print(profit)
             return profit
         else:
             return None
