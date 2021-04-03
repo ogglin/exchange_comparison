@@ -46,7 +46,6 @@ async def compare_markets(itoken, all_tokens, percent, currency, proxy, cnt, cur
 async def init_compare(idex_tokens, all_tokens, percent, currency, currencyUSD):
     async_tasks = []
     cnt = 0
-    print('idex_tokens', len(idex_tokens))
     for itoken in idex_tokens:
         async_tasks.append(compare_markets(itoken, all_tokens, percent, currency, proxys[cnt], cnt, currencyUSD))
         cnt += 1
@@ -75,7 +74,7 @@ def idex_profits():
             isTD = True
             time.sleep(1)
     currency = Settings.objects.all().values()[0]['currency']
-    currencyUSD = Settings.objects.all().values()[0]['currencyUSD']
+    currencyUSD = Settings.objects.all().values()[0]['currency_usd']
     all_result = []
     xlen = math.ceil(len(idex_tokens) / 200)
     for i in range(xlen):

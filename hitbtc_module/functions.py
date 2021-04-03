@@ -143,7 +143,7 @@ def hitbtc_profits():
             time.sleep(1)
             print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
-    currencyUSD = Settings.objects.all().values()[0]['currencyUSD']
+    currencyUSD = Settings.objects.all().values()[0]['currency_usd']
     all_result = []
     xlen = math.ceil(len(hitbtc_tokens) / 200)
     for i in range(xlen):

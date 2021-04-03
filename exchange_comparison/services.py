@@ -129,7 +129,7 @@ def usd_currency_update():
         url = 'https://api.hotbit.io/api/v1/market.status?market=ETH/USD&period=10'
         response = requests.get(url=url)
         jData = json.loads(response.content)['result']
-        _query(f"UPDATE settings SET currencyUSD = {jData['last']} WHERE id = 1;")
+        _query(f"UPDATE settings SET currency_usd = {jData['last']} WHERE id = 1;")
     except:
         pass
 

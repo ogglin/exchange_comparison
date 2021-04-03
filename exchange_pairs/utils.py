@@ -103,7 +103,6 @@ class CompareToken(object):
                     self.buy_price = float(ask[0]) / self.buy_currency
                     self.buy_ask = float(ask[0])
                     self.buy_volume += float(ask[1]) * float(ask[0]) / self.buy_currency
-                    print(float(ask[1]), float(ask[0]), self.buy_currency, float(ask[1]) * float(ask[0]) / self.buy_currency, self.buy_volume)
         else:
             self.buy_price = self.asks / self.buy_currency
             self.buy_ask = self.asks

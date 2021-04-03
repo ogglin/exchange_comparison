@@ -72,7 +72,7 @@ class Settings(models.Model):
     market_koef = models.FloatField(verbose_name='Коэффициет бирж', help_text='учет отклонения для сравнения бирж в %',
                                     null=True, blank=True)
     currency = models.FloatField(verbose_name='ETH/BTC', help_text='Курс ETH к BTC', null=True, blank=True)
-    currencyUSD = models.FloatField(verbose_name='ETH/USD', help_text='Курс ETH к BTC', null=True, blank=True)
+    currency_usd = models.FloatField(verbose_name='ETH/USD', help_text='Курс ETH к USD', null=True, blank=True)
     gas_normal = models.IntegerField()
     gas_fast = models.IntegerField()
 

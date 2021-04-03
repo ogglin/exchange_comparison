@@ -87,7 +87,7 @@ def hotbit_profits():
             time.sleep(1)
     get_eth_btc()
     currency = Settings.objects.all().values()[0]['currency']
-    currencyUSD = Settings.objects.all().values()[0]['currencyUSD']
+    currencyUSD = Settings.objects.all().values()[0]['currency_usd']
     all_result = []
     xlen = math.ceil(len(hotbit_tokens) / 200)
     for i in range(xlen):
