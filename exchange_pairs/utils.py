@@ -37,9 +37,9 @@ class CompareToken(object):
 
     def __init__(self, buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume,
                  contract, profit_percent, currency, currencyUSD):
-        print('-------------')
-        print(buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume, contract,
-              profit_percent, currency)
+        # print('-------------')
+        # print(buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume, contract,
+        #       profit_percent, currency)
         """Constructor"""
         self.buy_from = buy_from
         self.buy_symbol = buy_symbol
@@ -145,9 +145,9 @@ class CompareToken(object):
         else:
             profit = None
         if self.percent > self.profit_percent:
-            print(self.buy_currency, self.buy_currency)
-            print(profit)
-            print('----------')
+            # print(self.buy_currency, self.buy_currency)
+            # print(profit)
+            # print('----------')
             return profit
         else:
             return None
