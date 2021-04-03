@@ -37,8 +37,9 @@ class CompareToken(object):
 
     def __init__(self, buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume,
                  contract, profit_percent, currency, currencyUSD):
-        # print(buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume, contract,
-        #       profit_percent, currency)
+        print('-------------')
+        print(buy_from, buy_symbol, buy_prices, buy_volume, sell_to, sell_symbol, sell_prices, sell_volume, contract,
+              profit_percent, currency)
         """Constructor"""
         self.buy_from = buy_from
         self.buy_symbol = buy_symbol
@@ -61,15 +62,14 @@ class CompareToken(object):
         if self.asks is None or self.bids is None:
             return None
 
-        if 'btc' not in self.buy_symbol.lower():
-            self.buy_currency = 1
-        if 'btc' not in self.sell_symbol.lower():
-            self.sell_currency = 1
-
         if 'usd' in self.buy_symbol.lower():
             self.buy_currency = self.currencyUSD
-        if 'usd' not in self.sell_symbol.lower():
+        elif 'btc' not in self.buy_symbol.lower():
+            self.buy_currency = 1
+        if 'usd' in self.sell_symbol.lower():
             self.sell_currency = self.currencyUSD
+        elif 'btc' not in self.sell_symbol.lower():
+            self.sell_currency = 1
 
         if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from:
             self.b_vol = 0.8
@@ -145,9 +145,9 @@ class CompareToken(object):
         else:
             profit = None
         if self.percent > self.profit_percent:
-            # print('----------')
-            # print(self.buy_currency, self.buy_currency)
-            # print(profit)
+            print(self.buy_currency, self.buy_currency)
+            print(profit)
+            print('----------')
             return profit
         else:
             return None
@@ -288,11 +288,17 @@ class ResultPrepare(object):
                                 buyurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-usdt'
                         if 'hotbit' in buy_from:
                             if 'ETH' in result['buy_symbol']:
-                                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '').replace('ETH', '_ETH')
+                                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
+                                                                                                        '').replace(
+                                    'ETH', '_ETH')
                             elif 'USD' in result['buy_symbol']:
-                                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '').replace('USDT', '_USDT')
+                                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
+                                                                                                        '').replace(
+                                    'USDT', '_USDT')
                             elif 'BTC':
-                                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '').replace('BTC', '_BTC')
+                                buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
+                                                                                                        '').replace(
+                                    'BTC', '_BTC')
                         if buy_from == 'idex':
                             buyurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
                         if buy_from == 'bancor':
@@ -314,11 +320,17 @@ class ResultPrepare(object):
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-usdt'
                         if 'hotbit' in sell_to:
                             if 'ETH' in sell_symbol:
-                                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '').replace('ETH', '_ETH')
+                                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
+                                                                                                         '').replace(
+                                    'ETH', '_ETH')
                             elif 'USD' in sell_symbol:
-                                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '').replace('USDT', '_USDT')
+                                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
+                                                                                                         '').replace(
+                                    'USDT', '_USDT')
                             elif 'BTC' in sell_symbol:
-                                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '').replace('BTC', '_BTC')
+                                sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
+                                                                                                         '').replace(
+                                    'BTC', '_BTC')
                         if sell_to == 'idex':
                             sellurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
                         if sell_to == 'bancor':
