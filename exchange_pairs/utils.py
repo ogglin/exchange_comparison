@@ -281,6 +281,8 @@ class ResultPrepare(object):
                                 buyurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-eth'
                             if 'BTC' in result['buy_symbol']:
                                 buyurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-btc'
+                            if 'USD' in result['buy_symbol']:
+                                buyurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-usdt'
                         if 'hotbit' in buy_from:
                             buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if buy_from == 'idex':
@@ -300,6 +302,8 @@ class ResultPrepare(object):
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-eth'
                             if 'BTC' in sell_symbol:
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-btc'
+                            if 'BTC' in sell_symbol:
+                                sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-usdt'
                         if 'hotbit' in sell_to:
                             sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/', '_')
                         if sell_to == 'idex':
