@@ -145,9 +145,9 @@ class CompareToken(object):
         else:
             profit = None
         # print(self.buy_currency, self.buy_currency)
-        # print(profit)
         # print('----------')
         if self.percent > self.profit_percent:
+            # print('profit', profit)
             return profit
         else:
             return None
@@ -265,7 +265,7 @@ class ResultPrepare(object):
             if results:
                 for result in results:
                     if result:
-                        # print(result)
+                        print(result)
                         buy_from = result['buy_from']
                         pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
                         buy = result['buy_price']

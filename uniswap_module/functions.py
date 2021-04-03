@@ -67,5 +67,5 @@ async def asynchronous(trusted_tokens):
         else:
             print("error fetching %r: %s" % (error))
 
-    print("Elapsed Time: %s" % (timer() - start,), 'uniswap_prices_set length: ', len(uniswap_prices))
+    # print("Elapsed Time: %s" % (timer() - start,), 'uniswap_prices_set length: ', len(uniswap_prices))
     return uniswap_prices
