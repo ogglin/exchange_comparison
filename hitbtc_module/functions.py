@@ -73,7 +73,7 @@ async def hitbtc_tiker_init():
         await get_tiker()
 
 
-async def compare_markets(htoken, all_tokens, percent, currency, proxy):
+async def compare_markets(htoken, all_tokens, percent, currency, proxy, currencyUSD):
     hitbtc_deth = await get_hitbtc_depth(htoken[3], proxy)
     asks = []
     bids = []
@@ -98,22 +98,22 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy):
                 compare_result.append(
                     ct(buy_from='hitbtc', buy_symbol=htoken[3], buy_prices=asks, buy_volume=0, sell_to=token[2],
                        sell_prices=c_bids, sell_volume=1, sell_symbol=token[3],
-                       contract=token[1], profit_percent=percent, currency=currency).compare())
+                       contract=token[1], profit_percent=percent, currency=currency, currencyUSD=currencyUSD).compare())
                 if 'bancor' in token[2] or 'uniswap' in token[2] or 'kyber' in token[2] or 'uniswap_one' in token[2]:
                     for bid in hitbtc_deth['bid']:
                         bids.append([bid['price'], bid['size']])
                     compare_result.append(
                         ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=1, sell_to='hitbtc',
                            sell_prices=bids, sell_volume=0, sell_symbol=htoken[3],
-                           contract=token[1], profit_percent=percent, currency=currency).compare())
+                           contract=token[1], profit_percent=percent, currency=currency, currencyUSD=currencyUSD).compare())
     return compare_result
 
 
-async def init_compare(hitbtc_tokens, all_tokens, percent, currency):
+async def init_compare(hitbtc_tokens, all_tokens, percent, currency, currencyUSD):
     async_tasks = []
     cnt = 0
     for htoken in hitbtc_tokens:
-        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, proxys[cnt]))
+        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, proxys[cnt], currencyUSD))
         cnt += 1
         if cnt >= len(proxys):
             cnt = 0
@@ -143,6 +143,7 @@ def hitbtc_profits():
             time.sleep(1)
             print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
+    currencyUSD = Settings.objects.all().values()[0]['currencyUSD']
     all_result = []
     xlen = math.ceil(len(hitbtc_tokens) / 200)
     for i in range(xlen):
@@ -154,7 +155,7 @@ def hitbtc_profits():
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
         loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
-        init_result = loop.run_until_complete(init_compare(parts_hitbtc_tokens, all_tokens, percent, currency))
+        init_result = loop.run_until_complete(init_compare(parts_hitbtc_tokens, all_tokens, percent, currency, currencyUSD))
         loop.close()
         all_result.extend(init_result)
     # print('hitbtc_profits end', datetime.datetime.now())

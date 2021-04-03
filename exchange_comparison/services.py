@@ -122,6 +122,18 @@ def set_gas():
         pass
 
 
+@sync_to_async
+def usd_currency_update():
+    try:
+        time.sleep(1)
+        url = 'https://api.hotbit.io/api/v1/market.status?market=ETH/USD&period=10'
+        response = requests.get(url=url)
+        jData = json.loads(response.content)['result']
+        _query(f"UPDATE settings SET currencyUSD = {jData['last']} WHERE id = 1;")
+    except:
+        pass
+
+
 async def exchange_set_init():
     print('start exchanges: ' + str(datetime.datetime.now()))
     while True:
@@ -132,3 +144,4 @@ async def exchange_set_init():
 async def set_gas_init():
     while True:
         await set_gas()
+        await usd_currency_update()
