@@ -126,7 +126,7 @@ def set_gas():
 def usd_currency_update():
     try:
         time.sleep(1)
-        url = 'https://api.hotbit.io/api/v1/market.status?market=ETH/USD&period=10'
+        url = 'https://api.hotbit.io/api/v1/market.status?market=ETH/USDT&period=10'
         response = requests.get(url=url)
         jData = json.loads(response.content)['result']
         _query(f"UPDATE settings SET currency_usd = {jData['last']} WHERE id = 1;")
