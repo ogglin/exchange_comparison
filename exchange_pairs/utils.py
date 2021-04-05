@@ -62,16 +62,16 @@ class CompareToken(object):
         if self.asks is None or self.bids is None:
             return None
 
-        if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from or 'idex' in self.buy_from:
-            if 'usd' in self.buy_symbol.lower():
-                self.buy_currency = self.currencyUSD
-            elif 'btc' not in self.buy_symbol.lower():
-                self.buy_currency = 1
-        if 'hitbtc' in self.sell_to or 'hotbit' in self.sell_to or 'idex' in self.sell_to:
-            if 'usd' in self.sell_symbol.lower():
-                self.sell_currency = self.currencyUSD
-            elif 'btc' not in self.sell_symbol.lower():
-                self.sell_currency = 1
+        # if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from or 'idex' in self.buy_from:
+        if 'usd' in self.buy_symbol.lower():
+            self.buy_currency = self.currencyUSD
+        elif 'btc' not in self.buy_symbol.lower():
+            self.buy_currency = 1
+        # if 'hitbtc' in self.sell_to or 'hotbit' in self.sell_to or 'idex' in self.sell_to:
+        if 'usd' in self.sell_symbol.lower():
+            self.sell_currency = self.currencyUSD
+        elif 'btc' not in self.sell_symbol.lower():
+            self.sell_currency = 1
 
         if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from:
             self.b_vol = 0.8
