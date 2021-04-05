@@ -82,16 +82,17 @@ async def exchanges_hotbit():
     print('start hotbit exchanges: ' + str(datetime.datetime.now()))
     while True:
         await hotbit_result()
-        # print('end exchanges: ' + str(datetime.datetime.now()))
+        # print('end hotbit exchanges: ' + str(datetime.datetime.now()))
 
 
 async def exchanges_hitbtc():
     print('start hitbtc exchanges: ' + str(datetime.datetime.now()))
     while True:
         await hitbtc_result()
+        # print('end hitbtc exchanges: ' + str(datetime.datetime.now()))
 
 
 async def init_utils():
-    print('Start utils: ' + str(datetime.datetime.now()))
+    # print('Start utils: ' + str(datetime.datetime.now()))
     while True:
         pass

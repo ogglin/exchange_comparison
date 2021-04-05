@@ -3,7 +3,7 @@ import concurrent.futures
 import json
 import math
 import time
-
+from datetime import datetime
 
 import requests
 from django.db import transaction
@@ -80,6 +80,8 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
     compare_result = []
     if hitbtc_deth:
         for token in all_tokens:
+            # print(token)
+            # print(hitbtc_deth)
             if token[0] == htoken[0] and 'usd' not in token[0].lower() and 'usd' not in htoken[0].lower():
                 c_bids = None
                 # if 'idex' in token[2]:
@@ -141,7 +143,6 @@ def hitbtc_profits():
         else:
             isTD = True
             time.sleep(1)
-            print('wait for tokens')
     currency = Settings.objects.all().values()[0]['currency']
     currencyUSD = Settings.objects.all().values()[0]['currency_usd']
     all_result = []
@@ -154,9 +155,11 @@ def hitbtc_profits():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
-        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=100))
+        # print('hitbtc loop start', datetime.now())
         init_result = loop.run_until_complete(init_compare(parts_hitbtc_tokens, all_tokens, percent, currency, currencyUSD))
         loop.close()
+        # print('hitbtc loop  end', datetime.now())
         all_result.extend(init_result)
     # print('hitbtc_profits end', datetime.datetime.now())
     compare_result = rprep(all_result=all_result, exchanger='hitbtc').result()

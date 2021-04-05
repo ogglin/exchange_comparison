@@ -48,7 +48,8 @@ async def asynchronous(trusted_tokens):
             response = http.request('POST', url_v2, body=req)
             return tokenid[0], json.loads(response.data.decode('utf-8'))['data']['token'], tokenid[1], None
         except Exception as e:
-            return None, e
+            print(e)
+            return None, None, None, e
 
     start = timer()
     l = multiprocessing.Lock()
