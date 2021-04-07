@@ -34,7 +34,7 @@ def init_start():
         set_gas_init(),
         get_wss(),
         init_resave(),
-        init_utils(),
+        # init_utils(),
         # test_utils()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))
