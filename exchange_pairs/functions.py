@@ -9,7 +9,6 @@ from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
 from hotbit_module.functions import hotbit_profits, set_currencies
 from idex_module.functions import idex_profits
-from utils.main import init_utest
 from utils.token_parser import hitbtc_token_status
 
 
