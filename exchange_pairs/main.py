@@ -4,7 +4,7 @@ import concurrent.futures
 from bancor_module.services import bankor_init
 from exchange_comparison.services import exchange_set_init, set_gas_init
 from exchange_pairs.functions import exchanges_idex, exchanges_hotbit, exchanges_hitbtc, init_all_compared_tokens, \
-    tiker_hotbit, init_utils, test_utils
+    tiker_hotbit, init_utils
 from hitbtc_module.functions import hitbtc_tiker_init
 from idex_module.services import idex_init, tikers_set_idex_init
 from idex_module.socket_services import get_wss, init_resave
