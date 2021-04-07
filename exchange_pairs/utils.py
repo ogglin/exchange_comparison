@@ -308,7 +308,7 @@ class ResultPrepare(object):
                         if buy_from == 'kyber':
                             buyurl = 'https://kyberswap.com/swap/eth-' + pair
                         if buy_from == 'uniswap':
-                            if 'USDT' in result['buy_symbol']:
+                            if 'USDT' in sell_symbol or 'USDT' in result['buy_symbol']:
                                 buyurl = 'https://app.uniswap.org/#/swap?inputCurrency=' + str(contract) + '&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7'
                             else:
                                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
@@ -343,7 +343,7 @@ class ResultPrepare(object):
                         if sell_to == 'kyber':
                             sellurl = 'https://kyberswap.com/swap/eth-' + pair
                         if sell_to == 'uniswap':
-                            if 'USDT' in result['buy_symbol']:
+                            if 'USDT' in sell_symbol or 'USDT' in result['buy_symbol']:
                                 sellurl = 'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=' + str(contract)
                             else:
                                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
