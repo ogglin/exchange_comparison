@@ -102,6 +102,6 @@ async def init_utils():
 
 async def test_utils():
     # print('Start utils: ' + str(datetime.datetime.now()))
-    await init_utest()
-    # while True:
-    #     pass
+    # await init_utest()
+    while True:
+        pass
