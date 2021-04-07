@@ -9,6 +9,8 @@ from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
 from hotbit_module.functions import hotbit_profits, set_currencies
 from idex_module.functions import idex_profits
+from utils.main import init_utest
+from utils.token_parser import hitbtc_token_status
 
 
 @sync_to_async
@@ -93,6 +95,13 @@ async def exchanges_hitbtc():
 
 
 async def init_utils():
-    # print('Start utils: ' + str(datetime.datetime.now()))
+    print('Start utils: ' + str(datetime.datetime.now()))
     while True:
-        pass
+        await hitbtc_token_status()
+
+
+async def test_utils():
+    # print('Start utils: ' + str(datetime.datetime.now()))
+    await init_utest()
+    # while True:
+    #     pass

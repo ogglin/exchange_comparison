@@ -152,11 +152,14 @@ def resave_wss():
         if len(exps.uniswap_prices_set) > 0:
             sLogs = WebsocketLog.objects.order_by('-id').filter(Q(token__isnull=True) & ~Q(log__icontains='error'))
             for sLog in sLogs:
-                trade = json.loads(sLog.log)['data']
-                id = sLog.id
-                for uni_p in exps.uniswap_prices_set:
-                    if uni_p[0] == trade['m'].replace('-ETH', ''):
-                        compare_price(trade, uni_p, id)
+                try:
+                    trade = json.loads(sLog.log)['data']
+                    id = sLog.id
+                    for uni_p in exps.uniswap_prices_set:
+                        if uni_p[0] == trade['m'].replace('-ETH', ''):
+                            compare_price(trade, uni_p, id)
+                except:
+                    pass
             wT = False
         else:
             time.sleep(2)

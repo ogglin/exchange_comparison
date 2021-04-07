@@ -296,7 +296,7 @@ class ResultPrepare(object):
                                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
                                                                                                         '').replace(
                                     'USDT', '_USDT')
-                            elif 'BTC':
+                            elif 'BTC' in result['buy_symbol']:
                                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
                                                                                                         '').replace(
                                     'BTC', '_BTC')
@@ -308,7 +308,10 @@ class ResultPrepare(object):
                         if buy_from == 'kyber':
                             buyurl = 'https://kyberswap.com/swap/eth-' + pair
                         if buy_from == 'uniswap':
-                            buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
+                            if 'USDT' in result['buy_symbol']:
+                                buyurl = 'https://app.uniswap.org/#/swap?inputCurrency=' + str(contract) + '&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7'
+                            else:
+                                buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
                         if buy_from == 'uniswap_one':
                             buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
 
@@ -340,7 +343,10 @@ class ResultPrepare(object):
                         if sell_to == 'kyber':
                             sellurl = 'https://kyberswap.com/swap/eth-' + pair
                         if sell_to == 'uniswap':
-                            sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
+                            if 'USDT' in result['buy_symbol']:
+                                sellurl = 'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=' + str(contract)
+                            else:
+                                sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
                         if sell_to == 'uniswap_one':
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
                         compare_result.append(

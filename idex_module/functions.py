@@ -2,6 +2,7 @@ import asyncio
 import concurrent.futures
 import math
 import time
+from datetime import datetime
 
 import exchange_pairs.services as ex_serv
 from exchange_pairs.models import Settings
@@ -57,6 +58,7 @@ async def init_compare(idex_tokens, all_tokens, percent, currency, currencyUSD):
 
 # @sync_to_async
 def idex_profits():
+    # print('idex_profits start', datetime.now())
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     isTD = True
@@ -64,12 +66,14 @@ def idex_profits():
     all_tokens = []
     while isTD:
         if len(ex_serv.all_compared_tokens) > 0:
+            # print(len(ex_serv.all_compared_tokens))
             for token in ex_serv.all_compared_tokens:
                 if 'idex' in token[2]:
                     idex_tokens.append(token)
                 else:
                     all_tokens.append(token)
             isTD = False
+            # print(len(idex_tokens))
         else:
             isTD = True
             time.sleep(1)
@@ -85,9 +89,12 @@ def idex_profits():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
-        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=200))
+        # print('idex loop start', datetime.now())
         init_result = loop.run_until_complete(init_compare(parts_idex_tokens, all_tokens, percent, currency, currencyUSD))
+        # print('idex loop end', datetime.now())
         loop.close()
         all_result.extend(init_result)
+    # print('idex_profits end', datetime.now())
     compare_result = rprep(all_result=all_result, exchanger='hotbit').result()
     return compare_result

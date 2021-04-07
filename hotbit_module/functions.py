@@ -3,6 +3,7 @@ import concurrent.futures
 import json
 import math
 import time
+from datetime import datetime
 
 import requests
 from asgiref.sync import sync_to_async
@@ -69,6 +70,7 @@ async def init_compare(hotbit_tokens, all_tokens, percent, currency, currencyUSD
 
 
 def hotbit_profits():
+    # print('hotbit_profits start', datetime.now())
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     isTD = True
@@ -76,12 +78,14 @@ def hotbit_profits():
     all_tokens = []
     while isTD:
         if len(ex_serv.all_compared_tokens) > 0:
+            # print(len(ex_serv.all_compared_tokens))
             for token in ex_serv.all_compared_tokens:
                 if 'hotbit' in token[2]:
                     hotbit_tokens.append(token)
                 else:
                     all_tokens.append(token)
             isTD = False
+            # print(len(hotbit_tokens))
         else:
             isTD = True
             time.sleep(1)
@@ -98,10 +102,13 @@ def hotbit_profits():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
-        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=200))
+        # print('hotbit loop start', datetime.now())
         init_result = loop.run_until_complete(init_compare(parts_hotbit_tokens, all_tokens, percent, currency, currencyUSD))
         loop.close()
+        # print('hotbit loop end', datetime.now())
         all_result.extend(init_result)
+    # print('hotbit_profits end', datetime.now())
     compare_result = rprep(all_result=all_result, exchanger='hotbit').result()
     return compare_result
 

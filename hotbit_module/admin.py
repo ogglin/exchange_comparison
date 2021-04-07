@@ -7,3 +7,9 @@ from .models import *
 class HotbitAdmin(admin.ModelAdmin):
     list_display = ('exch_direction', 'symbol', 'tsymbol', 'contract', 'decimals', 'is_active')
     search_fields = ('exch_direction', 'symbol', 'tsymbol',)
+
+
+@admin.register(HotbitMarkets)
+class HotbitMarketsAdmin(admin.ModelAdmin):
+    list_display = ('market', 'token', 'tsymbol', 'is_active')
+    search_fields = ('market', 'tsymbol',)

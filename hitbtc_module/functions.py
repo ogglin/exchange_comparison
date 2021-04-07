@@ -125,7 +125,7 @@ async def init_compare(hitbtc_tokens, all_tokens, percent, currency, currencyUSD
 
 # @sync_to_async
 def hitbtc_profits():
-    # print('hitbtc_profits start', datetime.datetime.now())
+    # print('hitbtc_profits start', datetime.now())
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     # tsymbol, contract, site, token, sell, buy, volume
@@ -134,12 +134,14 @@ def hitbtc_profits():
     all_tokens = []
     while isTD:
         if len(ex_serv.all_compared_tokens) > 0:
+            # print(len(ex_serv.all_compared_tokens))
             for token in ex_serv.all_compared_tokens:
                 if 'hitbtc' in token[2]:
                     hitbtc_tokens.append(token)
                 else:
                     all_tokens.append(token)
             isTD = False
+            # print(len(hitbtc_tokens))
         else:
             isTD = True
             time.sleep(1)
@@ -155,13 +157,13 @@ def hitbtc_profits():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
-        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=100))
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=200))
         # print('hitbtc loop start', datetime.now())
         init_result = loop.run_until_complete(init_compare(parts_hitbtc_tokens, all_tokens, percent, currency, currencyUSD))
         loop.close()
         # print('hitbtc loop  end', datetime.now())
         all_result.extend(init_result)
-    # print('hitbtc_profits end', datetime.datetime.now())
+    # print('hitbtc_profits end', datetime.now())
     compare_result = rprep(all_result=all_result, exchanger='hitbtc').result()
     return compare_result
 
