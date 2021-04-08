@@ -27,7 +27,6 @@ def currencies_update_v2():
     update_list = []
     objs = Uniswap.objects.all().order_by('id')
     if len(exch_serv.uniswap_prices_set) > 0:
-        print('start currencies_update_v2: ' + str(datetime.datetime.now()))
         for data in exch_serv.uniswap_prices_set:
             try:
                 obj = objs.get(tokenid__icontains=data[1])
@@ -40,7 +39,6 @@ def currencies_update_v2():
                                is_active=True, volume=data[6], tokenid=data[1])
                 pair.save()
         Uniswap.objects.bulk_update(update_list, ['lowest_ask', 'highest_bid', 'volume'])
-        print('end currencies_update_v2: ' + str(datetime.datetime.now()))
 
 
 @sync_to_async

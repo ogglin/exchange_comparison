@@ -78,8 +78,8 @@ def compare_price(data, compare, id):
         buyurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
         sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(compare[1])
         percent = (sprice - price) / (price / 100)
-        _query(f"""UPDATE websocket_log SET (datetime, log, buy_url, sell_url, percent, token, type, site, price,
-                sprice) = ('{tm}', '{json.dumps(data)}', '{buyurl}', '{sellurl}', {percent}, '{token}',
+        _query(f"""UPDATE websocket_log SET (datetime, buy_url, sell_url, percent, token, type, site, price,
+                sprice) = ('{tm}', '{buyurl}', '{sellurl}', {percent}, '{token}',
                 '{stype}', '{compare[0]}', {price}, {sprice}) WHERE id = {id};""")
     if data['s'] == 'sell':
         stype = "sell"
@@ -87,8 +87,8 @@ def compare_price(data, compare, id):
         buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(compare[1])
         sellurl = 'https://exchange.idex.io/trading/' + token + '-ETH'
         percent = (sprice - price) / (price / 100)
-        _query(f"""UPDATE websocket_log SET (datetime, log, buy_url, sell_url, percent, token, type, site, price,
-                        sprice) = ('{tm}', '{json.dumps(data)}', '{buyurl}', '{sellurl}', {percent}, '{token}',
+        _query(f"""UPDATE websocket_log SET (datetime, buy_url, sell_url, percent, token, type, site, price,
+                        sprice) = ('{tm}', '{buyurl}', '{sellurl}', {percent}, '{token}',
                         '{stype}', '{compare[0]}', {price}, {sprice}) WHERE id = {id};""")
 
 
@@ -152,14 +152,14 @@ def resave_wss():
         if len(exps.uniswap_prices_set) > 0:
             sLogs = WebsocketLog.objects.order_by('-id').filter(Q(token__isnull=True) & ~Q(log__icontains='error'))
             for sLog in sLogs:
-                try:
+                if 'trades' in sLog.log:
                     trade = json.loads(sLog.log)['data']
-                    id = sLog.id
-                    for uni_p in exps.uniswap_prices_set:
-                        if uni_p[0] == trade['m'].replace('-ETH', ''):
-                            compare_price(trade, uni_p, id)
-                except:
-                    pass
+                else:
+                    trade = json.loads(sLog.log)
+                id = sLog.id
+                for uni_p in exps.uniswap_prices_set:
+                    if uni_p[0] == trade['m'].replace('-ETH', ''):
+                        compare_price(trade, uni_p, id)
             wT = False
         else:
             time.sleep(2)

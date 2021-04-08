@@ -111,7 +111,7 @@ class WebsocketLog(models.Model):
     sprice = models.FloatField(default=0, blank=True, null=True)
 
     def __str__(self):
-        return self.datetime
+        return self.log
 
     class Meta:
         db_table = 'websocket_log'
@@ -134,15 +134,15 @@ class CustomSql(models.Model):
 class ProfitExchanges(models.Model):
     pair = models.CharField(max_length=100)
     buy_name = models.CharField(max_length=100)
-    buy = models.FloatField()
+    buy = models.FloatField(max_length=100)
     sell_name = models.CharField(max_length=100)
-    sell = models.FloatField()
-    percent = models.FloatField()
+    sell = models.FloatField(max_length=100)
+    percent = models.FloatField(max_length=100)
     tokenid = models.CharField(max_length=100)
     buyurl = models.CharField(max_length=200)
     sellurl = models.CharField(max_length=200)
-    buy_ask = models.FloatField()
-    sell_bid = models.FloatField()
+    buy_ask = models.FloatField(max_length=100)
+    sell_bid = models.FloatField(max_length=100)
     sell_symbol = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):

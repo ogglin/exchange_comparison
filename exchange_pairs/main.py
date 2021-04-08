@@ -2,7 +2,7 @@ import asyncio
 import concurrent.futures
 
 from bancor_module.services import bankor_init
-from exchange_comparison.services import exchange_set_init, set_gas_init
+from exchange_comparison.services import set_gas_currency_init
 from exchange_pairs.functions import exchanges_idex, exchanges_hotbit, exchanges_hitbtc, init_all_compared_tokens, \
     tiker_hotbit, init_utils
 from hitbtc_module.functions import hitbtc_tiker_init
@@ -19,21 +19,20 @@ def init_start():
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     async_tasks = [
         init_all_compared_tokens(),
-        # tikers_set_idex_init(),
-        # idex_init(),
         exchanges_idex(),
-        # tiker_hotbit(),
         exchanges_hotbit(),
-        # hitbtc_tiker_init(),
         exchanges_hitbtc(),
         bankor_init(),
         kyber_init(),
         uniswap_v2_init(),
-        uniswap_v1_init(),
-        exchange_set_init(),
-        set_gas_init(),
+        set_gas_currency_init(),
         get_wss(),
         init_resave(),
+        # tikers_set_idex_init(),
+        # idex_init(),
+        # tiker_hotbit(),
+        # hitbtc_tiker_init(),
+        # uniswap_v1_init(),
         # init_utils(),
         # test_utils()
     ]

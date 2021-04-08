@@ -141,7 +141,7 @@ async def exchange_set_init():
         # print('end exchanges: ' + str(datetime.datetime.now()))
 
 
-async def set_gas_init():
+async def set_gas_currency_init():
     while True:
         await set_gas()
         await usd_currency_update()
