@@ -19,12 +19,12 @@ def init_start():
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=20))
     async_tasks = [
         init_all_compared_tokens(),
-        tikers_set_idex_init(),
-        idex_init(),
+        # tikers_set_idex_init(),
+        # idex_init(),
         exchanges_idex(),
-        tiker_hotbit(),
+        # tiker_hotbit(),
         exchanges_hotbit(),
-        hitbtc_tiker_init(),
+        # hitbtc_tiker_init(),
         exchanges_hitbtc(),
         bankor_init(),
         kyber_init(),
