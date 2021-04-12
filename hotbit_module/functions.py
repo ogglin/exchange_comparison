@@ -43,10 +43,10 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                         c_bids = []
                         for bid in hitbtc_deth['bid']:
                             c_bids.append([bid['price'], bid['size']])
-                elif 'bilaxy' in token[2]:
-                    bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
-                    if bilaxy_deth:
-                        c_bids = bilaxy_deth['bids']
+                # elif 'bilaxy' in token[2]:
+                #     bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
+                #     if bilaxy_deth:
+                #         c_bids = bilaxy_deth['bids']
                 elif 'idex' in token[2]:
                     c_bids = None
                 else:

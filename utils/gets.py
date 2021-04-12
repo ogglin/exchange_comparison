@@ -40,7 +40,7 @@ async def get_idex_depth(symbol, cnt):
     header = {
         'IDEX-API-KEY': idex_apis[cnt],
     }
-    url = f"https://api.idex.io/v1/orderbook?market={symbol}-ETH&level=2&limit=20"
+    url = f"https://api.idex.io/v1/orderbook?market={symbol}&level=2&limit=20"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
     try:
@@ -53,7 +53,7 @@ async def get_idex_depth(symbol, cnt):
                     return jhtml
                 elif 'code' in html:
                     if jhtml['code'] != 'MARKET_NOT_FOUND':
-                        print(jhtml['code'])
+                        print(symbol, jhtml['code'])
                     return None
     except:
         pass

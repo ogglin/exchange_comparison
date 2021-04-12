@@ -68,7 +68,7 @@ async def init_compare(bilaxy_tokens, all_tokens, percent, currency, currencyUSD
 
 
 def bilaxy_profits():
-    print('bilaxy_profits start', datetime.now())
+    # print('bilaxy_profits start', datetime.now())
     setting = Settings.objects.all()[0]
     percent = setting.market_percent / 100 * setting.market_koef
     isTD = True
@@ -76,14 +76,14 @@ def bilaxy_profits():
     all_tokens = []
     while isTD:
         if len(ex_serv.all_compared_tokens) > 0:
-            print(len(ex_serv.all_compared_tokens), datetime.now())
+            # print(len(ex_serv.all_compared_tokens), datetime.now())
             for token in ex_serv.all_compared_tokens:
                 if 'bilaxy' in token[2]:
                     bilaxy_tokens.append(token)
                 else:
                     all_tokens.append(token)
             isTD = False
-            print(len(bilaxy_tokens))
+            # print(len(bilaxy_tokens))
         else:
             isTD = True
             time.sleep(1)
@@ -100,12 +100,12 @@ def bilaxy_profits():
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
         loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=100))
-        print('bilaxy loop start', datetime.now())
+        # print('bilaxy loop start', datetime.now())
         init_result = loop.run_until_complete(
             init_compare(part_bilaxy_tokens, all_tokens, percent, currency, currencyUSD))
         loop.close()
-        print('bilaxy loop end', datetime.now())
+        # print('bilaxy loop end', datetime.now())
         all_result.extend(init_result)
-    print('bilaxy_profits end', datetime.now())
+    # print('bilaxy_profits end', datetime.now())
     compare_result = rprep(all_result=all_result, exchanger='bilaxy').result()
     return compare_result
