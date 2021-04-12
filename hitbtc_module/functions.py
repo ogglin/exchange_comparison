@@ -96,6 +96,8 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                 #     bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
                 #     if bilaxy_deth:
                 #         c_bids = bilaxy_deth['bids']
+                elif 'uniswap' in token[2]:
+                    c_bids = token[4]
                 else:
                     c_bids = None
                 for ask in hitbtc_deth['ask']:

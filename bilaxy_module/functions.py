@@ -40,6 +40,8 @@ async def compare_markets(btoken, all_tokens, percent, currency, proxy, currency
                         c_bids = None
                 elif 'idex' in token[2]:
                     c_bids = None
+                elif 'uniswap' in token[2]:
+                    c_bids = token[4]
                 else:
                     c_bids = None
                 compare_result.append(

@@ -49,6 +49,8 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                 #         c_bids = bilaxy_deth['bids']
                 elif 'idex' in token[2]:
                     c_bids = None
+                elif 'uniswap' in token[2]:
+                    c_bids = token[4]
                 else:
                     c_bids = None
                 compare_result.append(
