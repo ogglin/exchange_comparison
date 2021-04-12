@@ -359,7 +359,7 @@ class ResultPrepare(object):
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-eth'
                             if 'BTC' in sell_symbol:
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-btc'
-                            if 'USD' in sell_symbol:
+                            if 'USDT' in sell_symbol:
                                 sellurl = 'https://hitbtc.com/' + pair.replace('/', '') + '-to-usdt'
                         if 'hotbit' in sell_to:
                             if 'ETH' in sell_symbol:
