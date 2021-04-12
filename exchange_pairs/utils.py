@@ -377,7 +377,7 @@ class ResultPrepare(object):
                         if sell_to == 'idex':
                             sellurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
                         if sell_to == 'bilaxy':
-                            buyurl = 'https://bilaxy.com/trade/' + sell_symbol
+                            sellurl = 'https://bilaxy.com/trade/' + sell_symbol
                         if sell_to == 'bancor':
                             sellurl = 'https://app.bancor.network/eth/swap?from=' + str(contract) \
                                       + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
