@@ -330,7 +330,7 @@ class ResultPrepare(object):
                                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
                                                                                                         '').replace(
                                     'ETH', '_ETH')
-                            elif 'USD' in result['buy_symbol']:
+                            elif 'USDT' in result['buy_symbol']:
                                 buyurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
                                                                                                         '').replace(
                                     'USDT', '_USDT')
@@ -367,7 +367,7 @@ class ResultPrepare(object):
                                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
                                                                                                          '').replace(
                                     'ETH', '_ETH')
-                            elif 'USD' in sell_symbol:
+                            elif 'USDT' in sell_symbol:
                                 sellurl = 'https://www.hotbit.io/exchange?symbol=' + sell_symbol.replace('/',
                                                                                                          '').replace(
                                     'USDT', '_USDT')
