@@ -14,7 +14,7 @@ from exchange_pairs.models import Settings
 import exchange_pairs.services as ex_serv
 from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
 from hitbtc_module.models import Hitbtc
-from utils.gets import get_hotbit_depth, get_hitbtc_depth
+from utils.gets import get_hotbit_depth, get_hitbtc_depth, get_bilaxy_depth
 
 hitbtc_tikers_set = []
 
@@ -92,6 +92,10 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                     hotbit_depth = await get_hotbit_depth(token[3], proxy)
                     if hotbit_depth:
                         c_bids = hotbit_depth['bids']
+                elif 'bilaxy' in token[2]:
+                    bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
+                    if bilaxy_deth:
+                        c_bids = bilaxy_deth['bids']
                 else:
                     c_bids = token[4]
                 for ask in hitbtc_deth['ask']:

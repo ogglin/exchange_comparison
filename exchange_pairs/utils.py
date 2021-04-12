@@ -73,11 +73,11 @@ class CompareToken(object):
         elif 'btc' not in self.sell_symbol.lower():
             self.sell_currency = 1
 
-        if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from:
+        if 'hitbtc' in self.buy_from or 'hotbit' in self.buy_from or 'bilaxy' in self.buy_from:
             self.b_vol = 0.8
         elif 'idex' in self.buy_from:
             self.b_vol = 0.5
-        if 'hitbtc' in self.sell_to or 'hotbit' in self.sell_to:
+        if 'hitbtc' in self.sell_to or 'hotbit' in self.sell_to or 'bilaxy' in self.sell_to:
             self.s_vol = 0.8
         elif 'idex' in self.sell_to:
             self.s_vol = 0.5
@@ -127,6 +127,21 @@ class CompareToken(object):
         if self.sreverse and self.sell_price > 0:
             self.sell_price = 1 / self.sell_price
 
+        # if self.buy_price > 0:
+        #     print({
+        #         'buy_from': self.buy_from.lower(),
+        #         'buy_symbol': self.buy_symbol,
+        #         'buy_price': self.buy_price,
+        #         'buy_volume': self.buy_volume,
+        #         'buy_ask': self.buy_ask,
+        #         'sell_to': self.sell_to.lower(),
+        #         'sell_symbol': self.sell_symbol,
+        #         'sell_price': self.sell_price,
+        #         'sell_volume': self.sell_volume,
+        #         'sell_bid': self.sell_bid,
+        #         'percent': (self.sell_price - self.buy_price) / self.buy_price * 100,
+        #         'contract': self.contract,
+        #     })
         """Check profit and return it"""
         if self.buy_price > 0 and self.sell_price > 0 and self.buy_volume >= self.b_vol and self.sell_volume >= self.s_vol:
             self.percent = (self.sell_price - self.buy_price) / self.buy_price * 100
@@ -147,8 +162,8 @@ class CompareToken(object):
         else:
             profit = None
         # print(self.buy_currency, self.buy_currency)
-        # print('----------')
         if self.percent > self.profit_percent:
+            # print('----------')
             # print('profit', profit)
             return profit
         else:
@@ -200,6 +215,12 @@ class GetTokens(object):
         #     WHERE mh.exch_direction is not null and tp.is_active is true AND mh.is_active is true and
         #     settings_modules.is_active is true;''')
 
+    def __bilaxy(self):
+        return _query("""SELECT tp.tsymbol, lower(tp.contract), 'bilaxy' as site, bm.market 
+            FROM trusted_pairs tp LEFT JOIN bilaxy_markets bm ON lower(bm.tsymbol) = lower(tp.tsymbol) and 
+            tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'bilaxy' 
+            WHERE tp.is_active is true AND bm.is_active is true and settings_modules.is_active is true;""")
+
     def __uniswap(self):
         return []
         # return _query('''
@@ -237,6 +258,8 @@ class GetTokens(object):
                 self.at.extend(self.__hotbit())
             if 'hitbtc' not in self.module:
                 self.at.extend(self.__hitbtc())
+            if 'bilaxy' not in self.module:
+                self.at.extend(self.__bilaxy())
             if 'uniswap' not in self.module:
                 self.at.extend(self.__uniswap())
             if 'bancor' not in self.module:
@@ -252,6 +275,8 @@ class GetTokens(object):
             if 'hotbit' in self.module:
                 self.at = self.__hotbit()
             if 'hitbtc' in self.module:
+                self.at = self.__hitbtc()
+            if 'bilaxy' in self.module:
                 self.at = self.__hitbtc()
 
             # Exchangers
@@ -279,6 +304,7 @@ class ResultPrepare(object):
             if results:
                 for result in results:
                     if result:
+                        print(result)
                         buy_from = result['buy_from']
                         pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
                         buy = result['buy_price']
@@ -314,6 +340,8 @@ class ResultPrepare(object):
                                     'BTC', '_BTC')
                         if buy_from == 'idex':
                             buyurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
+                        if buy_from == 'bilaxy':
+                            buyurl = 'https://bilaxy.com/trade/' + result['buy_symbol']
                         if buy_from == 'bancor':
                             buyurl = 'https://app.bancor.network/eth/swap?from=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to=' + \
                                      str(contract)
@@ -349,6 +377,8 @@ class ResultPrepare(object):
                                     'BTC', '_BTC')
                         if sell_to == 'idex':
                             sellurl = 'https://exchange.idex.io/trading/' + pair.replace('/', '') + '-ETH'
+                        if sell_to == 'bilaxy':
+                            buyurl = 'https://bilaxy.com/trade/' + sell_symbol
                         if sell_to == 'bancor':
                             sellurl = 'https://app.bancor.network/eth/swap?from=' + str(contract) \
                                       + '&to=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'

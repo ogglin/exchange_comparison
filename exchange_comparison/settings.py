@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'uniswap_module',
     'hotbit_module',
     'hitbtc_module',
+    'bilaxy_module',
     'send_mail',
     'exchange_pairs',
 ]

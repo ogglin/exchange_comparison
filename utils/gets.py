@@ -99,6 +99,24 @@ async def get_hotbit_depth(symbol, proxy):
         pass
 
 
+async def get_bilaxy_depth(symbol, proxy):
+    url = f"https://newapi.bilaxy.com/v1/orderbook?pair={symbol}"
+    socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
+    connector = SocksConnector.from_url(socks_url)
+    try:
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.get(url) as response:
+                html = await response.text()
+                jhtml = json.loads(html)
+                if 'timestamp' in html:
+                    return jhtml
+                else:
+                    print(symbol, jhtml)
+                    return None
+    except:
+        pass
+
+
 def get_proxy():
     n = random.randint(0, 20)
     print(n)

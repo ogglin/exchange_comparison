@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 from django.db import transaction
 from django.db.models import Q
 
+from bilaxy_module.functions import bilaxy_profits
 from exchange_pairs.models import ProfitExchanges
 from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
@@ -18,7 +19,7 @@ def idex_result():
     idex_result = idex_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | (
             Q(sell_name__icontains='idex') & ~Q(buy_name__icontains='hotbit') & ~Q(
-        buy_name__icontains='hitbit'))).delete()
+        buy_name__icontains='hitbit') & ~Q(sell_name__icontains='bilaxy'))).delete()
     with transaction.atomic():
         for result in idex_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
@@ -34,7 +35,7 @@ def hotbit_result():
     hotbit_result = hotbit_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | (
             Q(sell_name__icontains='hotbit') & ~Q(buy_name__icontains='idex') & ~Q(
-        buy_name__icontains='hitbit'))).delete()
+        buy_name__icontains='hitbit')) & ~Q(sell_name__icontains='bilaxy')).delete()
     with transaction.atomic():
         for result in hotbit_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
@@ -50,9 +51,25 @@ def hitbtc_result():
     hitbtc_result = hitbtc_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | (
             Q(sell_name__icontains='hitbtc') & ~Q(buy_name__icontains='hotbit') & ~Q(
-        buy_name__icontains='idex'))).delete()
+        buy_name__icontains='idex') & ~Q(sell_name__icontains='bilaxy'))).delete()
     with transaction.atomic():
         for result in hitbtc_result:
+            pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
+                                   buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
+                                   sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
+                                   tokenid=result['tokenid'], sellurl=result['sellurl'],
+                                   sell_symbol=result['sell_symbol'])
+            pair.save()
+
+
+@sync_to_async
+def bilaxy_result():
+    bilaxy_result = bilaxy_profits()
+    ProfitExchanges.objects.filter(Q(buy_name__icontains='bilaxy') | (
+            Q(sell_name__icontains='bilaxy') & ~Q(buy_name__icontains='hotbit') & ~Q(
+        buy_name__icontains='idex') & ~Q(buy_name__icontains='hitbtc'))).delete()
+    with transaction.atomic():
+        for result in bilaxy_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
                                    buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
                                    sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
@@ -92,6 +109,13 @@ async def exchanges_hitbtc():
     while True:
         await hitbtc_result()
         # print('end hitbtc exchanges: ' + str(datetime.datetime.now()))
+
+
+async def exchanges_bilaxy():
+    print('start bilaxy exchanges: ' + str(datetime.datetime.now()))
+    while True:
+        await bilaxy_result()
+        # print('end bilaxy exchanges: ' + str(datetime.datetime.now()))
 
 
 async def init_utils():

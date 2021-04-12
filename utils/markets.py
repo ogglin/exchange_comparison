@@ -4,6 +4,7 @@ import time
 import requests
 from asgiref.sync import sync_to_async
 
+from bilaxy_module.models import BilaxyMarkets
 from hitbtc_module.models import HitbtcMarkets
 from hotbit_module.models import HotbitMarkets
 from idex_module.models import IdexMarkets
@@ -64,3 +65,16 @@ def set_idex_market():
             obj = IdexMarkets(market=m, token=t, tsymbol=t, is_active=True)
             obj.save()
             print(m, t)
+
+
+def set_bilaxy_market():
+    url = 'https://newapi.bilaxy.com/v1/pairs'
+    markets = json.loads(get_url_content(url))
+    for key, market in markets.items():
+        m = key
+        t = market['base']
+        a = market['trade_enabled']
+        if len(BilaxyMarkets.objects.filter(market=m)) < 1:
+            obj = BilaxyMarkets(market=m, token=t, tsymbol=t, is_active=a)
+            obj.save()
+            print(m, t, a)

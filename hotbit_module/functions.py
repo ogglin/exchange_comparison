@@ -11,7 +11,7 @@ from asgiref.sync import sync_to_async
 import exchange_pairs.services as ex_serv
 from exchange_pairs.models import Settings
 from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
-from utils.gets import get_hotbit_depth, get_hitbtc_depth
+from utils.gets import get_hotbit_depth, get_hitbtc_depth, get_bilaxy_depth
 from .models import Hotbit
 
 API_URL = 'https://api.hotbit.io/api/v1/allticker'
@@ -43,6 +43,10 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                         c_bids = []
                         for bid in hitbtc_deth['bid']:
                             c_bids.append([bid['price'], bid['size']])
+                elif 'bilaxy' in token[2]:
+                    bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
+                    if bilaxy_deth:
+                        c_bids = bilaxy_deth['bids']
                 elif 'idex' in token[2]:
                     c_bids = None
                 else:

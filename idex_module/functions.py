@@ -7,7 +7,7 @@ from datetime import datetime
 import exchange_pairs.services as ex_serv
 from exchange_pairs.models import Settings
 from exchange_pairs.utils import CompareToken as ct, ResultPrepare as rprep, proxys
-from utils.gets import get_hotbit_depth, get_idex_depth, get_hitbtc_depth
+from utils.gets import get_hotbit_depth, get_idex_depth, get_hitbtc_depth, get_bilaxy_depth
 
 
 async def compare_markets(itoken, all_tokens, percent, currency, proxy, cnt, currencyUSD):
@@ -28,6 +28,10 @@ async def compare_markets(itoken, all_tokens, percent, currency, proxy, cnt, cur
                         c_bids = []
                         for bid in hitbtc_deth['bid']:
                             c_bids.append([bid['price'], bid['size']])
+                elif 'bilaxy' in token[2]:
+                    bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
+                    if bilaxy_deth:
+                        c_bids = bilaxy_deth['bids']
                 else:
                     c_bids = token[4]
                 if idex_depth['asks']:
