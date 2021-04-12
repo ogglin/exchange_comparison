@@ -10,6 +10,7 @@ from idex_module.services import idex_init, tikers_set_idex_init
 from idex_module.socket_services import get_wss, init_resave
 from kyber_module.services import kyber_init
 from uniswap_module.services import uniswap_v2_init, uniswap_v1_init
+from utils.main import init_utest
 
 
 def init_start():
@@ -33,7 +34,8 @@ def init_start():
         # tiker_hotbit(),
         # hitbtc_tiker_init(),
         # uniswap_v1_init(),
-        # init_utils(),
+        init_utils(),
+        # init_utest(),
         # test_utils()
     ]
     loop.run_until_complete(asyncio.gather(*async_tasks))

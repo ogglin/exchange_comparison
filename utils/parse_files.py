@@ -4,8 +4,8 @@ import re
 from exchange_pairs.models import TrustedPairs
 
 
-# from hitbtc_module.models import Hitbtc
-# from hotbit_module.models import Hotbit
+from hitbtc_module.models import Hitbtc
+from hotbit_module.models import Hotbit
 
 
 def get_file(f):
@@ -32,8 +32,14 @@ def get_file(f):
             # print(name, contract, symbol)
             f_elems.append([name, contract, symbol])
     tobjs = TrustedPairs.objects.all()
+    objs = Hotbit.objects.all().order_by('id')
     for fe in f_elems:
         print(fe)
+        for obj in objs:
+            if obj.tsymbol:
+                if obj.tsymbol.lower() == fe[2].lower():
+                    obj.is_active = True
+                    obj.save()
         for pair in tobjs:
             if pair.contract is not None:
                 if pair.contract.lower() == fe[1].lower():

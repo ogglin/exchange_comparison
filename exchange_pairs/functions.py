@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from asgiref.sync import sync_to_async
 from django.db import transaction
@@ -9,7 +10,7 @@ from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
 from hotbit_module.functions import hotbit_profits, set_currencies
 from idex_module.functions import idex_profits
-# from utils.token_parser import hitbtc_token_status
+from utils.token_parser import hitbtc_token_status
 
 
 @sync_to_async
@@ -48,8 +49,8 @@ def hotbit_result():
 def hitbtc_result():
     hitbtc_result = hitbtc_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | (
-                Q(sell_name__icontains='hitbtc') & ~Q(buy_name__icontains='hotbit') & ~Q(
-            buy_name__icontains='idex'))).delete()
+            Q(sell_name__icontains='hitbtc') & ~Q(buy_name__icontains='hotbit') & ~Q(
+        buy_name__icontains='idex'))).delete()
     with transaction.atomic():
         for result in hitbtc_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
@@ -94,10 +95,12 @@ async def exchanges_hitbtc():
 
 
 async def init_utils():
-    print('Start utils: ' + str(datetime.datetime.now()))
     while True:
         pass
+        # print('Start hitbtc token status: ' + str(datetime.datetime.now()))
         # await hitbtc_token_status()
+        # print('End hitbtc token status: ' + str(datetime.datetime.now()))
+        # time.sleep(600)
 
 
 async def test_utils():

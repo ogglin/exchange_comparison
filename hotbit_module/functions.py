@@ -43,6 +43,8 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                         c_bids = []
                         for bid in hitbtc_deth['bid']:
                             c_bids.append([bid['price'], bid['size']])
+                elif 'idex' in token[2]:
+                    c_bids = None
                 else:
                     c_bids = token[4]
                 compare_result.append(
@@ -54,6 +56,8 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                         ct(buy_from=token[2], buy_symbol=token[3], buy_prices=token[5], buy_volume=0, sell_to='hotbit',
                            sell_prices=hotbit_depth['bids'], sell_volume=1, sell_symbol=htoken[3],
                            contract=token[1], profit_percent=percent, currency=currency, currencyUSD=currencyUSD).compare())
+    else:
+        print('not results:', htoken[3])
     return compare_result
 
 
@@ -78,7 +82,7 @@ def hotbit_profits():
     all_tokens = []
     while isTD:
         if len(ex_serv.all_compared_tokens) > 0:
-            # print(len(ex_serv.all_compared_tokens))
+            print(len(ex_serv.all_compared_tokens), datetime.now())
             for token in ex_serv.all_compared_tokens:
                 if 'hotbit' in token[2]:
                     hotbit_tokens.append(token)
