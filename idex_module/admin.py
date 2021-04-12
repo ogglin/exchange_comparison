@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import *
 
+from utils.admin_utils import activate, deactivate
+
 
 # Register your models here.
 # @admin.register(Idex)
@@ -13,3 +15,4 @@ from .models import *
 class IdexMarketsAdmin(admin.ModelAdmin):
     list_display = ('market', 'token', 'tsymbol', 'is_active')
     search_fields = ('market', 'tsymbol',)
+    actions = [activate, deactivate]
