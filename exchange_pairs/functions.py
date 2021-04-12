@@ -19,7 +19,7 @@ def idex_result():
     idex_result = idex_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | (
             Q(sell_name__icontains='idex') & ~Q(buy_name__icontains='hotbit') & ~Q(
-        buy_name__icontains='hitbit') & ~Q(sell_name__icontains='bilaxy'))).delete()
+        buy_name__icontains='hitbit') & ~Q(buy_name__icontains='bilaxy'))).delete()
     with transaction.atomic():
         for result in idex_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
@@ -35,7 +35,7 @@ def hotbit_result():
     hotbit_result = hotbit_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | (
             Q(sell_name__icontains='hotbit') & ~Q(buy_name__icontains='idex') & ~Q(
-        buy_name__icontains='hitbit')) & ~Q(sell_name__icontains='bilaxy')).delete()
+        buy_name__icontains='hitbit')) & ~Q(buy_name__icontains='bilaxy')).delete()
     with transaction.atomic():
         for result in hotbit_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],
@@ -51,7 +51,7 @@ def hitbtc_result():
     hitbtc_result = hitbtc_profits()
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | (
             Q(sell_name__icontains='hitbtc') & ~Q(buy_name__icontains='hotbit') & ~Q(
-        buy_name__icontains='idex') & ~Q(sell_name__icontains='bilaxy'))).delete()
+        buy_name__icontains='idex') & ~Q(buy_name__icontains='bilaxy'))).delete()
     with transaction.atomic():
         for result in hitbtc_result:
             pair = ProfitExchanges(pair=result['pair'], buy_name=result['buy_name'], buy=result['buy'],

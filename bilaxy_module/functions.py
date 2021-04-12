@@ -41,7 +41,7 @@ async def compare_markets(btoken, all_tokens, percent, currency, proxy, currency
                 elif 'idex' in token[2]:
                     c_bids = None
                 else:
-                    c_bids = token[4]
+                    c_bids = None
                 compare_result.append(
                     ct(buy_from='bilaxy', buy_symbol=btoken[3], buy_prices=bilaxy_depth['asks'], buy_volume=0,
                        sell_to=token[2], sell_prices=c_bids, sell_volume=1, sell_symbol=token[3],

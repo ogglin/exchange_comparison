@@ -33,7 +33,7 @@ async def compare_markets(itoken, all_tokens, percent, currency, proxy, cnt, cur
                 #     if bilaxy_deth:
                 #         c_bids = bilaxy_deth['bids']
                 else:
-                    c_bids = token[4]
+                    c_bids = None
                 if idex_depth['asks']:
                     compare_result.append(
                         ct(buy_from='idex', buy_symbol=itoken[3], buy_prices=idex_depth['asks'], buy_volume=0,
