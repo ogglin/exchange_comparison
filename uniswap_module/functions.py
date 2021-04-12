@@ -66,7 +66,7 @@ async def asynchronous(trusted_tokens):
                 token = jData['symbol']
                 uniswap_prices.append([tsymbol, tokenid, 'uniswap', token, highest_bid, lowest_ask, volume])
         else:
-            print("error fetching %r: %s" % (error))
+            print("error fetching: ", error)
 
     # print("Elapsed Time: %s" % (timer() - start,), 'uniswap_prices_set length: ', len(uniswap_prices))
     return uniswap_prices
