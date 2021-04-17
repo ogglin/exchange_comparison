@@ -293,8 +293,10 @@ class MainTableComponent {
                     let isHide = false;
                     this.hideDirection.forEach((hide, index) => {
                         if (hide.pair === item.pair && hide.buy === item.buy_name && hide.sell === item.sell_name) {
-                            isHide = !Number(((item.sell - item.buy) / (item.buy / 100)).toFixed(2)) > hide.percent.toFixed(2) + this.freezePercent;
-                            this.hideDirection.splice(index, 1);
+                            isHide = Number(((item.sell - item.buy) / (item.buy / 100)).toFixed(2)) < Number(hide.percent.toFixed(2)) + this.freezePercent;
+                            if (!isHide) {
+                                this.hideDirection.splice(index, 1);
+                            }
                         }
                     });
                     if (!isHide) {
@@ -372,8 +374,8 @@ class MainTableComponent {
             a.dispatchEvent(new MouseEvent('click', { ctrlKey: true }));
         };
         this.hidePair = (pair, buy, sell, percent) => {
-            this.hideDirection.push({ pair, buy, sell, percent });
-            console.log(this.hideDirection);
+            const hpair = { pair, buy, sell, percent };
+            this.hideDirection.push(hpair);
         };
     }
     ngOnInit() {
