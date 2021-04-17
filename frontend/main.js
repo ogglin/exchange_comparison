@@ -293,7 +293,7 @@ class MainTableComponent {
                     let isHide = false;
                     this.hideDirection.forEach((hide, index) => {
                         if (hide.pair === item.pair && hide.buy === item.buy_name && hide.sell === item.sell_name) {
-                            isHide = !Number(((item.sell - item.buy) / (item.buy / 100)).toFixed(2)) > hide.percent.toFixed(2);
+                            isHide = !Number(((item.sell - item.buy) / (item.buy / 100)).toFixed(2)) > hide.percent.toFixed(2) + this.freezePercent;
                             this.hideDirection.splice(index, 1);
                         }
                     });
