@@ -6,6 +6,7 @@ from exchange_pairs.models import TrustedPairs
 
 from hitbtc_module.models import Hitbtc
 from hotbit_module.models import Hotbit
+from bilaxy_module.models import BilaxyMarkets
 
 
 def get_file(f):
@@ -32,7 +33,7 @@ def get_file(f):
             # print(name, contract, symbol)
             f_elems.append([name, contract, symbol])
     tobjs = TrustedPairs.objects.all()
-    # objs = Hotbit.objects.all().order_by('id')
+    # objs = BilaxyMarkets.objects.all().order_by('id')
     for fe in f_elems:
         print(fe)
         # for obj in objs:
@@ -40,7 +41,7 @@ def get_file(f):
         #         if obj.tsymbol.lower() == fe[2].lower():
         #             obj.is_active = True
         #             obj.save()
-        for pair in tobjs:
+        '''for pair in tobjs:
             if pair.contract is not None:
                 if pair.contract.lower() == fe[1].lower():
                     try:
@@ -50,21 +51,21 @@ def get_file(f):
                         pair.save()
                     except:
                         try:
-                            pair.tsymbol = fe[2]+'_hot'
+                            pair.tsymbol = fe[2]
                             pair.token_name = fe[0]
                             pair.is_active = True
                             pair.save()
                         except:
-                            print(fe[0].lower(), pair.token.lower(), pair.contract, fe[2], fe[1])
-        # try:
-        #     print('try')
-        #     tpair = TrustedPairs.objects.filter(contract__icontains=fe[1].lower()).all()
-        #     if len(tpair) < 1:
-        #         spair = TrustedPairs(token=fe[0], contract=fe[1].lower(), tsymbol=fe[2], token_name=fe[0],
-        #                              is_active=True)
-        #         spair.save()
-        # except:
-        #     pass
+                            print(fe[0].lower(), pair.token.lower(), pair.contract, fe[2], fe[1])'''
+        try:
+            print('try', fe)
+            tpair = TrustedPairs.objects.filter(contract__icontains=fe[1].lower()).all()
+            if len(tpair) < 1:
+                spair = TrustedPairs(token=fe[0], contract=fe[1].lower(), tsymbol=fe[2], token_name=fe[0],
+                                     is_active=True)
+                spair.save()
+        except:
+            pass
 
     # objs = Hitbtc.objects.all().order_by('id')
     # new_symbols = []

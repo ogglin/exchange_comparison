@@ -3,6 +3,7 @@ import re
 from exchange_comparison.utils import _query
 
 proxys = [
+    # IPv4
     ['193.111.152.28', '16881', 'user53105', '3x7cyr'],
     ['185.161.211.209', '16881', 'user53105', '3x7cyr'],
     ['193.111.155.237', '16881', 'user53105', '3x7cyr'],
@@ -23,6 +24,27 @@ proxys = [
     ['213.32.84.202', '11565', 'user53105', '3x7cyr'],
     ['147.135.206.67', '11565', 'user53105', '3x7cyr'],
     ['213.32.84.46', '11565', 'user53105', '3x7cyr'],
+    # IPv6
+    ['191.101.231.112', '11782', 'user53105', '3x7cyr'],
+    ['191.101.231.113', '13521', 'user53105', '3x7cyr'],
+    ['191.101.231.114', '18856', 'user53105', '3x7cyr'],
+    ['191.101.231.115', '12724', 'user53105', '3x7cyr'],
+    ['191.101.231.116', '13354', 'user53105', '3x7cyr'],
+    ['191.101.231.117', '13044', 'user53105', '3x7cyr'],
+    ['191.101.231.118', '16879', 'user53105', '3x7cyr'],
+    ['191.101.231.119', '13701', 'user53105', '3x7cyr'],
+    ['191.101.231.112', '14286', 'user53105', '3x7cyr'],
+    ['191.101.231.113', '15181', 'user53105', '3x7cyr'],
+    ['191.101.231.112', '15963', 'user53105', '3x7cyr'],
+    ['191.101.231.113', '18037', 'user53105', '3x7cyr'],
+    ['191.101.231.114', '17589', 'user53105', '3x7cyr'],
+    ['191.101.231.115', '11557', 'user53105', '3x7cyr'],
+    ['191.101.231.116', '17652', 'user53105', '3x7cyr'],
+    ['191.101.231.117', '13016', 'user53105', '3x7cyr'],
+    ['191.101.231.118', '17954', 'user53105', '3x7cyr'],
+    ['191.101.231.119', '17442', 'user53105', '3x7cyr'],
+    ['191.101.231.112', '16723', 'user53105', '3x7cyr'],
+    ['191.101.231.113', '14291', 'user53105', '3x7cyr'],
 ]
 
 
@@ -304,7 +326,6 @@ class ResultPrepare(object):
             if results:
                 for result in results:
                     if result:
-                        # print(result)
                         buy_from = result['buy_from']
                         pair = result['buy_symbol'].replace('ETH', '').replace('BTC', '')
                         buy = result['buy_price']
@@ -349,7 +370,8 @@ class ResultPrepare(object):
                             buyurl = 'https://kyberswap.com/swap/eth-' + pair
                         if buy_from == 'uniswap':
                             if 'USDT' in sell_symbol or 'USDT' in result['buy_symbol']:
-                                buyurl = 'https://app.uniswap.org/#/swap?inputCurrency=' + str(contract) + '&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7'
+                                buyurl = 'https://app.uniswap.org/#/swap?inputCurrency=' + str(
+                                    contract) + '&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7'
                             else:
                                 buyurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
                         if buy_from == 'uniswap_one':
@@ -386,14 +408,12 @@ class ResultPrepare(object):
                             sellurl = 'https://kyberswap.com/swap/eth-' + pair
                         if sell_to == 'uniswap':
                             if 'USDT' in sell_symbol or 'USDT' in result['buy_symbol']:
-                                sellurl = 'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=' + str(contract)
+                                sellurl = 'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=' + str(
+                                    contract)
                             else:
                                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
                         if sell_to == 'uniswap_one':
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
-                        print({'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
-                             'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
-                             'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol})
                         compare_result.append(
                             {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
                              'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,

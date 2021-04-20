@@ -10,7 +10,8 @@ from utils.parse_files import get_file
 TEMP_DIR = str(Path(__file__).resolve(strict=True).parent.parent) + '/temp/'
 # file = TEMP_DIR + 'контракты хит бтс2.txt'
 # file = TEMP_DIR + 'ХОТ бит контракт 07 04.txt'
-file = TEMP_DIR + 'bilaxy.txt'
+# file = TEMP_DIR + 'bilaxy.txt'
+file = TEMP_DIR + 'bilaxy (2).txt'
 
 
 @sync_to_async
