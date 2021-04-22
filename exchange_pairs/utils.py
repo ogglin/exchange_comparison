@@ -417,5 +417,6 @@ class ResultPrepare(object):
                         compare_result.append(
                             {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
                              'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
-                             'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol})
+                             'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol,
+                             'contract': contract})
         return compare_result
