@@ -81,7 +81,7 @@ class ProfitExchangesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProfitExchanges
         fields = ['pair', 'buy_name', 'buy', 'sell_name', 'sell', 'percent', 'tokenid', 'buyurl', 'sellurl', 'buy_ask',
-                  'sell_bid', 'sell_symbol']
+                  'sell_bid', 'sell_symbol', 'contract']
 
 
 class TrustedPairsSerializer(serializers.HyperlinkedModelSerializer):
