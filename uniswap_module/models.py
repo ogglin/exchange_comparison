@@ -9,7 +9,7 @@ class Uniswap(models.Model):
     highest_bid = models.FloatField(blank=True, null=True)
     lowest_ask = models.FloatField(blank=True, null=True)
     tokenid = models.CharField(max_length=500, default='')
-    volume = models.FloatField()
+    volume = models.FloatField(blank=True, null=True)
     is_active = models.BooleanField(verbose_name='Активный', blank=False, null=False)
 
     def __str__(self):
