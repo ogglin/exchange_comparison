@@ -61,11 +61,16 @@ function MainTableComponent_td_11_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4, "remove_red_eye");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "a", 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](6, "img", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
     const element_r12 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", element_r12.pair, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpropertyInterpolate1"]("href", "https://etherscan.io/token/", element_r12.contract, "", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsanitizeUrl"]);
 } }
 function MainTableComponent_th_13_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "th", 16);
@@ -94,11 +99,11 @@ function MainTableComponent_td_14_ng_container_3_Template(rf, ctx) { if (rf & 1)
 } }
 function MainTableComponent_td_14_Template(rf, ctx) { if (rf & 1) {
     const _r21 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "td", 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "td", 22);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function MainTableComponent_td_14_Template_td_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r21); const element_r15 = ctx.$implicit; const ctx_r20 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](); return ctx_r20.toUrl(element_r15.buyurl); });
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, MainTableComponent_td_14_ng_container_2_Template, 3, 1, "ng-container", 21);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, MainTableComponent_td_14_ng_container_3_Template, 3, 1, "ng-container", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, MainTableComponent_td_14_ng_container_2_Template, 3, 1, "ng-container", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, MainTableComponent_td_14_ng_container_3_Template, 3, 1, "ng-container", 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
     const element_r15 = ctx.$implicit;
@@ -136,11 +141,11 @@ function MainTableComponent_td_17_ng_container_3_Template(rf, ctx) { if (rf & 1)
 } }
 function MainTableComponent_td_17_Template(rf, ctx) { if (rf & 1) {
     const _r28 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "td", 20);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "td", 22);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function MainTableComponent_td_17_Template_td_click_0_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r28); const element_r22 = ctx.$implicit; const ctx_r27 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](); return ctx_r27.toUrl(element_r22.sellurl); });
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, MainTableComponent_td_17_ng_container_2_Template, 3, 1, "ng-container", 21);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, MainTableComponent_td_17_ng_container_3_Template, 3, 1, "ng-container", 21);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, MainTableComponent_td_17_ng_container_2_Template, 3, 1, "ng-container", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, MainTableComponent_td_17_ng_container_3_Template, 3, 1, "ng-container", 23);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
     const element_r22 = ctx.$implicit;
@@ -167,19 +172,19 @@ function MainTableComponent_td_20_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind2"](2, 1, element_r29.percent, "1.0-2"), "% ");
 } }
 function MainTableComponent_tr_21_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "tr", 22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "tr", 24);
 } }
 const _c0 = function (a0) { return { "background-color": a0 }; };
 function MainTableComponent_tr_22_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "tr", 23);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "tr", 25);
 } if (rf & 2) {
     const row_r30 = ctx.$implicit;
     const ctx_r10 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngStyle", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0, row_r30.percent >= ctx_r10.redKoef ? ctx_r10.color.red : ctx_r10.color.green));
 } }
 function MainTableComponent_tr_23_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "tr", 24);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "td", 25);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "tr", 26);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "td", 27);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -312,7 +317,8 @@ class MainTableComponent {
                             sellurl: item.sellurl,
                             buy_ask: item.buy_ask,
                             sell_bid: item.sell_bid,
-                            sell_symbol: item.sell_symbol
+                            sell_symbol: item.sell_symbol,
+                            contract: item.contract
                         };
                         this.TableData.push(elem);
                     }
@@ -383,7 +389,7 @@ class MainTableComponent {
     }
 }
 MainTableComponent.ɵfac = function MainTableComponent_Factory(t) { return new (t || MainTableComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_api_service_service__WEBPACK_IMPORTED_MODULE_2__["ApiServiceService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"])); };
-MainTableComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MainTableComponent, selectors: [["app-main-table"]], decls: 25, vars: 11, consts: [[3, "API_KEYS", "tokenPrices"], ["matInput", "", "placeholder", "\u041D\u0430\u0439\u0442\u0438", 3, "keyup"], ["input", ""], [2, "text-align", "right", "padding", "5px 20px", "margin", "0", "color", "#bb0919", "font-weight", "700", "font-size", "1.6em"], ["mat-table", "", "matSort", "", "matSortActive", "percent", "matSortDisableClear", "", "matSortDirection", "desc", 1, "mat-elevation-z8", "w-100", "font-bold", 3, "dataSource"], ["matColumnDef", "pair"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "buy"], ["mat-cell", "", "class", "cursor-pointer", 3, "click", 4, "matCellDef"], ["matColumnDef", "sell"], ["matColumnDef", "percent"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 3, "ngStyle", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], [3, "notices", "interval", "timer", "pushKoef"], ["mat-header-cell", ""], ["mat-cell", ""], ["mat-icon-button", "", "aria-label", "hide-pair", 1, "cursor-pointer", 3, "click"], [1, "font-lighter"], ["mat-cell", "", 1, "cursor-pointer", 3, "click"], [4, "ngIf"], ["mat-header-row", ""], ["mat-row", "", 3, "ngStyle"], [1, "mat-row"], ["colspan", "4", 1, "mat-cell"]], template: function MainTableComponent_Template(rf, ctx) { if (rf & 1) {
+MainTableComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MainTableComponent, selectors: [["app-main-table"]], decls: 25, vars: 11, consts: [[3, "API_KEYS", "tokenPrices"], ["matInput", "", "placeholder", "\u041D\u0430\u0439\u0442\u0438", 3, "keyup"], ["input", ""], [2, "text-align", "right", "padding", "5px 20px", "margin", "0", "color", "#bb0919", "font-weight", "700", "font-size", "1.6em"], ["mat-table", "", "matSort", "", "matSortActive", "percent", "matSortDisableClear", "", "matSortDirection", "desc", 1, "mat-elevation-z8", "w-100", "font-bold", 3, "dataSource"], ["matColumnDef", "pair"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "buy"], ["mat-cell", "", "class", "cursor-pointer", 3, "click", 4, "matCellDef"], ["matColumnDef", "sell"], ["matColumnDef", "percent"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 3, "ngStyle", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], [3, "notices", "interval", "timer", "pushKoef"], ["mat-header-cell", ""], ["mat-cell", ""], ["mat-icon-button", "", "aria-label", "hide-pair", 1, "cursor-pointer", 3, "click"], [1, "font-lighter"], ["target", "_blank", 2, "padding-left", "10px", 3, "href"], ["width", "20px", "height", "20px", "src", "https://etherscan.io/images/brands/bscscan-logo.png"], ["mat-cell", "", 1, "cursor-pointer", 3, "click"], [4, "ngIf"], ["mat-header-row", ""], ["mat-row", "", 3, "ngStyle"], [1, "mat-row"], ["colspan", "4", 1, "mat-cell"]], template: function MainTableComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "app-socket", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "mat-form-field");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "mat-label");
@@ -399,7 +405,7 @@ MainTableComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefin
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](8, "table", 4);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](9, 5);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](10, MainTableComponent_th_10_Template, 2, 0, "th", 6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](11, MainTableComponent_td_11_Template, 5, 1, "td", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](11, MainTableComponent_td_11_Template, 7, 2, "td", 7);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerStart"](12, 8);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](13, MainTableComponent_th_13_Template, 2, 0, "th", 6);
