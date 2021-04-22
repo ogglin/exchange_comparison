@@ -61,7 +61,7 @@ class TrustedPairsAdmin(admin.ModelAdmin):
             uniObj.is_active = True
             uniObj.save()
         except:
-            obj = Uniswap(tokenid=obj.contract, tsymbol=obj.tsymbol, exch_direction=obj.token, is_active=True)
+            obj = Uniswap(tokenid=obj.contract, highest_bid=0, lowest_ask=0, tsymbol=obj.tsymbol, exch_direction=obj.token, is_active=True)
             obj.save()
         return HttpResponseRedirect("/admin/exchange_pairs/trustedpairs/")
         # TODO
