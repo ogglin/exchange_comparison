@@ -11,6 +11,8 @@ from exchange_pairs.services import set_all_compared_tokens
 from hitbtc_module.functions import hitbtc_profits
 from hotbit_module.functions import hotbit_profits, set_currencies
 from idex_module.functions import idex_profits
+from utils.main import init_utest
+from utils.markets import set_uniswap_market
 from utils.token_parser import hitbtc_token_status
 
 
@@ -26,7 +28,7 @@ def idex_result():
                                    buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
                                    sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
                                    tokenid=result['tokenid'], sellurl=result['sellurl'],
-                                   sell_symbol=result['sell_symbol'])
+                                   sell_symbol=result['sell_symbol'], contract=result['contract'])
             pair.save()
 
 
@@ -42,7 +44,7 @@ def hotbit_result():
                                    buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
                                    sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
                                    tokenid=result['tokenid'], sellurl=result['sellurl'],
-                                   sell_symbol=result['sell_symbol'])
+                                   sell_symbol=result['sell_symbol'], contract=result['contract'])
             pair.save()
 
 
@@ -58,7 +60,7 @@ def hitbtc_result():
                                    buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
                                    sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
                                    tokenid=result['tokenid'], sellurl=result['sellurl'],
-                                   sell_symbol=result['sell_symbol'])
+                                   sell_symbol=result['sell_symbol'], contract=result['contract'])
             pair.save()
 
 
@@ -74,7 +76,7 @@ def bilaxy_result():
                                    buy_ask=result['buy_ask'], buyurl=result['buyurl'], sell_name=result['sell_name'],
                                    sell=result['sell'], sell_bid=result['sell_bid'], percent=result['percent'],
                                    tokenid=result['tokenid'], sellurl=result['sellurl'],
-                                   sell_symbol=result['sell_symbol'])
+                                   sell_symbol=result['sell_symbol'], contract=result['contract'])
             pair.save()
 
 
@@ -85,40 +87,41 @@ async def init_all_compared_tokens():
 
 
 async def exchanges_idex():
+    print('start idex exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start idex exchanges: ' + str(datetime.datetime.now()))
         await idex_result()
-        print('end idex exchanges: ' + str(datetime.datetime.now()))
+        # print('end idex exchanges: ' + str(datetime.datetime.now()))
 
 
 async def tiker_hotbit():
+    print('start hotbit tiker: ' + str(datetime.datetime.now()))
     while True:
-        print('start hotbit tiker: ' + str(datetime.datetime.now()))
         await set_currencies()
-        print('end hotbit tiker: ' + str(datetime.datetime.now()))
+        # print('end hotbit tiker: ' + str(datetime.datetime.now()))
 
 async def exchanges_hotbit():
+    print('start hotbit exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start hotbit exchanges: ' + str(datetime.datetime.now()))
         await hotbit_result()
-        print('end hotbit exchanges: ' + str(datetime.datetime.now()))
+        # print('end hotbit exchanges: ' + str(datetime.datetime.now()))
 
 
 async def exchanges_hitbtc():
+    print('start hitbtc exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start hitbtc exchanges: ' + str(datetime.datetime.now()))
         await hitbtc_result()
-        print('end hitbtc exchanges: ' + str(datetime.datetime.now()))
+        # print('end hitbtc exchanges: ' + str(datetime.datetime.now()))
 
 
 async def exchanges_bilaxy():
+    print('start bilaxy exchanges: ' + str(datetime.datetime.now()))
     while True:
-        print('start bilaxy exchanges: ' + str(datetime.datetime.now()))
         await bilaxy_result()
-        print('end bilaxy exchanges: ' + str(datetime.datetime.now()))
+        # print('end bilaxy exchanges: ' + str(datetime.datetime.now()))
 
 
 async def init_utils():
+    # await set_uniswap_market()
     while True:
         pass
         # print('Start hitbtc token status: ' + str(datetime.datetime.now()))
