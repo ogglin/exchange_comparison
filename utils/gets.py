@@ -37,6 +37,8 @@ p_count = 0
 async def get_idex_depth(symbol, cnt):
     global p_count
     proxy = proxys[cnt]
+    if cnt > 19:
+        cnt -= 20
     header = {
         'IDEX-API-KEY': idex_apis[cnt],
     }
