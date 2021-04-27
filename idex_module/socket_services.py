@@ -12,6 +12,7 @@ from django.db.models import Q
 from websockets import WebSocketClientProtocol
 import psycopg2
 
+from exchange_comparison.utils import _query
 from exchange_pairs.models import WebsocketLog
 import exchange_pairs.services as exps
 from idex_module.models import IdexSocketLog
@@ -21,26 +22,6 @@ DATABASE_USER = 'exchange_comparison'
 DATABASE_PASSWORD = '0L7OBgdmXgvV28'
 DATABASE_HOST = '95.183.12.206'
 DATABASE_PORT = '5432'
-
-
-def _query(q):
-    con = psycopg2.connect(
-        database=DATABASE_NAME,
-        user=DATABASE_USER,
-        password=DATABASE_PASSWORD,
-        host=DATABASE_HOST,
-        port=DATABASE_PORT
-    )
-    cur = con.cursor()
-    try:
-        cur.execute(q)
-        data = cur.fetchall()
-    except psycopg2.DatabaseError as err:
-        print("Error: ", err)
-    else:
-        return data
-    finally:
-        con.commit()
 
 
 logging.basicConfig(level=logging.INFO)

@@ -4,6 +4,7 @@ from exchange_comparison.env import *
 
 
 def _query(q):
+    # print(q)
     con = psycopg2.connect(
         database=DATABASE_NAME,
         user=DATABASE_USER,
@@ -25,6 +26,7 @@ def _query(q):
 
 
 def _query_cols(q):
+    # print(q)
     con = psycopg2.connect(
         database=DATABASE_NAME,
         user=DATABASE_USER,

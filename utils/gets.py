@@ -5,6 +5,7 @@ import time
 import aiohttp
 from aiohttp_socks import SocksConnector
 
+from exchange_comparison.utils import _query
 from exchange_pairs.utils import proxys
 
 # 'cddba27a-916f-48e7-bad3-884c0869b627',
@@ -93,7 +94,9 @@ async def get_hotbit_depth(symbol, proxy):
                 if jhtml['error'] is None:
                     return jhtml['result']
                 elif jhtml['error']:
-                    print('hotbit', jhtml['error'])
+                    print('hotbit', symbol, jhtml['error'])
+                    if 'market not exist' in html:
+                        _query(f"""UPDATE hotbit_markets SET "is_active" = 'f' WHERE "market" LIKE '%{symbol}%'""")
                     return None
                 else:
                     return None
@@ -114,6 +117,8 @@ async def get_bilaxy_depth(symbol, proxy):
                     return jhtml
                 else:
                     print('bilaxy', symbol, jhtml)
+                    if 'Not found pair' in html:
+                        _query(f"""UPDATE bilaxy_markets SET "is_active" = 'f' WHERE "market" LIKE '%{symbol}%'""")
                     return None
     except:
         pass
