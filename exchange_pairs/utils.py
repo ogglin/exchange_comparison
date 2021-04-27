@@ -435,10 +435,10 @@ class ResultPrepare(object):
                                 sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract)
                         if sell_to == 'uniswap_one':
                             sellurl = 'https://app.uniswap.org/#/swap?outputCurrency=' + str(contract) + '&use=v1'
-                        # print({'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
-                        #      'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
-                        #      'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol,
-                        #      'contract': contract})
+                        print({'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
+                             'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
+                             'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol,
+                             'contract': contract})
                         compare_result.append(
                             {'pair': result['buy_symbol'], 'buy_name': buy_from, 'buy': buy, 'buy_ask': buy_ask,
                              'sell_name': sell_to, 'sell': sell, 'sell_bid': sell_bid, 'percent': percent,
