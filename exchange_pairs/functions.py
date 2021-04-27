@@ -121,9 +121,9 @@ async def exchanges_bilaxy():
 
 
 async def init_utils():
-    # await set_uniswap_market()
-    while True:
-        pass
+    await set_uniswap_market()
+    # while True:
+    #     pass
         # print('Start hitbtc token status: ' + str(datetime.datetime.now()))
         # await hitbtc_token_status()
         # print('End hitbtc token status: ' + str(datetime.datetime.now()))

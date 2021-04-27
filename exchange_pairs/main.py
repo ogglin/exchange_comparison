@@ -6,6 +6,7 @@ from exchange_comparison.services import set_gas_currency_init
 from exchange_pairs.functions import exchanges_idex, exchanges_hotbit, exchanges_hitbtc, init_all_compared_tokens, \
     tiker_hotbit, init_utils, exchanges_bilaxy
 from hitbtc_module.functions import hitbtc_tiker_init
+from hotbit_module.wssocket import hotbit_wss
 from idex_module.services import idex_init, tikers_set_idex_init
 from idex_module.socket_services import get_wss, init_resave
 from kyber_module.services import kyber_init
@@ -29,7 +30,8 @@ def init_start():
         uniswap_v2_init(),
         set_gas_currency_init(),
         get_wss(),
-        init_resave(),
+        # hotbit_wss(),
+        # init_resave(),
         # tikers_set_idex_init(),
         # idex_init(),
         # tiker_hotbit(),

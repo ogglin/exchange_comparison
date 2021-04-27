@@ -88,7 +88,7 @@ def hotbit_profits():
     all_tokens = []
     while isTD:
         if len(ex_serv.all_compared_tokens) > 0:
-            print(len(ex_serv.all_compared_tokens), datetime.now())
+            # print(len(ex_serv.all_compared_tokens), datetime.now())
             for token in ex_serv.all_compared_tokens:
                 if 'hotbit' in token[2]:
                     hotbit_tokens.append(token)

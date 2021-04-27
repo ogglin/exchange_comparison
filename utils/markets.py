@@ -6,10 +6,11 @@ import urllib3
 from asgiref.sync import sync_to_async
 
 from bilaxy_module.models import BilaxyMarkets
+from exchange_pairs.models import TrustedPairs
 from hitbtc_module.models import HitbtcMarkets
 from hotbit_module.models import HotbitMarkets
 from idex_module.models import IdexMarkets
-from uniswap_module.models import UniswapMarkets
+from uniswap_module.models import UniswapMarkets, Uniswap
 
 
 def get_url_content(url):
@@ -84,29 +85,37 @@ def set_bilaxy_market():
 
 @sync_to_async
 def set_uniswap_market():
-    http = urllib3.PoolManager()
-    url = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
-    all_i = 7
-    for i in range(all_i):
-        req = json.dumps({'query': '{tokens(first:1000, skip:' + str(i*1000) + ')  {id symbol name}}'}).encode('utf-8')
-        response = http.request('POST', url, body=req)
-        # try:
-        markets = json.loads(response.data.decode('utf-8'))['data']['tokens']
-        for market in markets:
-            c = market['id']
-            m = market['symbol'].strip()
-            t = market['name'].strip()
-            if len(UniswapMarkets.objects.filter(market=m)) < 1:
-                print(c, m, t)
-                obj = UniswapMarkets(market=m, token=t, tokenid=c, is_active=False)
+    # http = urllib3.PoolManager()
+    # url = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
+    # all_i = 7
+    # for i in range(all_i):
+    #     req = json.dumps({'query': '{tokens(first:1000, skip:' + str(i*1000) + ')  {id symbol name}}'}).encode('utf-8')
+    #     response = http.request('POST', url, body=req)
+    #     # try:
+    #     markets = json.loads(response.data.decode('utf-8'))['data']['tokens']
+    #     for market in markets:
+    #         c = market['id']
+    #         m = market['symbol'].strip()
+    #         t = market['name'].strip()
+    #         if len(UniswapMarkets.objects.filter(market=m)) < 1:
+    #             print(c, m, t)
+    #             obj = UniswapMarkets(market=m, token=t, tokenid=c, is_active=False)
+    #             obj.save()
+    tmarkets = TrustedPairs.objects.filter(contract__isnull=False)
+    umarkets = Uniswap.objects.all()
+    for tm in tmarkets:
+        # print(tm.contract)
+        uObj = Uniswap.objects.filter(tokenid=tm.contract)
+        if len(uObj) > 1:
+            obj = Uniswap.objects.get(tokenid=tm.contract)[0]
+            obj.tsymbol = tm.tsymbol
+            obj.is_active = True
+        else:
+            try:
+                obj = Uniswap(tokenid=tm.contract, highest_bid=0, lowest_ask=0, volume=0, tsymbol=tm.tsymbol,
+                              exch_direction=tm.token, is_active=True)
                 obj.save()
-        # except:
-        #     print(json.loads(response.data.decode('utf-8')))
+            except:
+                pass
 
-    #     m = key
-    #     t = market['base']
-    #     a = market['trade_enabled']
-    #     if len(UniswapMarkets.objects.filter(market=m)) < 1:
-    #         obj = UniswapMarkets(market=m, token=t, tsymbol=t, is_active=False)
-    #         obj.save()
-    #         print(m, t, a)
+
