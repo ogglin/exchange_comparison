@@ -38,6 +38,8 @@ p_count = 0
 async def get_idex_depth(symbol, cnt):
     global p_count
     proxy = proxys[cnt]
+    if cnt > 39:
+        cnt -= 20
     if cnt > 19:
         cnt -= 20
     header = {
