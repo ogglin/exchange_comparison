@@ -55,7 +55,7 @@ async def get_idex_depth(symbol, cnt):
                     return jhtml
                 elif 'code' in html:
                     if jhtml['code'] != 'MARKET_NOT_FOUND':
-                        print(symbol, jhtml['code'])
+                        print('IDEX', symbol, jhtml['code'])
                     return None
     except:
         pass
@@ -73,7 +73,7 @@ async def get_hitbtc_depth(symbol, proxy):
                 if 'ask' in html:
                     return jhtml
                 elif 'error' in html:
-                    print(jhtml['error'])
+                    print('hitbtc', jhtml['error'])
                     return None
                 else:
                     return None
@@ -93,7 +93,7 @@ async def get_hotbit_depth(symbol, proxy):
                 if jhtml['error'] is None:
                     return jhtml['result']
                 elif jhtml['error']:
-                    print(jhtml['error'])
+                    print('hotbit', jhtml['error'])
                     return None
                 else:
                     return None
@@ -113,7 +113,7 @@ async def get_bilaxy_depth(symbol, proxy):
                 if 'timestamp' in html:
                     return jhtml
                 else:
-                    print(symbol, jhtml)
+                    print('bilaxy', symbol, jhtml)
                     return None
     except:
         pass

@@ -63,7 +63,7 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                            sell_prices=hotbit_depth['bids'], sell_volume=1, sell_symbol=htoken[3],
                            contract=token[1], profit_percent=percent, currency=currency, currencyUSD=currencyUSD).compare())
     else:
-        print('not results:', htoken[3])
+        pass
     return compare_result
 
 
