@@ -102,5 +102,5 @@ def idex_profits():
         loop.close()
         all_result.extend(init_result)
     # print('idex_profits end', datetime.now())
-    compare_result = rprep(all_result=all_result, exchanger='hotbit').result()
+    compare_result = rprep(all_result=all_result, exchanger='idex').result()
     return compare_result
