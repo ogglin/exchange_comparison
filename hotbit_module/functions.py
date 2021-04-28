@@ -103,16 +103,16 @@ def hotbit_profits():
     currency = Settings.objects.all().values()[0]['currency']
     currencyUSD = Settings.objects.all().values()[0]['currency_usd']
     all_result = []
-    xlen = math.ceil(len(hotbit_tokens) / 200)
+    xlen = math.ceil(len(hotbit_tokens) / 100)
     for i in range(xlen):
         parts_hotbit_tokens = []
         for hi, htoken in enumerate(hotbit_tokens):
-            if 200 * i <= hi < 200 * (i + 1):
+            if 100 * i <= hi < 100 * (i + 1):
                 parts_hotbit_tokens.append(htoken)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop = asyncio.get_event_loop()
-        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=200))
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=100))
         # print('hotbit loop start', datetime.now())
         init_result = loop.run_until_complete(init_compare(parts_hotbit_tokens, all_tokens, percent, currency, currencyUSD))
         loop.close()
