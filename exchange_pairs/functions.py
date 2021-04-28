@@ -19,7 +19,7 @@ from utils.token_parser import hitbtc_token_status
 @sync_to_async
 def idex_result():
     idex_result = idex_profits()
-    # print('idex_result', idex_result)
+    print('idex_result', idex_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='idex') | (
             Q(sell_name__icontains='idex') & ~Q(buy_name__icontains='hotbit') & ~Q(
         buy_name__icontains='hitbit') & ~Q(buy_name__icontains='bilaxy'))).delete()
@@ -36,7 +36,7 @@ def idex_result():
 @sync_to_async
 def hotbit_result():
     hotbit_result = hotbit_profits()
-    # print('hotbit_result', hotbit_result)
+    print('hotbit_result', hotbit_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | (
             Q(sell_name__icontains='hotbit') & ~Q(buy_name__icontains='idex') & ~Q(
         buy_name__icontains='hitbit')) & ~Q(buy_name__icontains='bilaxy')).delete()
@@ -53,7 +53,7 @@ def hotbit_result():
 @sync_to_async
 def hitbtc_result():
     hitbtc_result = hitbtc_profits()
-    # print('hitbtc_result', hitbtc_result)
+    print('hitbtc_result', hitbtc_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hitbtc') | (
             Q(sell_name__icontains='hitbtc') & ~Q(buy_name__icontains='hotbit') & ~Q(
         buy_name__icontains='idex') & ~Q(buy_name__icontains='bilaxy'))).delete()
@@ -70,7 +70,7 @@ def hitbtc_result():
 @sync_to_async
 def bilaxy_result():
     bilaxy_result = bilaxy_profits()
-    # print('bilaxy_result', bilaxy_result)
+    print('bilaxy_result', bilaxy_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='bilaxy') | (
             Q(sell_name__icontains='bilaxy') & ~Q(buy_name__icontains='hotbit') & ~Q(
         buy_name__icontains='idex') & ~Q(buy_name__icontains='hitbtc'))).delete()
