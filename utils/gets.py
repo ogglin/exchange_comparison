@@ -48,82 +48,86 @@ async def get_idex_depth(symbol, cnt):
     url = f"https://api.idex.io/v1/orderbook?market={symbol}&level=2&limit=20"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
-    # try:
-    async with aiohttp.ClientSession(connector=connector, headers=header) as session:
-        async with session.get(url) as response:
-            html = await response.text()
-            jhtml = json.loads(html)
-            p_count += 1
-            if 'sequence' in html:
-                return jhtml
-            elif 'code' in html:
-                if jhtml['code'] != 'MARKET_NOT_FOUND':
-                    print('IDEX', symbol, jhtml['code'])
-                return None
-    # except:
-    #     pass
+    try:
+        async with aiohttp.ClientSession(connector=connector, headers=header) as session:
+            async with session.get(url) as response:
+                html = await response.text()
+                jhtml = json.loads(html)
+                p_count += 1
+                if 'sequence' in html:
+                    return jhtml
+                elif 'code' in html:
+                    if jhtml['code'] != 'MARKET_NOT_FOUND':
+                        print('IDEX', symbol, jhtml['code'])
+                    return None
+    except Exception as exc:
+        print(exc, proxy)
+        return None
 
 
 async def get_hitbtc_depth(symbol, proxy):
     url = f"https://api.hitbtc.com/api/2/public/orderbook/{symbol.replace('/', '')}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
-    # try:
-    async with aiohttp.ClientSession(connector=connector) as session:
-        async with session.get(url) as response:
-            html = await response.text()
-            jhtml = json.loads(html)
-            if 'ask' in html:
-                return jhtml
-            elif 'error' in html:
-                print('hitbtc', jhtml['error'])
-                return None
-            else:
-                return None
-    # except:
-    #     pass
+    try:
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.get(url) as response:
+                html = await response.text()
+                jhtml = json.loads(html)
+                if 'ask' in html:
+                    return jhtml
+                elif 'error' in html:
+                    print('hitbtc', jhtml['error'])
+                    return None
+                else:
+                    return None
+    except Exception as exc:
+        print(exc, proxy)
+        return None
 
 
 async def get_hotbit_depth(symbol, proxy):
     url = f"https://api.hotbit.io/api/v1/order.depth?interval=1e-8&&limit=20&market={symbol}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
-    # try:
-    async with aiohttp.ClientSession(connector=connector) as session:
-        async with session.get(url) as response:
-            html = await response.text()
-            jhtml = json.loads(html)
-            if jhtml['error'] is None:
-                return jhtml['result']
-            elif jhtml['error']:
-                print('hotbit', symbol, jhtml['error'])
-                if 'market not exist' in html:
-                    _query(f"""UPDATE hotbit_markets SET "is_active" = 'f' WHERE "market" LIKE '%{symbol}%'""")
-                return None
-            else:
-                return None
-    # except:
-    #     pass
+    try:
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.get(url) as response:
+                html = await response.text()
+                jhtml = json.loads(html)
+                if jhtml['error'] is None:
+                    return jhtml['result']
+                elif jhtml['error']:
+                    print('hotbit', symbol, jhtml['error'])
+                    if 'market not exist' in html:
+                        _query(f"""UPDATE hotbit_markets SET "is_active" = 'f' WHERE "market" LIKE '%{symbol}%'""")
+                    return None
+                else:
+                    return None
+    except Exception as exc:
+        print(exc, proxy)
+        return None
 
 
 async def get_bilaxy_depth(symbol, proxy):
     url = f"https://newapi.bilaxy.com/v1/orderbook?pair={symbol}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
-    # try:
-    async with aiohttp.ClientSession(connector=connector) as session:
-        async with session.get(url) as response:
-            html = await response.text()
-            jhtml = json.loads(html)
-            if 'timestamp' in html:
-                return jhtml
-            else:
-                print('bilaxy', symbol, jhtml)
-                if 'Not found pair' in html:
-                    _query(f"""UPDATE bilaxy_markets SET "is_active" = 'f' WHERE "market" LIKE '%{symbol}%'""")
-                return None
-    # except:
-    #     pass
+    try:
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.get(url) as response:
+                html = await response.text()
+                jhtml = json.loads(html)
+                if 'timestamp' in html:
+                    return jhtml
+                else:
+                    print('bilaxy', symbol, jhtml)
+                    if 'Not found pair' in html:
+                        _query(f"""UPDATE bilaxy_markets SET "is_active" = 'f' WHERE "market" LIKE '%{symbol}%'""")
+                    return None
+    except Exception as exc:
+        print(exc, proxy)
+        return None
 
 
 def get_proxy():
