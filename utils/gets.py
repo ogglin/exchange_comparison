@@ -38,7 +38,6 @@ p_count = 0
 async def get_idex_depth(symbol, cnt):
     global p_count
     proxy = proxys[cnt]
-    print(proxy)
     if cnt > 39:
         cnt -= 20
     if cnt > 19:
@@ -66,7 +65,6 @@ async def get_idex_depth(symbol, cnt):
 
 
 async def get_hitbtc_depth(symbol, proxy):
-    print(proxy)
     url = f"https://api.hitbtc.com/api/2/public/orderbook/{symbol.replace('/', '')}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
@@ -87,7 +85,6 @@ async def get_hitbtc_depth(symbol, proxy):
 
 
 async def get_hotbit_depth(symbol, proxy):
-    print(proxy)
     url = f"https://api.hotbit.io/api/v1/order.depth?interval=1e-8&&limit=20&market={symbol}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
@@ -110,7 +107,6 @@ async def get_hotbit_depth(symbol, proxy):
 
 
 async def get_bilaxy_depth(symbol, proxy):
-    print(proxy)
     url = f"https://newapi.bilaxy.com/v1/orderbook?pair={symbol}"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
     connector = SocksConnector.from_url(socks_url)
