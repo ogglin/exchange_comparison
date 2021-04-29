@@ -3,7 +3,8 @@ import random
 import time
 
 import aiohttp
-from aiohttp_socks import SocksConnector
+from aiohttp_socks import SocksConnector, ProxyConnector
+from asgiref.sync import async_to_sync
 
 from exchange_comparison.utils import _query
 from exchange_pairs.utils import proxys
@@ -47,7 +48,7 @@ async def get_idex_depth(symbol, cnt):
     }
     url = f"https://api.idex.io/v1/orderbook?market={symbol}&level=2&limit=20"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
-    connector = SocksConnector.from_url(socks_url)
+    connector = ProxyConnector.from_url(socks_url)
     try:
         async with aiohttp.ClientSession(connector=connector, headers=header) as session:
             async with session.get(url) as response:
@@ -137,5 +138,10 @@ def get_proxy():
     # print(proxy)
 
 
+@async_to_sync
+async def init():
+    idex_depth = await get_idex_depth('ETH-DAI', 30)
+    print(idex_depth)
+
 if __name__ == "__main__":
-    get_proxy()
+    init()
