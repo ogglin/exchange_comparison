@@ -117,7 +117,8 @@ def set_gas():
         url = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=7EERE6KTUK3UH5X9CPAK63CTP93SJRF1NI'
         response = requests.get(url=url)
         jData = json.loads(response.content)['result']
-        _query(f"UPDATE settings SET gas_fast = {jData['FastGasPrice']}, gas_normal={jData['ProposeGasPrice']} WHERE id = 1;")
+        _query(
+            f"UPDATE settings SET gas_fast = {jData['FastGasPrice']}, gas_normal={jData['ProposeGasPrice']} WHERE id = 1;")
     except:
         pass
 
@@ -135,6 +136,19 @@ def usd_currency_update():
         pass
 
 
+@sync_to_async
+def btc_currency_update():
+    try:
+        time.sleep(1)
+        # url = 'https://api.hotbit.io/api/v1/market.status?market=ETH/USDT&period=10'
+        url = 'https://api.hitbtc.com/api/2/public/ticker/ETHBTC'
+        response = requests.get(url=url)
+        jData = json.loads(response.content)
+        _query(f"UPDATE settings SET currency = {jData['last']} WHERE id = 1;")
+    except:
+        pass
+
+
 async def exchange_set_init():
     print('start exchanges: ' + str(datetime.datetime.now()))
     while True:
@@ -145,4 +159,5 @@ async def exchange_set_init():
 async def set_gas_currency_init():
     while True:
         await set_gas()
+        await btc_currency_update()
         await usd_currency_update()
