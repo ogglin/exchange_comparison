@@ -48,11 +48,12 @@ async def get_idex_depth(symbol, cnt):
     }
     url = f"https://api.idex.io/v1/orderbook?market={symbol}&level=2&limit=20"
     socks_url = 'socks5://' + proxy[2] + ':' + proxy[3] + '@' + proxy[0] + ':' + proxy[1]
-    connector = ProxyConnector.from_url(socks_url)
+    connector = SocksConnector.from_url(socks_url)
     try:
         async with aiohttp.ClientSession(connector=connector, headers=header) as session:
             async with session.get(url) as response:
                 html = await response.text()
+                print(html)
                 jhtml = json.loads(html)
                 p_count += 1
                 if 'sequence' in html:
@@ -74,6 +75,7 @@ async def get_hitbtc_depth(symbol, proxy):
         async with aiohttp.ClientSession(connector=connector) as session:
             async with session.get(url) as response:
                 html = await response.text()
+                print(html)
                 jhtml = json.loads(html)
                 if 'ask' in html:
                     return jhtml
@@ -95,6 +97,7 @@ async def get_hotbit_depth(symbol, proxy):
         async with aiohttp.ClientSession(connector=connector) as session:
             async with session.get(url) as response:
                 html = await response.text()
+                print(html)
                 jhtml = json.loads(html)
                 if jhtml['error'] is None:
                     return jhtml['result']
@@ -118,6 +121,7 @@ async def get_bilaxy_depth(symbol, proxy):
         async with aiohttp.ClientSession(connector=connector) as session:
             async with session.get(url) as response:
                 html = await response.text()
+                print(html)
                 jhtml = json.loads(html)
                 if 'timestamp' in html:
                     return jhtml
