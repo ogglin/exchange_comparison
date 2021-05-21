@@ -139,7 +139,7 @@ def resave_wss():
                     trade = json.loads(sLog.log)
                 id = sLog.id
                 for uni_p in exps.uniswap_prices_set:
-                    if uni_p[0] == trade['m'].replace('-ETH', ''):
+                    if uni_p[0].lower() == trade['m'].replace('-ETH', '').lower():
                         compare_price(trade, uni_p, id)
             wT = False
         else:
