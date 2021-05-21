@@ -30,7 +30,7 @@ def init_start():
         uniswap_v2_init(),
         set_gas_currency_init(),
         get_wss(),
-        hotbit_wss(),
+        # hotbit_wss(),
         init_resave(),
         # tikers_set_idex_init(),
         # idex_init(),
