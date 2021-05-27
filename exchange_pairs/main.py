@@ -28,12 +28,12 @@ def init_start():
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=40))
     async_tasks = [
-        # bankor_init(),
-        # kyber_init(),
-        # uniswap_v2_init(),
-        # set_gas_currency_init(),
-        # get_wss(),
-        # init_resave(),
+        bankor_init(),
+        kyber_init(),
+        uniswap_v2_init(),
+        set_gas_currency_init(),
+        get_wss(),
+        init_resave(),
         init_all_compared_tokens(),
         init_replica_bilaxy(),
         init_replica_hitbit(),
