@@ -21,8 +21,8 @@ PRODUCERS_COUNT = 20
 idex_tiker_all = None
 
 
-async def compare_markets(htoken, all_tokens, percent, currency, proxy, currencyUSD):
-    hotbit_depth = await get_hotbit_depth(htoken[3], proxy)
+async def compare_markets(htoken, all_tokens, percent, currency, cnt, currencyUSD):
+    hotbit_depth = await get_hotbit_depth(htoken[3], cnt)
     compare_result = []
     if hotbit_depth:
         for token in all_tokens:
@@ -38,7 +38,7 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
                 #     else:
                 #         c_bids = None
                 if 'hitbtc' in token[2]:
-                    hitbtc_deth = await get_hitbtc_depth(token[3], proxy)
+                    hitbtc_deth = await get_hitbtc_depth(token[3], cnt)
                     if hitbtc_deth:
                         c_bids = []
                         for bid in hitbtc_deth['bid']:
@@ -71,7 +71,7 @@ async def init_compare(hotbit_tokens, all_tokens, percent, currency, currencyUSD
     async_tasks = []
     cnt = 0
     for htoken in hotbit_tokens:
-        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, proxys[cnt], currencyUSD))
+        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, cnt, currencyUSD))
         cnt += 1
         if cnt >= len(proxys):
             cnt = 0

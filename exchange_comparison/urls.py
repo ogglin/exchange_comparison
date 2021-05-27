@@ -48,5 +48,5 @@ urlpatterns = [
                   path('uni/', include('uniswap_module.urls')),
                   path('admin/', admin.site.urls),
                   url(r'^api-auth/', include('rest_framework.urls')),
-                  path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+                  # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

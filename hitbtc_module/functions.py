@@ -73,8 +73,8 @@ async def hitbtc_tiker_init():
         await get_tiker()
 
 
-async def compare_markets(htoken, all_tokens, percent, currency, proxy, currencyUSD):
-    hitbtc_deth = await get_hitbtc_depth(htoken[3], proxy)
+async def compare_markets(htoken, all_tokens, percent, currency, cnt, currencyUSD):
+    hitbtc_deth = await get_hitbtc_depth(htoken[3], cnt)
     asks = []
     bids = []
     compare_result = []
@@ -84,16 +84,16 @@ async def compare_markets(htoken, all_tokens, percent, currency, proxy, currency
             if token[0] == htoken[0] and 'usd' not in token[0].lower() and 'usd' not in htoken[0].lower():
                 c_bids = None
                 # if 'idex' in token[2]:
-                #     idex_depth = await get_idex_depth(token[3], proxy)
+                #     idex_depth = await get_idex_depth(token[3], cnt)
                 #     if idex_depth:
                 #         if len(idex_depth['bids']) > 0:
                 #             c_bids = idex_depth['bids']
                 if 'hotbit' in token[2]:
-                    hotbit_depth = await get_hotbit_depth(token[3], proxy)
+                    hotbit_depth = await get_hotbit_depth(token[3], cnt)
                     if hotbit_depth:
                         c_bids = hotbit_depth['bids']
                 # elif 'bilaxy' in token[2]:
-                #     bilaxy_deth = await get_bilaxy_depth(token[3], proxy)
+                #     bilaxy_deth = await get_bilaxy_depth(token[3], cnt)
                 #     if bilaxy_deth:
                 #         c_bids = bilaxy_deth['bids']
                 elif 'uniswap' in token[2]:
@@ -120,7 +120,7 @@ async def init_compare(hitbtc_tokens, all_tokens, percent, currency, currencyUSD
     async_tasks = []
     cnt = 0
     for htoken in hitbtc_tokens:
-        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, proxys[cnt], currencyUSD))
+        async_tasks.append(compare_markets(htoken, all_tokens, percent, currency, cnt, currencyUSD))
         cnt += 1
         if cnt >= len(proxys):
             cnt = 0

@@ -1,5 +1,5 @@
 import re
-
+import exchange_comparison.global_vars as gv
 from exchange_comparison.utils import _query
 
 proxys = [
@@ -45,47 +45,6 @@ proxys = [
     ['45.86.1.172', '3001', 'rTfECS6e', 'IBXJQeqy'],
     ['45.87.253.200', '3001', 'rTfECS6e', 'IBXJQeqy'],
     ['45.87.253.238', '3001', 'rTfECS6e', 'IBXJQeqy'],
-    # IPv6
-    # ['191.101.231.112', '11782', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '13521', 'user53105', '3x7cyr'],
-    # ['191.101.231.114', '18856', 'user53105', '3x7cyr'],
-    # ['191.101.231.115', '12724', 'user53105', '3x7cyr'],
-    # ['191.101.231.116', '13354', 'user53105', '3x7cyr'],
-    # ['191.101.231.117', '13044', 'user53105', '3x7cyr'],
-    # ['191.101.231.118', '16879', 'user53105', '3x7cyr'],
-    # ['191.101.231.119', '13701', 'user53105', '3x7cyr'],
-    # ['191.101.231.112', '14286', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '15181', 'user53105', '3x7cyr'],
-    # ['191.101.231.112', '15963', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '18037', 'user53105', '3x7cyr'],
-    # ['191.101.231.114', '17589', 'user53105', '3x7cyr'],
-    # ['191.101.231.115', '11557', 'user53105', '3x7cyr'],
-    # ['191.101.231.116', '17652', 'user53105', '3x7cyr'],
-    # ['191.101.231.117', '13016', 'user53105', '3x7cyr'],
-    # ['191.101.231.118', '17954', 'user53105', '3x7cyr'],
-    # ['191.101.231.119', '17442', 'user53105', '3x7cyr'],
-    # ['191.101.231.112', '16723', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '14291', 'user53105', '3x7cyr'],
-    # ['191.101.231.112', '3405', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '8033', 'user53105', '3x7cyr'],
-    # ['191.101.231.114', '7187', 'user53105', '3x7cyr'],
-    # ['191.101.231.115', '7196', 'user53105', '3x7cyr'],
-    # ['191.101.231.116', '9984', 'user53105', '3x7cyr'],
-    # ['191.101.231.117', '2178', 'user53105', '3x7cyr'],
-    # ['191.101.231.118', '2221', 'user53105', '3x7cyr'],
-    # ['191.101.231.119', '2202', 'user53105', '3x7cyr'],
-    # ['191.101.231.112', '5728', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '4623', 'user53105', '3x7cyr'],
-    # ['191.101.231.114', '9350', 'user53105', '3x7cyr'],
-    # ['191.101.231.115', '3700', 'user53105', '3x7cyr'],
-    # ['191.101.231.116', '3546', 'user53105', '3x7cyr'],
-    # ['191.101.231.117', '9597', 'user53105', '3x7cyr'],
-    # ['191.101.231.118', '7028', 'user53105', '3x7cyr'],
-    # ['191.101.231.119', '6365', 'user53105', '3x7cyr'],
-    # ['191.101.231.112', '6781', 'user53105', '3x7cyr'],
-    # ['191.101.231.113', '7810', 'user53105', '3x7cyr'],
-    # ['191.101.231.114', '1318', 'user53105', '3x7cyr'],
-    # ['191.101.231.115', '3382', 'user53105', '3x7cyr'],
 ]
 
 
@@ -247,36 +206,18 @@ class GetTokens(object):
             FROM trusted_pairs tp LEFT JOIN idex_markets im ON lower(im.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'idex' 
             WHERE tp.is_active is true AND im.is_active is true and settings_modules.is_active is true;""")
-        # return _query('''
-        #     SELECT tp.tsymbol, lower(tp.contract), 'idex' as site, mi.exch_direction token, mi.highest_bid, mi.lowest_ask,
-        #     mi.volume FROM trusted_pairs tp LEFT JOIN module_idex mi ON lower(mi.tsymbol) = lower(tp.tsymbol) and
-        #     tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'idex'
-        #     WHERE mi.exch_direction is not null  and tp.is_active is true AND mi.is_active is true and
-        #     settings_modules.is_active is true ORDER BY token;''')
 
     def __hotbit(self):
         return _query("""SELECT tp.tsymbol, lower(tp.contract), 'hotbit' as site, hm.market 
             FROM trusted_pairs tp LEFT JOIN hotbit_markets hm ON lower(hm.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hotbit' 
             WHERE tp.is_active is true AND hm.is_active is true and settings_modules.is_active is true;""")
-        # return _query('''
-        #     SELECT tp.tsymbol, lower(tp.contract), 'hotbit' as site, mh.symbol token, mh.sell, mh.buy, mh.volume
-        #     FROM trusted_pairs tp LEFT JOIN module_hotbit mh ON lower(mh.tsymbol) = lower(tp.tsymbol) and
-        #     tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hotbit'
-        #     WHERE mh.exch_direction is not null  and tp.is_active is true AND mh.is_active is true and
-        #     settings_modules.is_active is true;''')
 
     def __hitbtc(self):
         return _query("""SELECT tp.tsymbol, lower(tp.contract), 'hitbtc' as site, hm.market 
             FROM trusted_pairs tp LEFT JOIN hitbtc_markets hm ON lower(hm.tsymbol) = lower(tp.tsymbol) and 
             tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hitbtc' 
             WHERE tp.is_active is true AND hm.is_active is true and settings_modules.is_active is true;""")
-        # return _query('''
-        #     SELECT tp.tsymbol, lower(tp.contract), 'hitbtc' as site, mh.symbol token, mh.sell, mh.buy, mh.volume
-        #     FROM trusted_pairs tp LEFT JOIN module_hitbtc mh ON lower(mh.tsymbol) = lower(tp.tsymbol) and
-        #     tp.contract is not null LEFT JOIN settings_modules ON settings_modules.module_name = 'hitbtc'
-        #     WHERE mh.exch_direction is not null and tp.is_active is true AND mh.is_active is true and
-        #     settings_modules.is_active is true;''')
 
     def __bilaxy(self):
         return _query("""SELECT tp.tsymbol, lower(tp.contract), 'bilaxy' as site, bm.market 
@@ -340,7 +281,7 @@ class GetTokens(object):
             if 'hitbtc' in self.module:
                 self.at = self.__hitbtc()
             if 'bilaxy' in self.module:
-                self.at = self.__hitbtc()
+                self.at = self.__bilaxy()
 
             # Exchangers
             if 'uniswap' in self.module:
@@ -466,3 +407,22 @@ class ResultPrepare(object):
                              'tokenid': tokenid, 'buyurl': buyurl, 'sellurl': sellurl, 'sell_symbol': sell_symbol,
                              'contract': contract})
         return compare_result
+
+
+def get_token_depth(token):
+    c_bids = None
+    if 'idex' in token[2]:
+        if token[3] in gv.replica_idex:
+            c_bids = gv.replica_idex[token[3]][0]['bids']
+    elif 'hitbtc' in token[2]:
+        if token[3] in gv.replica_hitbtc:
+            c_bids = gv.replica_hitbtc[token[3]][0]['bids']
+    elif 'bilaxy' in token[2]:
+        if token[3] in gv.replica_bilaxy:
+            c_bids = gv.replica_bilaxy[token[3]][0]['bids']
+    elif 'hotbit' in token[2]:
+        if token[3] in gv.replica_hotbit:
+            c_bids = gv.replica_hotbit[token[3]][0]['bids']
+    elif 'uniswap' in token[2]:
+        c_bids = token[4]
+    return c_bids
