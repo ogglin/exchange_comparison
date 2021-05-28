@@ -42,6 +42,7 @@ def make_replica():
     replica = {}
     tokens = gt(module='bilaxy', _all=False).tokens()
     xlen = math.ceil(len(tokens) / counts)
+    # print(len(tokens))
     for i in range(xlen):
         parts_tokens = []
         for hi, htoken in enumerate(tokens):
@@ -66,7 +67,7 @@ def make_replica():
 
 
 async def init_replica_bilaxy():
-    print('bilaxy start')
+    print('bilaxy start replica')
     while True:
         tstart = datetime.now()
         await make_replica()

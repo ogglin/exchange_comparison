@@ -74,7 +74,7 @@ def compare_init():
     all_result = loop.run_until_complete(make_compare(gv.replica_bilaxy, all_tokens, currency, currencyUSD, percent))
     loop.close()
     compare_result = rprep(all_result=all_result, exchanger='bilaxy').result()
-    print('bilaxy_result', compare_result)
+    # print('bilaxy_result', compare_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='bilaxy') | (
             Q(sell_name__icontains='bilaxy') & ~Q(buy_name__icontains='hotbit') & ~Q(
         buy_name__icontains='idex') & ~Q(buy_name__icontains='hitbtc'))).delete()
@@ -92,5 +92,6 @@ def compare_init():
 async def init_compare_bilaxy():
     while True:
         tstart = datetime.now()
+        # print('bilaxy compare start: ', str(tstart))
         await compare_init()
-        print('bilaxy compare time: ', str(datetime.now() - tstart))
+        # print('bilaxy compare time: ', str(datetime.now() - tstart))

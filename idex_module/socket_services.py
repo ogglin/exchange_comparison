@@ -14,7 +14,7 @@ import psycopg2
 
 from exchange_comparison.utils import _query
 from exchange_pairs.models import WebsocketLog
-import exchange_pairs.services as exps
+import exchange_comparison.global_vars as gv
 from idex_module.models import IdexSocketLog
 
 DATABASE_NAME = 'exchange_comparison'
@@ -130,7 +130,7 @@ def get_wss():
 def resave_wss():
     wT = True
     while wT:
-        if len(exps.uniswap_prices_set) > 0:
+        if len(gv.uniswap_prices_set) > 0:
             sLogs = WebsocketLog.objects.order_by('-id').filter(Q(token__isnull=True) & ~Q(log__icontains='error'))
             for sLog in sLogs:
                 if 'trades' in sLog.log:
@@ -138,7 +138,7 @@ def resave_wss():
                 else:
                     trade = json.loads(sLog.log)
                 id = sLog.id
-                for uni_p in exps.uniswap_prices_set:
+                for uni_p in gv.uniswap_prices_set:
                     if uni_p[0].lower() == trade['m'].replace('-ETH', '').lower():
                         compare_price(trade, uni_p, id)
             wT = False

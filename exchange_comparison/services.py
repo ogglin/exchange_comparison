@@ -117,7 +117,6 @@ def set_gas():
         url = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=7EERE6KTUK3UH5X9CPAK63CTP93SJRF1NI'
         response = requests.get(url=url)
         jData = json.loads(response.content)['result']
-        print(jData)
         _query(
             f"UPDATE settings SET gas_fast = {jData['FastGasPrice']}, gas_normal={jData['ProposeGasPrice']} WHERE id = 1;")
     except:
@@ -132,7 +131,6 @@ def usd_currency_update():
         url = 'https://api.hitbtc.com/api/2/public/ticker/ETHUSD'
         response = requests.get(url=url)
         jData = json.loads(response.content)
-        print(jData)
         _query(f"UPDATE settings SET currency_usd = {jData['last']} WHERE id = 1;")
     except:
         pass
@@ -146,7 +144,6 @@ def btc_currency_update():
         url = 'https://api.hitbtc.com/api/2/public/ticker/ETHBTC'
         response = requests.get(url=url)
         jData = json.loads(response.content)
-        print(jData)
         _query(f"UPDATE settings SET currency = {jData['last']} WHERE id = 1;")
     except:
         pass

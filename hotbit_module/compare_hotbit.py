@@ -71,7 +71,7 @@ def compare_init():
     all_result = loop.run_until_complete(make_compare(gv.replica_hotbit, all_tokens, currency, currencyUSD, percent))
     loop.close()
     compare_result = rprep(all_result=all_result, exchanger='hotbit').result()
-    print('hotbit_result', compare_result)
+    # print('hotbit_result', compare_result)
     ProfitExchanges.objects.filter(Q(buy_name__icontains='hotbit') | (
             Q(sell_name__icontains='hotbit') & ~Q(buy_name__icontains='idex') & ~Q(
         buy_name__icontains='hitbit')) & ~Q(buy_name__icontains='bilaxy')).delete()
@@ -90,4 +90,4 @@ async def init_compare_hotbit():
     while True:
         tstart = datetime.now()
         await compare_init()
-        print('hotbit compare time: ', str(datetime.now() - tstart))
+        # print('hotbit compare time: ', str(datetime.now() - tstart))

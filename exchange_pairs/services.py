@@ -26,7 +26,6 @@ async def get_tokens():
 
 
 async def init_all_compared_tokens():
-    print('set compared_tokens start: ', str(datetime.now()))
     while True:
         start = datetime.now()
         await get_tokens()

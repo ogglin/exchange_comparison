@@ -5,7 +5,7 @@ import requests
 from asgiref.sync import sync_to_async
 
 from exchange_pairs.models import TrustedPairs
-import exchange_pairs.services as exch_serv
+import exchange_comparison.global_vars as gv
 from .models import Uniswap, UniswapOne
 
 koef = 0.99
@@ -26,8 +26,8 @@ def currencies_update_v1(direction, lowest_ask, highest_bid, tokenid, volume):
 def currencies_update_v2():
     update_list = []
     objs = Uniswap.objects.all().order_by('id')
-    if len(exch_serv.uniswap_prices_set) > 0:
-        for data in exch_serv.uniswap_prices_set:
+    if len(gv.uniswap_prices_set) > 0:
+        for data in gv.uniswap_prices_set:
             try:
                 obj = objs.get(tokenid__icontains=data[1])
                 obj.lowest_ask = data[5]
