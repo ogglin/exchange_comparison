@@ -1,3 +1,5 @@
+import time
+
 from bs4 import BeautifulSoup
 from asgiref.sync import sync_to_async
 import requests as req
@@ -36,6 +38,12 @@ def hitbtc_token_status():
                 # print('******************/')
         except:
             pass
+
+
+async def init_token_status():
+    while True:
+        await hitbtc_token_status()
+        time.sleep(60)
 
 
 if __name__ == '__main__':

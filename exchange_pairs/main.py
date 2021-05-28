@@ -20,6 +20,7 @@ from idex_module.socket_services import get_wss, init_resave
 from kyber_module.services import kyber_init
 from uniswap_module.services import uniswap_v2_init, uniswap_v1_init
 from utils.main import init_utest
+from utils.token_parser import init_token_status
 
 
 def init_start():
@@ -28,6 +29,7 @@ def init_start():
     loop = asyncio.get_event_loop()
     loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=40))
     async_tasks = [
+        init_token_status(),
         bankor_init(),
         kyber_init(),
         uniswap_v2_init(),
@@ -45,7 +47,7 @@ def init_start():
         init_compare_hotbit(),
         init_compare_idex(),
 
-        exchanges_idex(),
+        # exchanges_idex(),
         # exchanges_hotbit(),
         # exchanges_hitbtc(),
         # exchanges_bilaxy(),
