@@ -11,8 +11,8 @@ from uniswap_module.functions import get_uni_2
 
 async def get_tokens():
     gv.uniswap_prices_set = await get_uni_2()
-    gv.all_compared_tokens = gt(module='all', _all=True).tokens()
-    gv.all_compared_tokens.extend(gv.uniswap_prices_set)
+    # gv.all_compared_tokens = gt(module='all', _all=True).tokens()
+    # gv.all_compared_tokens.extend(gv.uniswap_prices_set)
     return True
 
 
